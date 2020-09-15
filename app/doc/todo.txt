@@ -1,0 +1,2 @@
+intégrer sweetAlert
+https://sweetalert.js.org/guides/

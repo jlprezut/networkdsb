@@ -1,0 +1,41 @@
+/site
+/site/{id}
+/site/{id}/salle
+
+/salle
+/salle/{id}
+/salle/{id}/baie
+
+/baie                                   OK
+/baie/{id}                              OK
+/baie/{id}/equipement                   OK
+
+/equipement                             OK
+/equipement/{id}                        OK
+/equipement/{id}/port                   OK
+
+/filter/user                            OK
+/filter/baie                            OK
+/filter/baie/{id}/equipement            OK
+/filter/baie/{id}/equipement/{id}/port  OK
+
+/port                                   OK
+/port/{id}                              OK
+/port/{id}/comment                      OK
+/port/{id}/links                        OK
+/port/{id}/describe                     OK
+/port/{id}/link                         OK
+/port/{id}/link/{dest}                  OK
+/port/{id}/link/{dest}/comment                  
+/port/{id}/unlink/{dest}                OK
+
+/quadrupleur/empty                      OK
+
+/user                                   OK
+/user/{id}                              OK
+/user/{id}/port                         OK
+/user/{id}/link/{dest}                  OK
+/user/{id}/unlink/{dest}                OK
+/user/{id}/inventory                    OK
+
+/error/port                             OK

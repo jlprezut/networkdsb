@@ -11,6 +11,7 @@ class appController extends nodefony.Controller {
     super(container, context);
     // start session
     this.startSession();
+    this.dsbdb = this.getConnection("dsb") ;
   }
 
 /**
@@ -20,9 +21,9 @@ class appController extends nodefony.Controller {
   indexAction() {
     return this.render("app::index.html.twig", {
       name: this.kernel.projectName,
-			description: this.kernel.package.description    });
-
+			description: this.kernel.package.description});
   }
+
 }
 
 module.exports = appController;

@@ -1,0 +1,42 @@
+networkDSB/app/node_modules/@amcharts/amcharts4/.internal/core/utils/EventDispatcher.js
+/**
+ * Checks if dispatching for particular event type is enabled.
+ *
+ * @param type  Event type
+ * @return Enabled?
+ */
+EventDispatcher.prototype.isEnabled = function (type) {
+    if (this._disposed) {
+        return false ;                                        /// JLP
+        //throw new Error("EventDispatcher is disposed");
+    }
+    // TODO is this check correct ?
+    return this._enabled && this._listeners.length > 0 && this.hasListenersByType(type) && this._disabled[type] == null;
+};
+
+
+networkDSB/app/node_modules/@amcharts/amcharts4/.internal/core/Base.js
+/**
+ * Creates [[Disposer]] for `setTimeout` function call. This ensures that all
+ * timeouts created by the object will be cleared when object itself is
+ * disposed.
+ *
+ * @ignore Exclude from docs
+ * @param fn     Callback function
+ * @param delay  Timeout (ms)
+ * @return Disposer for timeout
+ */
+BaseObject.prototype.setTimeout = function (fn, delay) {
+    var _this = this;
+    var id = setTimeout(function () {
+        _this.removeDispose(disposer);
+        fn();
+    }, delay);
+    var disposer = new Disposer(function () {
+        clearTimeout(id);
+    });
+    if (this._disposers !== null) {    /// JLP
+      this._disposers.push(disposer);
+    }
+    return disposer;
+};
