@@ -23,7 +23,9 @@ class PortGraph extends nodefony.Service {
     this.api.get('/port')
     .then((r) => {
       r.forEach((item, i) => {
-        item.tooltipText = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'refresh' : 'All' },'${this.portAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
+        item.tooltipText = `Baie : ${item.baie_name}<br>${item.equipement_name}<br>Port ${item.name}<hr>` + item.tooltipText
+        item.tooltipText += '<hr>'
+        item.tooltipText += `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'refresh' : 'All' },'${this.portAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
         if (item.comment !== '' && item.comment !== null) {
           item.tooltipText += `${item.comment}</br>`
         } else {
@@ -50,7 +52,9 @@ class PortGraph extends nodefony.Service {
       .then((r) => {
         r.forEach((item, i) => {
           if (item.type_obj == 'port') {
-            item.tooltipText = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'refresh': 'One' },'${this.portAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
+            item.tooltipText = `Baie : ${item.baie_name}<br>${item.equipement_name}<br>Port ${item.name}<hr>` + item.tooltipText
+            item.tooltipText += '<hr>'
+            item.tooltipText += `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'refresh': 'One' },'${this.portAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
             if (item.comment !== '' && item.comment !== null) {
               item.tooltipText += `${item.comment}</br>`
             } else {

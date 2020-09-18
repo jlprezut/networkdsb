@@ -41,14 +41,17 @@ class UserGraph extends nodefony.Service {
     this.api.get(`/user/${idUser}`)
       .then((r) => {
         r.forEach((item, i) => {
-          item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','linkUserPort')">Lier le port</a></br>
+          item.tooltipText += '<hr>'
+          item.tooltipText += `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','linkUserPort')">Lier le port</a></br>
                               <a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','inventoryUser')">Arborescence</a>`
         });
         let firstLevel = r ;
         this.api.get(`/user/${idUser}/port`)
           .then((r) => {
             r.forEach((item, i) => {
-              item.tooltipText = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'idUser' : ${idUser} },'${this.userAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
+              item.tooltipText = `Baie : ${item.baie_name}<br>${item.equipement_name}<br>Port ${item.name}<hr>` + item.tooltipText
+              item.tooltipText += '<hr>'
+              item.tooltipText += `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'idUser' : ${idUser} },'${this.userAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
               if (item.comment !== '' && item.comment !== null) {
                 item.tooltipText += `${item.comment}</br>`
               } else {
