@@ -46,9 +46,9 @@ module.exports = {
   connectors: {
               dsb: {
                 driver: "mysql",
-                dbname: 'test',
-                username: 'root',
-                password: 'jlpmsh',
+                dbname: 'networkdsb',
+                username: 'network',
+                password: 'network',
                 options: {
                   dialect: "mysql",
                   host: "localhost",
