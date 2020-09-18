@@ -26,7 +26,8 @@ module.exports = merge(wpconfig, {
   //context: context,
   target: "web",
   entry: {
-    app: ["./Resources/js/app.js"]
+    app: ["./Resources/js/app.js"],
+    mobile: ["./Resources/js/mobile.js"]
   },
   output: {
     path: public,

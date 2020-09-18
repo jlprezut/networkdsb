@@ -1,0 +1,996 @@
+-- Salle definition
+
+CREATE TABLE `Salle` (
+  `id_salle` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nom_salle` varchar(100) NOT NULL,
+  `id_site` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id_salle`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+-- Site definition
+
+CREATE TABLE `Site` (
+  `id_site` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Nom` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_site`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+-- `User` definition
+
+CREATE TABLE `User` (
+  `id_user` int(11) NOT NULL AUTO_INCREMENT,
+  `nom_user` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_user`),
+  UNIQUE KEY `UK_user_nom` (`nom_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=168 DEFAULT CHARSET=latin1;
+
+-- baie definition
+
+CREATE TABLE `baie` (
+  `id_baie` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `nom_baie` varchar(20) NOT NULL DEFAULT '',
+  `visible` int(11) NOT NULL DEFAULT 1,
+  `id_salle` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id_baie`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+-- equipement definition
+
+CREATE TABLE `equipement` (
+  `id_equipement` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `type` enum('switch','bandeau','Quadrupleur','PreQuadrupleur','DSLAM','Routeur','Serveur','InterBaie') DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `id_baie` int(11) NOT NULL,
+  `premier_port` int(5) NOT NULL DEFAULT 1,
+  `dernier_port` int(5) NOT NULL DEFAULT 0,
+  `Emplacement` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id_equipement`)
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=latin1;
+
+-- link definition
+
+CREATE TABLE `link` (
+  `id_link` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id_port1` int(11) NOT NULL,
+  `id_port2` int(11) NOT NULL,
+  `id_unik` varchar(10) NOT NULL DEFAULT '',
+  `Commentaire` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id_link`),
+  UNIQUE KEY `uk_link_id_link` (`id_unik`),
+  KEY `idx_link_port1` (`id_port1`),
+  KEY `idx_link_port2` (`id_port2`)
+) ENGINE=InnoDB AUTO_INCREMENT=600 DEFAULT CHARSET=latin1;
+
+-- port definition
+
+CREATE TABLE `port` (
+  `id_port` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `numero_port` int(5) NOT NULL,
+  `id_equipement` int(11) NOT NULL,
+  `id_user` int(11) DEFAULT NULL,
+  `Commentaire_user` varchar(100) DEFAULT NULL,
+  `type_acces` enum('RJ45','Fibre','Câble') DEFAULT NULL,
+  `Commentaire` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id_port`),
+  KEY `port_FK` (`id_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=1350 DEFAULT CHARSET=latin1;
+
+----------------------------------
+
+CREATE DEFINER=`network`@`localhost` TRIGGER `TG_AI_Equipement_port` AFTER INSERT ON `equipement` FOR EACH ROW begin
+	declare p1 integer ;
+	declare nb_ligne integer ;
+
+	select NEW.premier_port into p1 ;
+
+	label1: LOOP
+		select count(*) into nb_ligne from port where id_equipement = NEW.id_equipement and numero_port = p1 ;
+		if nb_ligne = 0 then
+			insert into port (numero_port,id_equipement,type_acces) values (p1,NEW.id_equipement,'RJ45') ;
+		end if ;
+		set p1 = p1 + 1 ;
+		if p1 > NEW.dernier_port then
+			leave label1 ;
+		end if ;
+	end loop label1;
+
+end;
+
+----
+CREATE DEFINER=`network`@`localhost` TRIGGER `TG_AU` AFTER UPDATE ON `equipement` FOR EACH ROW begin
+	declare p1 integer ;
+	declare nb_ligne integer ;
+
+	select NEW.premier_port into p1 ;
+
+	label1: LOOP
+		select count(*) into nb_ligne from port where id_equipement = NEW.id_equipement and numero_port = p1 ;
+		if nb_ligne = 0 then
+			insert into port (numero_port,id_equipement) values (p1,NEW.id_equipement) ;
+		end if ;
+		set p1 = p1 + 1 ;
+		if p1 > NEW.dernier_port then
+			leave label1 ;
+		end if ;
+	end loop label1;
+
+end;
+
+----
+CREATE DEFINER=`network`@`localhost` TRIGGER `TG_BU_link` BEFORE INSERT ON `link` FOR EACH ROW begin
+	declare plus_petit integer ;
+	DECLARE errorMessage VARCHAR(255);
+
+	if (NEW.id_port1 = NEW.id_port2) then
+		set errorMessage = 'Pas possible de créer une boucle' ;
+		SIGNAL SQLSTATE '45000'
+	            SET MESSAGE_TEXT = errorMessage;
+	end if ;
+
+	select least(NEW.id_port1, NEW.id_port2) into plus_petit ;
+	set NEW.id_port2 = greatest(NEW.id_port1, NEW.id_port2) ;
+	set NEW.id_port1 = plus_petit ;
+
+	set NEW.id_unik = concat(NEW.id_port1, "-" ,NEW.id_port2) ;
+end;
+
+----------------------------------
+
+-- baie_list source
+
+CREATE OR REPLACE
+ALGORITHM = UNDEFINED VIEW `baie_list` AS
+select
+    'baie' AS `type_obj`,
+    `baie`.`id_baie` AS `id_obj`,
+    concat(`baie`.`id_baie`, '-baie') AS `id`,
+    baie.`nom_baie` AS `name`,
+    10 AS `value`,
+    concat('Baie', if(`baie`.`visible`, '', ' Virtuelle'), ' : ', `baie`.`nom_baie`) AS `tooltipText`,
+    `baie`.`id_salle` AS `id_salle`
+from
+    `baie`;
+
+-----
+-- equipement_list source
+
+CREATE OR REPLACE
+ALGORITHM = UNDEFINED VIEW equipement_list AS
+select
+    'equipement' AS `type_obj`,
+    `e`.`id_equipement` AS `id_obj`,
+    concat(`e`.`id_equipement`, '-eq') AS `id`,
+    `e`.`description` AS `name`,
+    4 AS `value`,
+    concat(`e`.`type`, ' : ', `e`.`description`) AS `tooltipText`,
+    `e`.`id_baie` AS `id_baie`
+from
+    equipement `e`;
+
+------
+-- liste_erreurs source
+
+CREATE OR REPLACE
+ALGORITHM = UNDEFINED VIEW `liste_erreurs` AS
+select
+    `b`.`id_baie` AS `id_baie`,
+    `b`.`nom_baie` AS `nom_baie`,
+    `e`.`type` AS `type`,
+    `e`.`id_equipement` AS `id_equipement`,
+    `e`.`description` AS `description`,
+    `p`.`id_port` AS `id_port`,
+    `p`.`numero_port` AS `numero_port`,
+    count(`f1`.`id_link`) + count(`f2`.`id_link`) AS `nb_link`
+from
+    ((`baie` `b`
+join `equipement` `e`)
+join ((`port` `p`
+left join `link` `f1` on
+    (`p`.`id_port` = `f1`.`id_port1`))
+left join `link` `f2` on
+    (`p`.`id_port` = `f2`.`id_port2`)))
+where
+    `p`.`id_equipement` = `e`.`id_equipement`
+    and `e`.`type` = 'PreQuadrupleur'
+    and `e`.`id_baie` = `b`.`id_baie`
+group by
+    `e`.`id_equipement`,
+    `p`.`id_port`
+having
+    `nb_link` <> 8
+union
+select
+    `b`.`id_baie` AS `id_baie`,
+    `b`.`nom_baie` AS `nom_baie`,
+    `e`.`type` AS `type`,
+    `e`.`id_equipement` AS `id_equipement`,
+    `e`.`description` AS `description`,
+    `p`.`id_port` AS `id_port`,
+    `p`.`numero_port` AS `numero_port`,
+    count(`f1`.`id_link`) + count(`f2`.`id_link`) AS `nb_link`
+from
+    ((`baie` `b`
+join `equipement` `e`)
+join ((`port` `p`
+left join `link` `f1` on
+    (`p`.`id_port` = `f1`.`id_port1`))
+left join `link` `f2` on
+    (`p`.`id_port` = `f2`.`id_port2`)))
+where
+    `p`.`id_equipement` = `e`.`id_equipement`
+    and `e`.`type` = 'InterBaie'
+    and `e`.`id_baie` = `b`.`id_baie`
+group by
+    `e`.`id_equipement`,
+    `p`.`id_port`
+having
+    `nb_link` > 2
+    or `nb_link` = 1
+union
+select
+    `b`.`id_baie` AS `id_baie`,
+    `b`.`nom_baie` AS `nom_baie`,
+    `e`.`type` AS `type`,
+    `e`.`id_equipement` AS `id_equipement`,
+    `e`.`description` AS `description`,
+    `p`.`id_port` AS `id_port`,
+    `p`.`numero_port` AS `numero_port`,
+    count(`f1`.`id_link`) + count(`f2`.`id_link`) AS `nb_link`
+from
+    ((`baie` `b`
+join equipement `e`)
+join ((`port` `p`
+left join `link` `f1` on
+    (`p`.`id_port` = `f1`.`id_port1`))
+left join `link` `f2` on
+    (`p`.`id_port` = `f2`.`id_port2`)))
+where
+    `p`.`id_equipement` = `e`.`id_equipement`
+    and `e`.`type` = 'Quadrupleur'
+    and `e`.`id_baie` = `b`.`id_baie`
+group by
+    `e`.`id_equipement`,
+    `p`.`id_port`
+having
+    `nb_link` > 2
+union
+select
+    `b`.`id_baie` AS `id_baie`,
+    `b`.`nom_baie` AS `nom_baie`,
+    `e`.`type` AS `type`,
+    `e`.`id_equipement` AS `id_equipement`,
+    `e`.`description` AS `description`,
+    `p`.`id_port` AS `id_port`,
+    `p`.`numero_port` AS `numero_port`,
+    count(`f1`.`id_link`) + count(`f2`.`id_link`) AS `nb_link`
+from
+    ((`baie` `b`
+join `equipement` `e`)
+join ((`port` `p`
+left join `link` `f1` on
+    (`p`.`id_port` = `f1`.`id_port1`))
+left join `link` `f2` on
+    (`p`.`id_port` = `f2`.`id_port2`)))
+where
+    `p`.`id_equipement` = `e`.`id_equipement`
+    and `e`.`type` not in ('Quadrupleur', 'InterBaie', 'PreQuadrupleur')
+    and `e`.`id_baie` = `b`.`id_baie`
+group by
+    `e`.`id_equipement`,
+    `p`.`id_port`
+having
+    `nb_link` > 1;
+
+-----
+-- port_describe source
+
+CREATE OR REPLACE
+ALGORITHM = UNDEFINED VIEW `port_describe` AS
+select
+    `a`.`id_port` AS `id_port`,
+    concat('Baie ', `b`.`nom_baie`, ' / ', `e`.`description`, ' (', `e`.`type`, ') / Port num : ', `a`.`numero_port`, ifnull((select concat(' (User : ', `u`.`nom_user`, ')') from `user` `u` where `u`.`id_user` = `a`.`id_user`), '')) AS `description`
+from
+    ((`port` `a`
+join `equipement` `e`)
+join `baie` `b`)
+where
+    `a`.`id_equipement` = `e`.`id_equipement`
+    and `e`.`id_baie` = `b`.`id_baie`;
+
+-----
+-- port_link source
+
+CREATE OR REPLACE
+ALGORITHM = UNDEFINED VIEW `port_link` AS
+select
+    'port' AS `type_obj`,
+    `a`.`id_port` AS `id_obj`,
+    concat(`c`.`id_port`, '-pt') AS `id`,
+    `c`.`numero_port` AS `name`,
+    4 AS `value`,
+    concat('port ', `c`.`numero_port`) AS `tooltipText`,
+    `b`.`Commentaire` AS `comment`
+from
+    ((`port` `a`
+join `link` `b`)
+join `port` `c`)
+where
+    `a`.`id_port` = `b`.`id_port1`
+    and `b`.`id_port2` = `c`.`id_port`
+union
+select
+    'link' AS `type_obj`,
+    `a`.`id_port` AS `id_obj`,
+    concat(`c`.`id_port`, '-pt') AS `id`,
+    `c`.`numero_port` AS `name`,
+    4 AS `value`,
+    concat('port ', `c`.`numero_port`) AS `tooltipText`,
+    `b`.`Commentaire` AS `comment`
+from
+    ((`port` `a`
+join `link` `b`)
+join `port` `c`)
+where
+    `a`.`id_port` = `b`.`id_port2`
+    and `b`.`id_port1` = `c`.`id_port`;
+
+------
+-- salle_list source
+
+CREATE OR REPLACE
+ALGORITHM = UNDEFINED VIEW `salle_list` AS
+select
+    'salle' AS `type_obj`,
+    `s`.`id_salle` AS `id_obj`,
+    concat(`s`.`id_salle`, '-salle') AS `id`,
+    `s`.`nom_salle` AS `name`,
+    10 AS `value`,
+    concat('Salle : ', `s`.`nom_salle`) AS `tooltipText`,
+    `s`.`id_site` AS `id_site`
+from
+    `salle` `s`;
+
+-------
+-- site_list source
+
+CREATE OR REPLACE
+ALGORITHM = UNDEFINED VIEW `site_list` AS
+select
+    'site' AS `type_obj`,
+    `s`.`id_site` AS `id_obj`,
+    concat(`s`.`id_site`, '-site') AS `id`,
+    `s`.`Nom` AS `name`,
+    10 AS `value`,
+    concat('Site : ', `s`.`Nom`) AS `tooltipText`
+from
+    `site` `s`;
+
+------
+-- vue_users source
+
+CREATE OR REPLACE
+ALGORITHM = UNDEFINED VIEW `vue_users` AS
+select
+    'user' AS `type_obj`,
+    `user`.`id_user` AS `id_obj`,
+    concat(`user`.`id_user`, '-user') AS `id`,
+    `user`.`nom_user` AS `name`,
+    8 AS `value`,
+    `user`.`nom_user` AS `tooltipText`
+from
+    `user`;
+
+------
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `baie_list`(IN v_id_salle INTEGER)
+BEGIN
+	select
+		'baie' as type_obj,
+	    `baie`.`id_baie` AS `id_obj`,
+	    concat(`baie`.`id_baie`, '-baie') AS `id`,
+	    `baie`.`nom_baie` AS `name`,
+	    10 AS `value`,
+	    concat('Baie', if(`baie`.`visible`, '', ' Virtuelle'), ' : ', baie.nom_baie) AS `tooltipText`,
+	    id_Salle as id_Salle
+	from
+	    `baie`
+	where
+		baie.id_salle = v_id_salle ;
+
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` FUNCTION `count_link`(p_id_port integer) RETURNS int(11)
+BEGIN
+	declare nb_link integer ;
+	set nb_link = (select count(*) from link a where a.id_port1 = p_id_port or a.id_port2 = p_id_port) ;
+
+	return nb_link ;
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` FUNCTION `create_link`(source integer,destination integer) RETURNS int(11)
+BEGIN
+	declare nb_ligne integer ;
+
+	set @nb_ligne = (select count(*) from link l where (l.id_port1 = source and l.id_port2 = destination) or (l.id_port1  = destination and l.id_port2 = source) ) ;
+
+	if (@nb_ligne > 0) then
+		return 0 ;
+	else
+		insert into link (id_port1,id_port2) values (source,destination) ;
+		return 1 ;
+	end if ;
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `create_quadrupleur`(OUT p_id_new integer)
+myprocedure:
+BEGIN
+
+	declare last_quadrupleur integer ;
+	declare id_quadrupleur integer ;
+	declare id_prequadrupleur integer ;
+
+	set last_quadrupleur = (select max(convert(description,integer)) from equipement e where type = 'Quadrupleur') ;
+
+	if (last_quadrupleur is null) then
+		set last_quadrupleur = 0 ;
+	end if ;
+
+	set last_quadrupleur = last_quadrupleur + 1 ;
+
+	set autocommit = 0 ;
+
+	start transaction ;
+
+	insert into equipement (type, description, id_baie, premier_port, dernier_port) values ('PreQuadrupleur',last_quadrupleur, 6, 0, 0) ;
+	set id_prequadrupleur = (SELECT LAST_INSERT_ID()) ;
+
+	insert into equipement (type,description, id_baie, premier_port, dernier_port) values ('Quadrupleur',last_quadrupleur, 6, 1, 4) ;
+	set id_quadrupleur = (SELECT LAST_INSERT_ID()) ;
+
+	insert into link(id_port1, id_port2) select a.id_port , b.id_port from port a, port b
+												where a.id_equipement  = id_prequadrupleur
+													and b.id_equipement  = id_quadrupleur and b.numero_port = 1 ;
+
+	insert into link(id_port1, id_port2) select a.id_port , b.id_port from port a, port b
+												where a.id_equipement  = id_prequadrupleur
+													and b.id_equipement  = id_quadrupleur and b.numero_port = 2 ;
+
+	insert into link(id_port1, id_port2) select a.id_port , b.id_port from port a, port b
+												where a.id_equipement  = id_prequadrupleur
+													and b.id_equipement  = id_quadrupleur and b.numero_port = 3 ;
+
+	insert into link(id_port1, id_port2) select a.id_port , b.id_port from port a, port b
+												where a.id_equipement  = id_prequadrupleur
+													and b.id_equipement  = id_quadrupleur and b.numero_port = 4 ;
+
+	select id_prequadrupleur ;
+
+	commit ;
+
+	set p_id_new = id_prequadrupleur ;
+
+END;
+
+---
+
+CREATE DEFINER=`network`@`localhost` FUNCTION `create_user_port`(vid_user integer,vid_port integer) RETURNS int(11)
+BEGIN
+	declare nb_ligne integer ;
+
+	set @nb_ligne = (select count(*) from port p where p.id_port = vid_port and p.id_user = vid_user);
+
+	if (@nb_ligne > 0) then
+		return 0 ;
+	else
+		set @nb_ligne = (select count(*) from port p where p.id_port = vid_port) ;
+
+		if (@nb_ligne = 0) then
+			return 0 ;
+		else
+			update port
+				set port.id_user = vid_user
+				where port.id_port = vid_port ;
+			return 1 ;
+		end if ;
+	end if ;
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` FUNCTION `delete_link`(source integer,destination integer) RETURNS int(11)
+BEGIN
+	declare nb_ligne integer ;
+
+	set @nb_ligne = (select count(*) from link l where (l.id_port1 = source and l.id_port2 = destination) or (l.id_port1  = destination and l.id_port2 = source) ) ;
+
+	if (@nb_ligne = 0) then
+		return 0 ;
+	else
+		delete from link
+			where (id_port1 = source and id_port2 = destination)
+					or (id_port1  = destination and id_port2 = source) ;
+		return 1 ;
+	end if ;
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` FUNCTION `delete_user_port`(vid_user integer, vid_port integer) RETURNS int(11)
+BEGIN
+	declare nb_ligne integer ;
+
+	set @nb_ligne = (select count(*) from port p where p.id_port = vid_port);
+
+	if (@nb_ligne = 0) then
+		return 0 ;
+	else
+		set @nb_ligne = (select count(*) from port p where p.id_port = vid_port and p.id_user = vid_user) ;
+
+		if (@nb_ligne = 0) then
+			return 0 ;
+		else
+			update port
+				set port.id_user = null
+				where port.id_port = vid_port ;
+			return 1 ;
+		end if ;
+	end if ;
+END;
+
+-----
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `equipement_list`(IN v_id_baie integer)
+BEGIN
+	select
+		'equipement' as type_obj,
+		e.id_equipement  as id_obj,
+	    concat(e.id_equipement, '-eq') AS id,
+	    e.description AS name,
+	    4 AS value,
+	    concat(e.type, " : " , e.description) AS tooltipText,
+	    e.id_baie as id_baie
+	from
+	    equipement as e
+	where
+	     e.type <> 'Quadrupleur'
+	     and e.id_baie = v_id_baie ;
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `filter_baie`(IN p_idBaie INTEGER, IN p_idEquipement INTEGER)
+BEGIN
+	if p_idBaie is  null then
+		select
+		    `b`.`id_baie` AS `id`,
+		    `b`.`nom_baie` AS `label`
+		from
+		    `baie` `b`
+		where
+		    `b`.`visible` = 1 ;
+	else
+		if p_idEquipement is null then
+			select
+				e.id_equipement as id,
+				e.description as label
+			FROM
+				equipement as e
+			where
+				e.id_baie = p_idBaie ;
+		else
+			select
+				p.id_port as id,
+				concat(p.numero_port,if(p.id_user is null,'',concat(' (',u.nom_user ,')'))) as label
+			FROM
+				(port as p,
+				equipement e) left join
+				user u on p.id_user = u.id_user
+			where
+				e.id_baie = p_idBaie AND
+				e.id_equipement = p.id_equipement and
+				p.id_equipement = p_idEquipement ;
+		end  if ;
+	end if ;
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `filter_site`(IN p_idSite INTEGER, IN p_idSalle INTEGER)
+BEGIN
+	if p_idSite is  null then
+		select
+		    s.id_site AS `id`,
+		    s.Nom AS `label`
+		from
+		    site s ;
+	else
+		if p_idSalle is null then
+			select
+				s.id_salle as id,
+				s.nom_salle as label
+			FROM
+				salle as s
+			where
+				s.id_site = p_idSite ;
+		else
+			select
+			    `b`.`id_baie` AS `id`,
+			    `b`.`nom_baie` AS `label`
+			from
+			    `baie` `b`, salle s
+			where
+			    `b`.`visible` = 1
+			   and b.id_salle = p_idSalle
+			  and s.id_salle = b.id_salle
+			  and s.id_site = p_idSite ;
+		end  if ;
+	end if ;
+END;
+
+---
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `filter_user`()
+BEGIN
+	select
+	    id_user AS id,
+	    nom_user AS label
+	from
+	    user
+	order by
+	    nom_user ;
+END;
+
+---
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `find_empty_prequadrupleur`(OUT p_id_equipement integer)
+BEGIN
+	declare l_id_equipement integer ;
+
+	set l_id_equipement = (select min(a.id_equipement)
+							from port a, equipement b
+							where b.type = 'PreQuadrupleur'
+									and a.id_equipement  = b.id_equipement
+									and count_link(a.id_port) = 4) ;
+
+	if (l_id_equipement is null) then
+		call create_quadrupleur(l_id_equipement) ;
+	end if ;
+
+	set p_id_equipement = l_id_equipement ;
+END;
+
+---
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `get_port0_prequadrupleur`(IN p_id_prequadrupleur integer , OUT p_id_port integer)
+myproc:
+BEGIN
+	declare l_id_port integer ;
+	declare eq_exist integer ;
+
+	set eq_exist = (select count(*) from equipement a where a.id_equipement  = p_id_prequadrupleur and a.type = 'PreQuadrupleur') ;
+
+	if (eq_exist = 0) then
+		select 0 ;
+		leave myproc ;
+	end if ;
+
+	set l_id_port = (select id_port from port a where a.id_equipement = p_id_prequadrupleur and a.numero_port = 0) ;
+
+	set p_id_port = l_id_port ;
+
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `get_port0_empty_quadrupleur`()
+BEGIN
+	declare l_id_quadrupleur integer ;
+	declare l_id_port integer ;
+
+	call find_empty_prequadrupleur(l_id_quadrupleur) ;
+	call get_port0_prequadrupleur(l_id_quadrupleur, l_id_port) ;
+
+	select l_id_port as id_port ;
+
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `import_rename_Quadrupleurs`()
+whole_proc:
+BEGIN
+
+	declare nb_ligne integer ;
+	declare i integer ;
+	declare v_id_equipement integer ;
+	DECLARE done INT DEFAULT 0;
+
+	DECLARE quadrupleur_cursor CURSOR FOR select a.id_equipement from equipement a where type = 'Quadrupleur' and description like 'Q%' order by id_equipement ;
+	DECLARE prequadrupleur_cursor CURSOR FOR select a.id_equipement from equipement a where type = 'PreQuadrupleur' and description like 'P%' order by id_equipement ;
+ 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+	set @nb_ligne = (select count(*) from equipement where type = 'Quadrupleur' and description like 'Q%' order by id_equipement) ;
+	set @i = 1 ;
+
+	if (@nb_ligne = 0) then
+		select 0 ;
+		leave whole_proc ;
+	end if ;
+
+	set autocommit = 0 ;
+
+	start transaction ;
+
+	OPEN quadrupleur_cursor;
+
+	quadrupleur_loop: LOOP
+	   FETCH quadrupleur_cursor INTO v_id_equipement;
+	   IF done THEN
+	      LEAVE quadrupleur_loop;
+	   END IF;
+	   update equipement set description = @i where equipement.id_equipement  = v_id_equipement ;
+	   set @i = @i + 1 ;
+	END LOOP;
+
+	CLOSE quadrupleur_cursor;
+
+	set done = 0 ;
+	set @i = 1 ;
+
+	OPEN prequadrupleur_cursor;
+
+	prequadrupleur_loop: LOOP
+	   FETCH prequadrupleur_cursor INTO v_id_equipement;
+	   IF done THEN
+	      LEAVE prequadrupleur_loop;
+	   END IF;
+	   update equipement set description = @i where equipement.id_equipement  = v_id_equipement ;
+	   set @i = @i + 1 ;
+	END LOOP;
+
+	CLOSE prequadrupleur_cursor;
+
+	select * from equipement e  where type in ('Quadrupleur','PreQuadrupleur') order by e.description,e.type ;
+
+	commit ;
+
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `link_comment`(IN p_idPort integer, IN p_idPortSource integer, IN p_comment varchar(100))
+BEGIN
+	update link set Commentaire = p_comment
+		where (id_port1 = p_idPort and id_port2 = p_idPortSource)
+				or (id_port2 = p_idPort and id_port1 = p_idPortSource) ;
+	select 1 ;
+END;
+
+---
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `port_comment`(IN p_idPort integer, IN p_comment varchar(100))
+BEGIN
+	update port set Commentaire = p_comment where id_port = p_idPort ;
+	select 1 ;
+END;
+
+----
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `port_links`(IN id_port integer)
+BEGIN
+	declare nb_base integer ;
+	declare nb_find integer ;
+	declare v_distance integer ;
+
+	DROP table if exists TMP_port ;
+
+	CREATE TEMPORARY TABLE TMP_port (
+	    id INT UNSIGNED PRIMARY KEY,
+	    distance INT unsigned,
+	    commentLink varchar(100),
+	    idPortSource INT unsigned
+	);
+
+	set @v_distance = 0 ;
+
+	insert into TMP_port(id,distance) values (id_port,@v_distance) ;
+
+	set @nb_find = (select count(*) from TMP_port) ;
+
+
+	iterloop: LOOP
+		set @v_distance = @v_distance + 1 ;
+		insert IGNORE into TMP_port select if(a.id_port = b.id_port1 ,b.id_port2 ,b.id_port1 )  AS id_port_dest, @v_distance, b.Commentaire ,  a.id_port as idPortSource
+													from port a, link b, TMP_port t
+													where a.id_port  = t.id
+		    											and (a.id_port = b.id_port1 or a.id_port = b.id_port2) ;
+		set @nb_base = @nb_find ;
+		set @nb_find = (select count(*) from TMP_port) ;
+
+		if @nb_base = @nb_find then
+			LEAVE iterloop ;
+		END IF ;
+
+	end LOOP iterloop ;
+
+	SELECT id_obj,type_obj,x.id,x.name,x.value,x.linkWith,id_equipement, id_user, comment,tooltipText, commentLink, idPortSource
+		from (
+		select
+    	tmp_port.distance as distance,
+    	port.id_port as id_obj,
+    	'port' as type_obj,
+		concat(`port`.`id_port`, '-pt') AS `id`,
+	    `port`.`numero_port` AS `name`,
+	    1 AS `value`,
+	    concat('["', `port`.`id_equipement`, '-eq"', if(`port`.`id_user` is not null, concat(',"', `port`.`id_user`, '-user"'), ''),IFNULL((select concat(',',x.nom) from
+    		(SELECT b.id_port a,
+    				GROUP_CONCAT(concat('"',if(link.id_port1=b.id_port,link.id_port2, link.id_port1 ),'-pt','"') ORDER BY link.id_port2 ASC SEPARATOR ', ') AS nom
+			FROM link , port b
+			where link.id_port1 = b.id_port or link.id_port2 = b.id_port
+			GROUP BY a) x
+			where x.a = port.id_port),''), ']') AS `linkWith`,
+		port.id_equipement as id_equipement,
+		port.id_user as id_user,
+		port.Commentaire  as comment,
+		'' as 'tooltipText',
+		TMP_port.commentLink as commentLink,
+		TMP_port.idPortSource as idPortSource
+	from
+	    (`port`
+	join `equipement`
+	join TMP_port
+	join baie)
+	where
+	    `port`.`id_equipement` = `equipement`.`id_equipement`
+	    and equipement.id_baie = baie.id_baie
+	    and port.id_port = TMP_port.id
+	union
+	select DISTINCT
+	    100 as distance,
+	    user.id_user as id_obj,
+    	'user' as type_obj,
+	    concat(`user`.`id_user`, '-user') AS `id`,
+	    `user`.`nom_user` AS `name`,
+	    4 AS `value`,
+	    NULL AS `linkWith`,
+	    NULL as id_equipement,
+	    user.id_user as 'id_user',
+	    '' as comment,
+	    user.nom_user as 'tooltipText',
+	    '' as commentLink,
+	    NULL as idPortSource
+	from
+	    (`user`
+	join `port`
+	join TMP_port)
+	where
+	    `user`.`id_user` = `port`.`id_user`
+	    and TMP_port.id = port.id_port
+	   ) x
+	order by x.distance ;
+
+END;
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `port_list`(IN v_type_obj varchar(20), IN v_id INTEGER)
+BEGIN
+	select
+		'port' as type_obj,
+		p.id_port  as id_obj,
+	    concat(p.id_port, '-pt') AS id,
+	    p.numero_port AS name,
+	    1 AS value,
+	    if((select count(0) from link as l where l.id_port1 = p.id_port or l.id_port2 = p.id_port) > 0, concat(convert((select count(0) from link as l where l.id_port1 = p.id_port or l.id_port2 = p.id_port),char), ' lien(s)'), 'Pas de liaison') AS tooltipText,
+	    p.id_user as id_user,
+	    p.Commentaire as comment,
+	    p.id_equipement  as id_equipement
+	from
+	    port as p
+	where
+	    (p.id_equipement = v_id and v_type_obj = 'equipement')
+	    or (p.id_user = v_id and v_type_obj = 'user')
+	    or (p.id_port = v_id and v_type_obj = 'port')
+	    or (v_type_obj is null and v_id is null) ;
+END;
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `salle_list`(IN v_id_site INTEGER)
+BEGIN
+	select
+		'salle' as type_obj,
+		s.id_salle  as id_obj,
+	    concat(s.id_salle , '-salle') AS id,
+	    s.nom_salle AS name,
+	    4 AS value,
+	    concat('Salle :',s.nom_salle) AS tooltipText
+	from
+	    salle as s
+	where
+	    s.id_site = v_id_site ;
+END;
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `user_arbo_port`(IN v_id_user INT)
+BEGIN
+
+	DECLARE id_port INT;
+	DECLARE done INT DEFAULT 0;
+	DECLARE ordre INT DEFAULT 0 ;
+
+	DECLARE arbo_user_cursor CURSOR FOR select a.id_port from port a where a.id_user = v_id_user order by a.id_equipement ,a.numero_port ;
+ 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+ 	DROP table if exists TMP_arbo_user_port ;
+
+	CREATE TEMPORARY TABLE TMP_arbo_user_port (
+	    id INT UNSIGNED PRIMARY KEY,
+	    niveau INT unsigned,
+	    ordre INT unsigned,
+	    link INT unsigned
+	);
+
+	SET @@SESSION.max_sp_recursion_depth=25;
+
+	OPEN arbo_user_cursor;
+
+	arbo_user_loop: LOOP
+	   FETCH arbo_user_cursor INTO id_port;
+	   IF done THEN
+	      LEAVE arbo_user_loop;
+	   END IF;
+	   insert into TMP_arbo_user_port values (id_port,0,ordre,null) ;
+	   set ordre = ordre + 1 ;
+	   call user_arbo_port_recursif(id_port,1,ordre) ;
+	END LOOP;
+
+	CLOSE arbo_user_cursor;
+
+	select  a.niveau, a.ordre,
+			b.id_port,
+			b.numero_port, b.Commentaire as commentaire_port, c.description, c.`type` , d.nom_baie,
+			(select commentaire from link where id_link = a.link) as commentaire_link
+		from TMP_arbo_user_port a, port b, equipement c, baie d
+		where a.id = b.id_port and b.id_equipement  = c.id_equipement and c.id_baie = d.id_baie
+		order by a.ordre;
+
+END;
+
+CREATE DEFINER=`network`@`localhost` PROCEDURE `user_arbo_port_recursif`(IN v_id_port INT, IN l_niveau INT,  INOUT l_ordre INT)
+BEGIN
+	DECLARE l_id_port INT;
+	DECLARE l_id_link INT;
+	DECLARE done INT DEFAULT 0;
+
+	DECLARE arbo_user_cursor CURSOR FOR
+		select x.id_port, x.id_link from (
+				select a.id_port2 as id_port, b.id_equipement , b.numero_port, a.id_link from link a, port b
+					where   not exists(select c.id from TMP_arbo_user_port c where c.id = a.id_port2)
+						and a.id_port1 = v_id_port
+						and a.id_port1 = b.id_port
+				union
+				select a.id_port1 as id_port, b.id_equipement , b.numero_port, a.id_link from link a, port b
+					where   not exists(select c.id from TMP_arbo_user_port c where c.id = a.id_port1)
+						and a.id_port2 = v_id_port
+						and a.id_port2 = b.id_port) as x
+			order by x.id_equipement ,x.numero_port ;
+
+ 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+	OPEN arbo_user_cursor;
+
+	arbo_user_loop: LOOP
+	   FETCH arbo_user_cursor INTO l_id_port, l_id_link;
+	   IF done THEN
+	      LEAVE arbo_user_loop;
+	   END IF;
+	   insert into TMP_arbo_user_port values (l_id_port, l_niveau, l_ordre, l_id_link) ;
+	   set l_ordre = l_ordre + 1 ;
+	   call user_arbo_port_recursif(l_id_port, l_niveau + 1, l_ordre) ;
+	END LOOP;
+
+	CLOSE arbo_user_cursor;
+
+END;
