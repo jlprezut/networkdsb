@@ -1,4 +1,4 @@
-const cpu = require('os').cpus().length;
+const cpu = 2 ; // require('os').cpus().length;
 const path = require("path");
 
 const package = require(path.resolve("package.json"));

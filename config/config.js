@@ -37,7 +37,7 @@ if (process.env && process.env.NODE_ENV === "production") {
   certificats.cert = path.resolve("config", "certificates", "server", "fullchain.pem");
   certificats.ca = path.resolve("config", "certificates", "ca", "networkDSB-root-ca.crt.pem");
   CDN = null;
-  statics = true;
+  statics = false;
   documentation = false;
   monitoring = true;
   unitTest = false;
@@ -50,10 +50,11 @@ if (process.env && process.env.NODE_ENV === "production") {
 
 module.exports = {
   system: {
-    domain: "0.0.0.0",
+    domain: "localhost",
     domainAlias: [
       "^127.0.0.1$",
-      "^localhost$"
+      "^localhost$",
+	"^networkdsb.com$"
     ],
     httpPort: 5151,
     httpsPort: 5152,
