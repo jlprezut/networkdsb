@@ -23,7 +23,7 @@ class UserGraph extends nodefony.Service {
       .then((r) => {
         if (this.memo.memoId !== "") {
           r.forEach((item, i) => {
-            item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','${this.userAction.linkUserPort.name}')">Lier le port</a>` ;
+            item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','linkUserPort')">Lier le port</a>` ;
           }) ;
         }
         this.networkSeries.data = r ;
@@ -41,21 +41,21 @@ class UserGraph extends nodefony.Service {
     this.api.get(`/user/${idUser}`)
       .then((r) => {
         r.forEach((item, i) => {
-          item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','${this.userAction.linkUserPort.name}')">Lier le port</a></br>
-                              <a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','${this.userAction.inventoryUser.name}')">Arborescence</a>`
+          item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','linkUserPort')">Lier le port</a></br>
+                              <a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','inventoryUser')">Arborescence</a>`
         });
         let firstLevel = r ;
         this.api.get(`/user/${idUser}/port`)
           .then((r) => {
             r.forEach((item, i) => {
-              item.tooltipText = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'idUser' : ${idUser} },'${this.userAction.name}','${this.userAction.modifyCommentPort.name}')">Commentaire</a></br>` ;
+              item.tooltipText = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'idUser' : ${idUser} },'${this.userAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
               if (item.comment !== '' && item.comment !== null) {
                 item.tooltipText += `${item.comment}</br>`
               } else {
                 item.tooltipText += `<I>pas de commentaire</I></br>` ;
               }
               item.tooltipText += '<hr>' ;
-              item.tooltipText += `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','${this.userAction.unlinkUserPort.name}')">Délier de ${firstLevel[0].name}</a>` ;
+              item.tooltipText += `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','unlinkUserPort')">Délier de ${firstLevel[0].name}</a>` ;
             });
             firstLevel[0].children = r;
             this.networkSeries.data = firstLevel ;

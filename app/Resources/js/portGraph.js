@@ -23,14 +23,14 @@ class PortGraph extends nodefony.Service {
     this.api.get('/port')
     .then((r) => {
       r.forEach((item, i) => {
-        item.tooltipText = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'refresh' : 'All' },'${this.portAction.name}','${this.portAction.modifyCommentPort.name}')">Commentaire</a></br>` ;
+        item.tooltipText = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'refresh' : 'All' },'${this.portAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
         if (item.comment !== '' && item.comment !== null) {
           item.tooltipText += `${item.comment}</br>`
         } else {
           item.tooltipText += `<I>pas de commentaire</I></br>` ;
         }
         item.tooltipText += '<hr>' ;
-        item.tooltipText += `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.memo.name}','${this.memo.setMemoId.name}')">Mémoriser le port</a>` ;
+        item.tooltipText += `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.memo.name}','setMemoId')">Mémoriser le port</a>` ;
       });
 
       this.networkSeries.data = r ;
@@ -50,18 +50,18 @@ class PortGraph extends nodefony.Service {
       .then((r) => {
         r.forEach((item, i) => {
           if (item.type_obj == 'port') {
-            item.tooltipText = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'refresh': 'One' },'${this.portAction.name}','${this.portAction.modifyCommentPort.name}')">Commentaire</a></br>` ;
+            item.tooltipText = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'refresh': 'One' },'${this.portAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
             if (item.comment !== '' && item.comment !== null) {
               item.tooltipText += `${item.comment}</br>`
             } else {
               item.tooltipText += `<I>pas de commentaire</I></br>` ;
             }
             item.tooltipText += '<hr>' ;
-            item.tooltipText += `<a href='#' onclick='app.eventUserAction(${item.id_obj},"${this.memo.name}","${this.memo.setMemoId.name}")'>Mémoriser le port</a></br>
-                                <a href='#' onclick='app.eventUserAction(${item.id_obj},"${this.portAction.name}","${this.portAction.linkPort.name}")'>Lier le port</a></br>
+            item.tooltipText += `<a href='#' onclick='app.eventUserAction(${item.id_obj},"${this.memo.name}","setMemoId")'>Mémoriser le port</a></br>
+                                <a href='#' onclick='app.eventUserAction(${item.id_obj},"${this.portAction.name}","linkPort")'>Lier le port</a></br>
                                 </br>
-                                <a href='#' onclick='app.eventUserAction(${item.id_obj},"${this.portAction.name}","${this.portAction.addQuadrupleur.name}")'>Ajouter un quadrupleur</a>` ;
-            item.tooltipTextLink = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'idPortSource': ${item.idPortSource} },'${this.portAction.name}','${this.portAction.modifyCommentLink.name}')">Commentaire</a></br>` ;
+                                <a href='#' onclick='app.eventUserAction(${item.id_obj},"${this.portAction.name}","addQuadrupleur")'>Ajouter un quadrupleur</a>` ;
+            item.tooltipTextLink = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'idPortSource': ${item.idPortSource} },'${this.portAction.name}','modifyCommentLink')">Commentaire</a></br>` ;
             if (item.commentLink !== '' && item.commentLink !== null) {
               item.tooltipTextLink += `${item.commentLink}</br>`
             } else {
