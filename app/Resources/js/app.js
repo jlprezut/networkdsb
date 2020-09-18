@@ -109,7 +109,8 @@ class App extends nodefony.Service{
   eventUserAction(idObj, typeObj, action) {
     let idObjTEXT = JSON.stringify(idObj) ;
     //this.log("this."+typeObj+"."+action+"(JSON.parse('"+idObjTEXT+"'))");
-    eval("this."+typeObj+"."+action+"(JSON.parse('"+idObjTEXT+"'))") ;
+    this[typeObj][action](JSON.parse(idObjTEXT)) ;
+    //eval("this."+typeObj+"."+action+"(JSON.parse('"+idObjTEXT+"'))") ;
   }
 
   createGraph() {
@@ -136,7 +137,7 @@ class App extends nodefony.Service{
     networkSeries.centerStrength = 0.5;
 
     networkSeries.nodes.template.label.text = "{name}"
-    networkSeries.fontSize = 8;
+    networkSeries.fontSize = 16;
     networkSeries.minRadius = 15;
     networkSeries.maxRadius = 50;
 
