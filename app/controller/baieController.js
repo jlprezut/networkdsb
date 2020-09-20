@@ -45,7 +45,7 @@ class baieController extends nodefony.Controller {
               throw error ;
             }) ;
     }
-    
+
     /**
     *    @Route ("/baie/{idBaie}/equipement",
     *      name="baieeq")

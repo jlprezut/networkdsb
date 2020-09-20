@@ -18,7 +18,6 @@ class userController extends nodefony.controller {
         }, this.context) ;
     }
 
-
     /**
     *    @Route ("/user",
     *      name="users")
@@ -66,7 +65,7 @@ class userController extends nodefony.controller {
     *      name="userl")
     */
     UserPortLinkAction(idUser,idPort) {
-      return this.queryService.callQuery(`SELECT create_user_port(${idUser},${idPort}) as resultat`)
+      return this.queryService.callQuery(`SELECT create_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}') as resultat`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -80,7 +79,7 @@ class userController extends nodefony.controller {
     *      name="userul")
     */
     UserPortUnlinkAction(idUser,idPort) {
-      return this.queryService.callQuery(`SELECT delete_user_port(${idUser},${idPort}) as resultat`)
+      return this.queryService.callQuery(`SELECT delete_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}') as resultat`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })

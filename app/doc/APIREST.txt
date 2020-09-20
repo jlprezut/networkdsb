@@ -1,41 +1,44 @@
-/site
-/site/{id}
-/site/{id}/salle
+/site                                   OK        select * from site_list
+/site/{id}                              OK        select * from site_list where id_obj = ${idSite}
+/site/{id}/salle                        OK        call salle_list(${idSite})
 
-/salle
-/salle/{id}
-/salle/{id}/baie
+/salle                                  OK        select * from salle_list
+/salle/{id}                             OK        select * from salle_list where id_obj = ${idSalle}
+/salle/{id}/baie                        OK        call baie_list(${idSalle})
 
-/baie                                   OK
-/baie/{id}                              OK
-/baie/{id}/equipement                   OK
+/baie                                   OK        select * from baie_list
+/baie/{id}                              OK        select * from baie_list where id_obj = ${idBaie}
+/baie/{id}/equipement                   OK        call equipement_list(${idBaie})
 
-/equipement                             OK
-/equipement/{id}                        OK
-/equipement/{id}/port                   OK
+/equipement                             OK        select * from equipement_list
+/equipement/{id}                        OK        select * from equipement_list where id_obj = ${idEquipement}
+/equipement/{id}/port                   OK        call port_list('equipement',${idEquipement})
 
-/filter/user                            OK
-/filter/baie                            OK
-/filter/baie/{id}/equipement            OK
-/filter/baie/{id}/equipement/{id}/port  OK
+/filter/site                            OK        call filter_site(NULL,NULL)
+/filter/site/{id}/salle                 OK        call filter_site(${idSite},NULL)
+/filter/site/{id}/salle/{id}/baie       OK        call filter_site(${idSite},${idSalle})
+/filter/baie                            OK        call filter_baie(NULL,NULL)
+/filter/baie/{id}/equipement            OK        call filter_baie(${idBaie},NULL)
+/filter/baie/{id}/equipement/{id}/port  OK        call filter_baie(${idBaie},${idEquipement})
+/filter/user                            OK        call filter_user()
 
-/port                                   OK
-/port/{id}                              OK
-/port/{id}/comment                      OK
-/port/{id}/links                        OK
-/port/{id}/describe                     OK
-/port/{id}/link                         OK
-/port/{id}/link/{dest}                  OK
-/port/{id}/link/{dest}/comment                  
-/port/{id}/unlink/{dest}                OK
+/port                                   OK        call port_list(NULL, NULL)
+/port/{id}                              OK        call port_list('port',${idPort})
+/port/{id}/comment                      OK        call port_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')
+/port/{id}/links                        OK        call port_links(${idPort})
+/port/{id}/describe                     OK        select * from port_describe where id_port = ${idPort}
+/port/{id}/link                         OK        select * from port_link where id_obj = ${idPort}
+/port/{id}/link/{dest}                  OK        select create_link_RB(${idPort},${idDest},'${this.context.remoteAddress}') as resultat
+/port/{id}/link/{dest}/comment          OK        call link_comment_RB(${idPort},${idDest},'${this.context.request.url.query.comment}')
+/port/{id}/unlink/{dest}                OK        select delete_link_RB(${idPort},${idDest},'${this.context.remoteAddress}','${this.context.remoteAddress}') as resultat
 
-/quadrupleur/empty                      OK
+/quadrupleur/empty                      OK        call get_port0_empty_quadrupleur()
 
-/user                                   OK
-/user/{id}                              OK
-/user/{id}/port                         OK
-/user/{id}/link/{dest}                  OK
-/user/{id}/unlink/{dest}                OK
-/user/{id}/inventory                    OK
+/user                                   OK        SELECT * from vue_users
+/user/{id}                              OK        SELECT * from vue_users where id_obj = ${idUser}
+/user/{id}/port                         OK        call port_list('user',${idUser})
+/user/{id}/link/{dest}                  OK        SELECT create_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}') as resultat
+/user/{id}/unlink/{dest}                OK        SELECT delete_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}') as resultat
+/user/{id}/inventory                    OK        call user_arbo_port(${idUser})
 
-/error/port                             OK
+/error/port                             OK        select * from liste_erreurs

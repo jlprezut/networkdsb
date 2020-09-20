@@ -51,7 +51,7 @@ class portController extends nodefony.controller {
     *      name="portcomment")
     */
     PortCommentAction(idPort) {
-      return this.queryService.callProcedure(`call port_comment(${idPort},'${this.context.request.url.query.comment}')`)
+      return this.queryService.callProcedure(`call port_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')`)
             .then((reponse) => {
                 return 'OK' ;
             })
@@ -107,7 +107,7 @@ class portController extends nodefony.controller {
     *      name="portl")
     */
     PortLinkAction(idPort,idDest) {
-      return this.queryService.callQuery(`select create_link(${idPort},${idDest}) as resultat`)
+      return this.queryService.callQuery(`select create_link_RB(${idPort},${idDest},'${this.context.remoteAddress}') as resultat`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -121,7 +121,7 @@ class portController extends nodefony.controller {
     *      name="portlcomment")
     */
     PortLinkCommentAction(idPort,idDest) {
-      return this.queryService.callProcedure(`call link_comment(${idPort},${idDest},'${this.context.request.url.query.comment}')`)
+      return this.queryService.callProcedure(`call link_comment_RB(${idPort},${idDest},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -135,7 +135,7 @@ class portController extends nodefony.controller {
     *      name="portu")
     */
     PortUnlinkAction(idPort,idDest) {
-      return this.queryService.callQuery(`select delete_link(${idPort},${idDest}) as resultat`)
+      return this.queryService.callQuery(`select delete_link_RB(${idPort},${idDest},'${this.context.remoteAddress}') as resultat`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
