@@ -19,8 +19,6 @@ class appController extends nodefony.Controller {
  *      name="home")
  */
   indexAction() {
-    this.log(this.context.request.headers) ;
-
     return this.render("app::index.html.twig", {
       name: this.kernel.projectName,
 			description: this.kernel.package.description});
