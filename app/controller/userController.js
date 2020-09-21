@@ -51,7 +51,7 @@ class userController extends nodefony.controller {
     *      name="userPort")
     */
     UserPortAction(idUser) {
-      return this.queryService.callProcedure(`call port_list('user',${idUser})`)
+      return this.queryService.callProcedure(`CALL port_list('user',${idUser})`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -65,7 +65,7 @@ class userController extends nodefony.controller {
     *      name="userl")
     */
     UserPortLinkAction(idUser,idPort) {
-      return this.queryService.callQuery(`SELECT create_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}') as resultat`)
+      return this.queryService.callProcedure(`CALL create_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}')`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -79,7 +79,7 @@ class userController extends nodefony.controller {
     *      name="userul")
     */
     UserPortUnlinkAction(idUser,idPort) {
-      return this.queryService.callQuery(`SELECT delete_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}') as resultat`)
+      return this.queryService.callProcedure(`CALL delete_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}')`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -93,7 +93,7 @@ class userController extends nodefony.controller {
     *      name="userInventory")
     */
     UserInventoryAction(idUser) {
-      return this.queryService.callProcedure(`call user_arbo_port(${idUser})`)
+      return this.queryService.callProcedure(`CALL user_arbo_port(${idUser})`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })

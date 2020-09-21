@@ -23,7 +23,7 @@ class portController extends nodefony.controller {
     *      name="port")
     */
     PortAction() {
-      return this.queryService.callProcedure("call port_list(NULL, NULL)")
+      return this.queryService.callProcedure("CALL port_list(NULL, NULL)")
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -37,7 +37,7 @@ class portController extends nodefony.controller {
     *      name="portd")
     */
     PortDetailAction(idPort) {
-      return this.queryService.callProcedure(`call port_list('port',${idPort})`)
+      return this.queryService.callProcedure(`CALL port_list('port',${idPort})`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -51,7 +51,7 @@ class portController extends nodefony.controller {
     *      name="portcomment")
     */
     PortCommentAction(idPort) {
-      return this.queryService.callProcedure(`call port_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')`)
+      return this.queryService.callProcedure(`CALL port_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')`)
             .then((reponse) => {
                 return 'OK' ;
             })
@@ -65,7 +65,7 @@ class portController extends nodefony.controller {
     *      name="portls")
     */
     PortLinksAction(idPort) {
-      return this.queryService.callProcedure(`call port_links(${idPort})`)
+      return this.queryService.callProcedure(`CALL port_links(${idPort})`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -79,7 +79,7 @@ class portController extends nodefony.controller {
     *      name="portde")
     */
     PortDescribeAction(idPort) {
-      return this.queryService.callQuery(`select * from port_describe where id_port = ${idPort}`)
+      return this.queryService.callQuery(`SELECT * from port_describe where id_port = ${idPort}`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -93,7 +93,7 @@ class portController extends nodefony.controller {
     *      name="portll")
     */
     PortLinkListAction(idPort) {
-      return this.queryService.callQuery(`select * from port_link where id_obj = ${idPort} `)
+      return this.queryService.callQuery(`SELECT * from port_link where id_obj = ${idPort} `)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -107,7 +107,7 @@ class portController extends nodefony.controller {
     *      name="portl")
     */
     PortLinkAction(idPort,idDest) {
-      return this.queryService.callQuery(`select create_link_RB(${idPort},${idDest},'${this.context.remoteAddress}') as resultat`)
+      return this.queryService.callProcedure(`CALL create_link_RB(${idPort},${idDest},'${this.context.remoteAddress}')`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -121,7 +121,7 @@ class portController extends nodefony.controller {
     *      name="portlcomment")
     */
     PortLinkCommentAction(idPort,idDest) {
-      return this.queryService.callProcedure(`call link_comment_RB(${idPort},${idDest},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')`)
+      return this.queryService.callProcedure(`CALL link_comment_RB(${idPort},${idDest},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -135,7 +135,7 @@ class portController extends nodefony.controller {
     *      name="portu")
     */
     PortUnlinkAction(idPort,idDest) {
-      return this.queryService.callQuery(`select delete_link_RB(${idPort},${idDest},'${this.context.remoteAddress}') as resultat`)
+      return this.queryService.callProcedure(`CALL delete_link_RB(${idPort},${idDest},'${this.context.remoteAddress}')`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
