@@ -16,7 +16,7 @@ class EquipementGraph extends nodefony.Service {
   }
 
   affichageAll(){
-    this.api.get('/equipement')
+    this.api.get('/api/equipement')
     .then((r) => {
       this.networkSeries.data = r ;
       this.tools.cleanEvent() ;
@@ -30,17 +30,13 @@ class EquipementGraph extends nodefony.Service {
   }
 
   affichageOne(idEquipement){
-    this.api.get(`/equipement/${idEquipement}`)
+    this.api.get(`/api/equipement/${idEquipement}`)
       .then((r) => {
-        // r.forEach((item, i) => {
-        //   item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${item.type_obj}','LinkUserPort')">Lier le port mémoriser</a>` ;
-        // });
+
         let firstLevel = r ;
-        this.api.get(`/equipement/${idEquipement}/port`)
+        this.api.get(`/api/equipement/${idEquipement}/port`)
         .then((r) => {
-          // r.forEach((item, i) => {
-          //   item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${item.type_obj}','unLinkUserPort')">Délier de ${firstLevel[0].name}</a>` ;
-          // });
+
           firstLevel[0].children = r;
           this.networkSeries.data = firstLevel ;
 

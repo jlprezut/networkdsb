@@ -16,11 +16,8 @@ class BaieGraph extends nodefony.Service {
   }
 
   affichageAll(){
-    this.api.get('/baie')
+    this.api.get('/api/baie')
     .then((r) => {
-      // r.forEach((item, i) => {
-      //   item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${item.type_obj}','linkUserPort')">Lier le port</a>` ;
-      // });
       this.networkSeries.data = r ;
 
       this.tools.cleanNodeEvent() ;
@@ -34,17 +31,13 @@ class BaieGraph extends nodefony.Service {
   }
 
   affichageOne(idBaie){
-    this.api.get(`/baie/${idBaie}`)
+    this.api.get(`/api/baie/${idBaie}`)
       .then((r) => {
-        // r.forEach((item, i) => {
-        //   item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${item.type_obj}','LinkUserPort')">Lier le port mémoriser</a>` ;
-        // });
+
         let firstLevel = r ;
-        this.api.get(`/baie/${idBaie}/equipement`)
+        this.api.get(`/api/baie/${idBaie}/equipement`)
         .then((r) => {
-          // r.forEach((item, i) => {
-          //   item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${item.type_obj}','unLinkUserPort')">Délier de ${firstLevel[0].name}</a>` ;
-          // });
+
           firstLevel[0].children = r;
           this.networkSeries.data = firstLevel ;
 

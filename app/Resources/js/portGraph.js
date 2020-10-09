@@ -20,19 +20,19 @@ class PortGraph extends nodefony.Service {
   }
 
   affichageAll(){
-    this.api.get('/port')
+    this.api.get('/api/port')
     .then((r) => {
       r.forEach((item, i) => {
         item.tooltipText = `Baie : ${item.baie_name}<br>${item.equipement_name}<br>Port ${item.name}` + item.tooltipText
         item.tooltipText += '<hr>'
-        item.tooltipText += `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'refresh' : 'All' },'${this.portAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
+        item.tooltipText += `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'comment': '${item.comment}' ,'refresh' : 'All' },'${this.portAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
         if (item.comment !== '' && item.comment !== null) {
           item.tooltipText += `${item.comment}</br>`
         } else {
           item.tooltipText += `<I>pas de commentaire</I></br>` ;
         }
         item.tooltipText += '<hr>' ;
-        item.tooltipText += `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.memo.name}','setMemoId')">Mémoriser le port</a>` ;
+        item.tooltipText += `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj} },'${this.memo.name}','setMemoId')">Mémoriser le port</a>` ;
       });
 
       this.networkSeries.data = r ;
@@ -48,24 +48,28 @@ class PortGraph extends nodefony.Service {
   }
 
   affichageOne(idPort){
-    this.api.get(`/port/${idPort}/links`)
+    this.api.get(`/api/port/${idPort}/links`)
       .then((r) => {
         r.forEach((item, i) => {
           if (item.type_obj == 'port') {
             item.tooltipText = `Baie : ${item.baie_name}<br>${item.equipement_name}<br>Port ${item.name}` + item.tooltipText
             item.tooltipText += '<hr>'
-            item.tooltipText += `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'refresh': 'One' },'${this.portAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
+            let myComment = '' ;
             if (item.comment !== '' && item.comment !== null) {
-              item.tooltipText += `${item.comment}</br>`
+              myComment = item.comment ;
+            }
+            item.tooltipText += `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'comment': '${myComment}', 'refresh': 'One' },'${this.portAction.name}','modifyCommentPort')">Commentaire</a></br>` ;
+            if (myComment !== '') {
+              item.tooltipText += `${myComment}</br>`
             } else {
               item.tooltipText += `<I>pas de commentaire</I></br>` ;
             }
             item.tooltipText += '<hr>' ;
-            item.tooltipText += `<a href='#' onclick='app.eventUserAction(${item.id_obj},"${this.memo.name}","setMemoId")'>Mémoriser le port</a></br>
-                                <a href='#' onclick='app.eventUserAction(${item.id_obj},"${this.portAction.name}","linkPort")'>Lier le port</a></br>
+            item.tooltipText += `<a href='#' onclick="app.eventUserAction({ 'idPort': ${item.id_obj} },'${this.memo.name}','setMemoId')">Mémoriser le port</a></br>
+                                <a href='#' onclick="app.eventUserAction({ 'idPort': ${item.id_obj} },'${this.portAction.name}','linkPort')">Lier le port</a></br>
                                 </br>
-                                <a href='#' onclick='app.eventUserAction(${item.id_obj},"${this.portAction.name}","addQuadrupleur")'>Ajouter un quadrupleur</a>` ;
-            item.tooltipTextLink = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'idPortSource': ${item.idPortSource} },'${this.portAction.name}','modifyCommentLink')">Commentaire</a></br>` ;
+                                <a href='#' onclick="app.eventUserAction({ 'idPort': ${item.id_obj} },'${this.portAction.name}','addQuadrupleur')">Ajouter un quadrupleur</a>` ;
+            item.tooltipTextLink = `<a href="#" onclick="app.eventUserAction({ 'idPort': ${item.id_obj}, 'idPortSource': ${item.idPortSource}, 'comment': '${myComment}' },'${this.portAction.name}','modifyCommentLink')">Commentaire</a></br>` ;
             if (item.commentLink !== '' && item.commentLink !== null) {
               item.tooltipTextLink += `${item.commentLink}</br>`
             } else {
@@ -89,7 +93,7 @@ class PortGraph extends nodefony.Service {
       this.equipementGraph.affichageOne(event.target.dataItem._dataContext.id_equipement) ;
     }
     if (event.target.dataItem._dataContext.type_obj === "user") {
-      this.userGraph.affichageOne(event.target.dataItem._dataContext.id_user) ;
+      this.userGraph.affichageOne({ 'idUser': event.target.dataItem._dataContext.id_user }) ;
     }
   }
 
@@ -111,7 +115,7 @@ class PortGraph extends nodefony.Service {
           showCancelButton: true, icon:'question'})
         .then((response) => {
           if (response.isConfirmed) {
-            this.userAction.unlinkUserPort(objPort.id_obj) ;
+            this.userAction.unlinkUserPort({ 'idPort': objPort.id_obj }) ;
           }
       })
     }
@@ -121,8 +125,8 @@ class PortGraph extends nodefony.Service {
           showCancelButton: true, icon:'question'})
         .then((response) => {
           if (response.isConfirmed) {
-            this.portAction.unlinkPort(event.target.dataItem._dataContext.id_obj,
-                                       event.target.source.dataItem._dataContext.id_obj) ;
+            this.portAction.unlinkPort({ 'idPort1': event.target.dataItem._dataContext.id_obj,
+                                         'idPort2': event.target.source.dataItem._dataContext.id_obj} ) ;
           }
         })
     }

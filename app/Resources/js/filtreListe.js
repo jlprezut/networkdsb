@@ -116,7 +116,7 @@ class FiltreListe extends nodefony.Service {
       this.userGraph.affichageAll() ;
     } else {
       let idUser = choixUser.options[choixUser.selectedIndex].value ;
-      this.userGraph.affichageOne(idUser) ;
+      this.userGraph.affichageOne({ 'idUser': idUser }) ;
     }
   }
 
@@ -132,7 +132,7 @@ class FiltreListe extends nodefony.Service {
     } else {
       let idSite = choixSite.options[choixSite.selectedIndex].value ;
       this.siteGraph.affichageOne(idSite) ;
-      this.populateOption(`/filter/site/${idSite}/salle`, 'listeSalle') ;
+      this.populateOption(`/api/filter/site/${idSite}/salle`, 'listeSalle') ;
     }
   }
 
@@ -153,7 +153,7 @@ class FiltreListe extends nodefony.Service {
       let idSalle = choixSalle.options[choixSalle.selectedIndex].value ;
       let idSite =choixSite.options[choixSite.selectedIndex].value ;
       this.salleGraph.affichageOne(idSalle) ;
-      this.populateOption(`/filter/site/${idSite}/salle/${idSalle}/baie`, 'listeBaie') ;
+      this.populateOption(`/api/filter/site/${idSite}/salle/${idSalle}/baie`, 'listeBaie') ;
     }
   }
 
@@ -173,7 +173,7 @@ class FiltreListe extends nodefony.Service {
       let idBaie = choixBaie.options[choixBaie.selectedIndex].value ;
       let idSalle = choixSalle.options[choixSalle.selectedIndex].value ;
       this.baieGraph.affichageOne(idBaie) ;
-      this.populateOption(`/filter/baie/${idBaie}/equipement`, 'listeEquipement') ;
+      this.populateOption(`/api/filter/baie/${idBaie}/equipement`, 'listeEquipement') ;
     }
   }
 
@@ -190,7 +190,7 @@ class FiltreListe extends nodefony.Service {
       let idEquipement = choixEquipement.options[choixEquipement.selectedIndex].value
       let idBaie = choixBaie.options[choixBaie.selectedIndex].value ;
       this.equipementGraph.affichageOne(idEquipement);
-      this.populateOption(`/filter/baie/${idBaie}/equipement/${idEquipement}/port`,'listePort') ;
+      this.populateOption(`/api/filter/baie/${idBaie}/equipement/${idEquipement}/port`,'listePort') ;
     }
   }
 

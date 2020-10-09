@@ -15,11 +15,9 @@ class SiteGraph extends nodefony.Service  {
   }
 
   affichageAll(){
-    this.api.get('/site')
+    this.api.get('/api/site')
       .then((r) => {
-        // r.forEach((item, i) => {
-        //   item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${item.type_obj}','linkUserPort')">Lier le port</a>` ;
-        // });
+
         this.networkSeries.data = r ;
 
         this.tools.cleanNodeEvent() ;
@@ -33,10 +31,10 @@ class SiteGraph extends nodefony.Service  {
   }
 
   affichageOne(idSite){
-    this.api.get(`/site/${idSite}`)
+    this.api.get(`/api/site/${idSite}`)
       .then((r) => {
         let firstLevel = r ;
-        this.api.get(`/site/${idSite}/salle`)
+        this.api.get(`/api/site/${idSite}/salle`)
           .then((r) => {
             firstLevel[0].children = r;
             this.networkSeries.data = firstLevel ;

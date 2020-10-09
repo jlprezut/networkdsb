@@ -16,11 +16,9 @@ class SalleGraph extends nodefony.Service {
   }
 
   affichageAll(){
-    this.api.get('/salle')
+    this.api.get('/api/salle')
       .then((r) => {
-        // r.forEach((item, i) => {
-        //   item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${item.type_obj}','linkUserPort')">Lier le port</a>` ;
-        // });
+
         this.networkSeries.data = r ;
 
         this.tools.cleanEvent() ;
@@ -34,10 +32,10 @@ class SalleGraph extends nodefony.Service {
   }
 
   affichageOne(idSalle){
-    this.api.get(`/salle/${idSalle}`)
+    this.api.get(`/api/salle/${idSalle}`)
       .then((r) => {
         let firstLevel = r ;
-        this.api.get(`/salle/${idSalle}/baie`)
+        this.api.get(`/api/salle/${idSalle}/baie`)
           .then((r) => {
             firstLevel[0].children = r;
             this.networkSeries.data = firstLevel ;

@@ -17,15 +17,16 @@ class UserAction extends nodefony.Service {
     this.log("Start") ;
   }
 
-  linkUserPort(idUser){
+  linkUserPort(obj){
+    let idUser = obj.idUser ;
       if (this.memo.memoId == "") {
           this.swal.fire({title: "Pas d'origine définie", showConfirmButton: true, icon: 'error'}) ;
       } else {
-        this.api.get(`/user/${idUser}/link/${this.memo.memoId}`)
+        this.api.get(`/api/user/${idUser}/link/${this.memo.memoId}`)
         .then((r) => {
           if (r[0].resultat == 1) {
             this.swal.fire({title: 'Liaison réussie', showConfirmButton: true, icon: 'success'}) ;
-            this.userGraph.affichageOne(idUser) ;
+            this.userGraph.affichageOne({ 'idUser': idUser }) ;
           } else {
             this.swal.fire({title: "Pas possible de réaliser la liaison", showConfirmButton: true, icon: 'error'}) ;
           }
@@ -33,13 +34,14 @@ class UserAction extends nodefony.Service {
       }
   }
 
-  unlinkUserPort(idPort) {
-    this.api.get(`/port/${idPort}`)
+  unlinkUserPort(obj) {
+    let idPort = obj.idPort ;
+    this.api.get(`/api/port/${idPort}`)
     .then((p) => {
       if (p[0].id_user == "null") {
         this.swal.fire({title: "Pas d'utilisateur lié", showConfirmButton: true, icon: 'error'}) ;
       } else {
-        this.api.get(`/user/${p[0].id_user}/unlink/${idPort}`)
+        this.api.get(`/api/user/${p[0].id_user}/unlink/${idPort}`)
         .then((r) => {
           if (r[0].resultat == 1) {
             this.swal.fire({title: 'Suppression réussie', showConfirmButton: true, icon: 'success'}) ;
@@ -52,8 +54,9 @@ class UserAction extends nodefony.Service {
     });
   }
 
-  inventoryUser(idUser){
-    this.api.get(`/user/${idUser}/inventory`)
+  inventoryUser(obj){
+    let idUser = obj.idUser ;
+    this.api.get(`/api/user/${idUser}/inventory`)
       .then((text) => {
         let content = '' ;
         for (let i=0; i< text.length; i++) {
@@ -99,8 +102,27 @@ class UserAction extends nodefony.Service {
     this.portAction.modifyComment(idPort)
       .then((r) => {
         if (r == 'OK') {
-          this.userGraph.affichageOne(idUser) ;
+          this.userGraph.affichageOne({ 'idUser': idUser }) ;
         }
+      })
+  }
+
+  modifyComment(obj) {
+    let idUser = obj.idUser ;
+    let idPort = obj.idPort ;
+    let defaultComment = obj.comment ;
+    if (defaultComment === 'null') {
+      defaultComment = ''
+    }
+    this.swal.fire({title: 'Modifier le commentaire', input: 'text', inputValue: defaultComment,
+        showCancelButton: true, confirmButtonText: 'Enregistrer' })
+      .then((commentaire) => {
+          if (commentaire.isConfirmed) {
+            return this.api.get(`/api/user/${idUser}/port/${idPort}/comment`,{ params: {comment: commentaire.value}})
+              .then((r) => {
+                this.kernel.portGraph.affichageOne(idPort) ;
+              })
+            }
       })
   }
 

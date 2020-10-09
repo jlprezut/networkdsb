@@ -22,17 +22,18 @@ class ErrorGraph extends nodefony.Service{
     });
   }
 
-  showErreurPort(idPort) {
+  showErreurPort(obj) {
+    let idPort = obj.idPort ;
     this.tools.closePopUp()
     this.portGraph.affichageOne(idPort) ;
   }
 
   listeErreur(){
-    this.api.get('/error/port')
+    this.api.get('/api/error/port')
       .then((r) => {
         let content = '' ;
         for (let i=0; i< r.length; i++) {
-          content = content + `<a href='#' onclick='app.eventUserAction(${r[i].id_port},"${this.name}","showErreurPort")'>Baie / ${r[i].nom_baie} / ${r[i].description} (${r[i].type}) / Port num : ${r[i].numero_port} (nb liens : ${r[i].nb_link})</a><br>` ;
+          content = content + `<a href='#' onclick="app.eventUserAction({ 'idPort': ${r[i].id_port} },'${this.name}','showErreurPort')">Baie / ${r[i].nom_baie} / ${r[i].description} (${r[i].type}) / Port num : ${r[i].numero_port} (nb liens : ${r[i].nb_link})</a><br>` ;
         }
         if (content === '') {
           content = 'Aucune erreur...' ;

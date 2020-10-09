@@ -55,8 +55,8 @@ class App extends nodefony.Service{
 
   loadDataHTML() {
     this.memo.hide() ;
-    this.filtreListe.populateOption('/filter/user','listeUser') ;
-    this.filtreListe.populateOption('/filter/site','listeSite') ;
+    this.filtreListe.populateOption('/api/filter/user','listeUser') ;
+    this.filtreListe.populateOption('/api/filter/site','listeSite') ;
     this.siteGraph.affichageAll() ;
   }
 
@@ -107,10 +107,11 @@ class App extends nodefony.Service{
   }
 
   eventUserAction(idObj, typeObj, action) {
-    let idObjTEXT = JSON.stringify(idObj) ;
+    //let idObjTEXT = JSON.stringify(idObj) ;
     //this.log("this."+typeObj+"."+action+"(JSON.parse('"+idObjTEXT+"'))");
-    this[typeObj][action](JSON.parse(idObjTEXT)) ;
+    //this[typeObj][action](JSON.parse(idObjTEXT)) ;
     //eval("this."+typeObj+"."+action+"(JSON.parse('"+idObjTEXT+"'))") ;
+    this[typeObj][action](idObj) ;
   }
 
   createGraph() {

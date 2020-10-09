@@ -26,9 +26,9 @@ class Memo extends nodefony.Service {
     document.getElementById("memorisation").style.visibility=(false)?'visible':'hidden';
   }
 
-  setMemoId(idPort) {
-    this.memoId = idPort ;
-    this.api.get(`/port/${idPort}/describe`)
+  setMemoId(obj) {
+    this.memoId = obj.idPort ;
+    this.api.get(`/api/port/${this.memoId}/text`)
     .then((r) => {
       document.getElementById("memoId").innerHTML=r[0].description ;
       document.getElementById("memorisation").style.visibility=(true)?'visible':'hidden';

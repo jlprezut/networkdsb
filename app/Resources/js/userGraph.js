@@ -19,11 +19,11 @@ class UserGraph extends nodefony.Service {
   }
 
   affichageAll(){
-    this.api.get('/user')
+    this.api.get('/api/user')
       .then((r) => {
         if (this.memo.memoId !== "") {
           r.forEach((item, i) => {
-            item.tooltipText = `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','linkUserPort')">Lier le port</a>` ;
+            item.tooltipText = `<a href="#" onclick="app.eventUserAction({ 'idUser': ${item.id_obj}},'${this.userAction.name}','linkUserPort')">Lier le port</a>` ;
           }) ;
         }
         this.networkSeries.data = r ;
@@ -34,19 +34,20 @@ class UserGraph extends nodefony.Service {
   }
 
   clicEventAll(event) {
-    this.affichageOne(event.target.dataItem._dataContext.id_obj) ;
+    this.affichageOne({ 'idUser': event.target.dataItem._dataContext.id_obj }) ;
   }
 
-  affichageOne(idUser){
-    this.api.get(`/user/${idUser}`)
+  affichageOne(obj){
+    let idUser = obj.idUser ;
+    this.api.get(`/api/user/${idUser}`)
       .then((r) => {
         r.forEach((item, i) => {
           item.tooltipText += '<hr>'
-          item.tooltipText += `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','linkUserPort')">Lier le port</a></br>
-                              <a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','inventoryUser')">Arborescence</a>`
+          item.tooltipText += `<a href="#" onclick="app.eventUserAction({ 'idUser': ${item.id_obj}},'${this.userAction.name}','linkUserPort')">Lier le port</a></br>
+                              <a href="#" onclick="app.eventUserAction({ 'idUser': ${item.id_obj}},'${this.userAction.name}','inventoryUser')">Arborescence</a>`
         });
         let firstLevel = r ;
-        this.api.get(`/user/${idUser}/port`)
+        this.api.get(`/api/user/${idUser}/port`)
           .then((r) => {
             r.forEach((item, i) => {
               item.tooltipText = `Baie : ${item.baie_name}<br>${item.equipement_name}<br>Port ${item.name}<hr>` + item.tooltipText
@@ -58,7 +59,7 @@ class UserGraph extends nodefony.Service {
                 item.tooltipText += `<I>pas de commentaire</I></br>` ;
               }
               item.tooltipText += '<hr>' ;
-              item.tooltipText += `<a href="#" onclick="app.eventUserAction(${item.id_obj},'${this.userAction.name}','unlinkUserPort')">Délier de ${firstLevel[0].name}</a>` ;
+              item.tooltipText += `<a href="#" onclick="app.eventUserAction({ 'idUser': ${item.id_obj}},'${this.userAction.name}','unlinkUserPort')">Délier de ${firstLevel[0].name}</a>` ;
             });
             firstLevel[0].children = r;
             this.networkSeries.data = firstLevel ;
@@ -96,10 +97,10 @@ class UserGraph extends nodefony.Service {
         objPort = event.target.source.dataItem._dataContext ;
       }
       this.swal.fire({title:"Confirmez-vous", text:`la suppression de la liaison avec ${objUser.name} ?`,
-          showCancelButton: true, icon:'question'})
+          showCancelButton: true, icon: 'question'})
         .then((response) => {
           if (response.isConfirmed) {
-            this.userAction.unlinkUserPort(objPort.id_obj) ;
+            this.userAction.unlinkUserPort({ 'idPort': objPort.id_obj }) ;
           }
       })
     }
