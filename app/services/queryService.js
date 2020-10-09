@@ -13,7 +13,7 @@ class query extends nodefony.Service {
   callQuery(url) {
     return this.dsbdb.query(url)
               .then((recordSet) => {
-                return this.cleanResult(recordSet[0]);
+                return recordSet[0] ; // this.cleanResult(recordSet[0]);
               })
               .catch((error) => {
                 throw error ;
@@ -23,13 +23,13 @@ class query extends nodefony.Service {
   callProcedure(url) {
     return this.dsbdb.query(url)
               .then((recordSet) => {
-                return this.cleanResult(recordSet) ;
+                return recordSet ; // this.cleanResult(recordSet) ;
               })
               .catch((error) => {
                 throw error ;
               }) ;
   }
-
+/*
   cleanResult(result) {
     let work = JSON.parse(JSON.stringify(result)) ;
     //console.log(work) ;
@@ -40,7 +40,7 @@ class query extends nodefony.Service {
     }
     return work ;
   }
-
+*/
 };
 
 module.exports = query ;

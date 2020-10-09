@@ -19,7 +19,7 @@ class quadrupleurController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/quadrupleur/empty",
+    *    @Route ("/api/quadrupleur/empty",
     *      name="quadrupleurEmpty")
     */
     quadrupleurEmptyAction() {

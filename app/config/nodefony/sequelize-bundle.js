@@ -46,12 +46,12 @@ module.exports = {
   connectors: {
               dsb: {
                 driver: "mysql",
-                dbname: 'networkdsb',
-                username: 'network',
-                password: 'network',
+                dbname: 'networkdsb_DEV',
+                username: 'networkUser',
+                password: 'networkUser',
                 options: {
                   dialect: "mysql",
-                  host: "localhost",
+                  host: "192.168.100.30",
                   port: "3306",
                   pool:{
                     max:   5,

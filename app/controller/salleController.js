@@ -19,7 +19,7 @@ class salleController extends nodefony.Controller {
     }
 
     /**
-    *    @Route ("/salle",
+    *    @Route ("/api/salle",
     *      name="salle")
     */
     SalleListAction() {
@@ -33,7 +33,7 @@ class salleController extends nodefony.Controller {
     }
 
     /**
-    *    @Route ("/salle/{idSalle}",
+    *    @Route ("/api/salle/{idSalle}",
     *      name="salled")
     */
     SalleDetailAction(idSalle) {
@@ -47,11 +47,11 @@ class salleController extends nodefony.Controller {
     }
 
     /**
-    *    @Route ("/salle/{idSalle}/baie",
+    *    @Route ("/api/salle/{idSalle}/baie",
     *      name="salleb")
     */
     SalleBaieListAction(idSalle) {
-      return this.queryService.callProcedure(`call baie_list(${idSalle})`)
+      return this.queryService.callQuery(`select * from baie_list where id_salle = ${idSalle}`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })

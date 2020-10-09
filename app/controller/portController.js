@@ -19,7 +19,7 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/port",
+    *    @Route ("/api/port",
     *      name="port")
     */
     PortAction() {
@@ -33,7 +33,7 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/port/{idPort}",
+    *    @Route ("/api/port/{idPort}",
     *      name="portd")
     */
     PortDetailAction(idPort) {
@@ -47,7 +47,7 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/port/{idPort}/comment",
+    *    @Route ("/api/port/{idPort}/comment",
     *      name="portcomment")
     */
     PortCommentAction(idPort) {
@@ -61,7 +61,7 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/port/{idPort}/links",
+    *    @Route ("/api/port/{idPort}/links",
     *      name="portls")
     */
     PortLinksAction(idPort) {
@@ -75,10 +75,24 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/port/{idPort}/describe",
-    *      name="portde")
+    *    @Route ("/api/port/{idPort}/describe",
+    *      name="portdesc")
     */
     PortDescribeAction(idPort) {
+      return this.queryService.callProcedure(`CALL port_describe(${idPort})`)
+            .then((reponse) => {
+                return this.api.render(reponse) ;
+            })
+            .catch((error) => {
+              throw error ;
+            }) ;
+    }
+
+    /**
+    *    @Route ("/api/port/{idPort}/text",
+    *      name="porttxt")
+    */
+    PortTextAction(idPort) {
       return this.queryService.callQuery(`SELECT * from port_describe where id_port = ${idPort}`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
@@ -89,7 +103,7 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/port/{idPort}/link",
+    *    @Route ("/api/port/{idPort}/link",
     *      name="portll")
     */
     PortLinkListAction(idPort) {
@@ -103,7 +117,7 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/port/{idPort}/link/{idDest}",
+    *    @Route ("/api/port/{idPort}/link/{idDest}",
     *      name="portl")
     */
     PortLinkAction(idPort,idDest) {
@@ -117,7 +131,7 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/port/{idPort}/link/{idDest}/comment",
+    *    @Route ("/api/port/{idPort}/link/{idDest}/comment",
     *      name="portlcomment")
     */
     PortLinkCommentAction(idPort,idDest) {
@@ -131,7 +145,7 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/port/{idPort}/unlink/{idDest}",
+    *    @Route ("/api/port/{idPort}/unlink/{idDest}",
     *      name="portu")
     */
     PortUnlinkAction(idPort,idDest) {

@@ -19,7 +19,7 @@ class baieController extends nodefony.Controller {
     }
 
     /**
-    *    @Route ("/baie",
+    *    @Route ("/api/baie",
     *      name="baie")
     */
     BaieListAction() {
@@ -33,7 +33,7 @@ class baieController extends nodefony.Controller {
     }
 
     /**
-    *    @Route ("/baie/{idBaie}",
+    *    @Route ("/api/baie/{idBaie}",
     *      name="baiel")
     */
     BaieDetailAction(idBaie) {
@@ -47,11 +47,11 @@ class baieController extends nodefony.Controller {
     }
 
     /**
-    *    @Route ("/baie/{idBaie}/equipement",
+    *    @Route ("/api/baie/{idBaie}/equipement",
     *      name="baieeq")
     */
     BaieEquipementListAction(idBaie) {
-      return this.queryService.callProcedure(`call equipement_list(${idBaie})`)
+      return this.queryService.callQuery(`select * from equipement_list where id_baie = ${idBaie}`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })

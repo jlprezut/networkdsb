@@ -19,7 +19,7 @@ class filterController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/filter/site",
+    *    @Route ("/api/filter/site",
     *      name="filters")
     */
     SiteFilterAction() {
@@ -33,7 +33,7 @@ class filterController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/filter/site/{idSite}/salle",
+    *    @Route ("/api/filter/site/{idSite}/salle",
     *      name="filtersa")
     */
     SiteSalleFilterAction(idSite) {
@@ -47,7 +47,7 @@ class filterController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/filter/site/{idSite}/salle/{idSalle}/baie",
+    *    @Route ("/api/filter/site/{idSite}/salle/{idSalle}/baie",
     *      name="filtersab")
     */
     SiteSalleBaieFilterAction(idSite,idSalle) {
@@ -61,7 +61,7 @@ class filterController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/filter/baie",
+    *    @Route ("/api/filter/baie",
     *      name="filterb")
     */
     BaieFilterAction() {
@@ -75,7 +75,7 @@ class filterController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/filter/user",
+    *    @Route ("/api/filter/user",
     *      name="filteru")
     */
     UserFilterAction() {
@@ -89,7 +89,7 @@ class filterController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/filter/baie/{idBaie}/equipement",
+    *    @Route ("/api/filter/baie/{idBaie}/equipement",
     *      name="filterbe")
     */
     BaieEquipementFilterAction(idBaie) {
@@ -103,7 +103,7 @@ class filterController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/filter/baie/{idBaie}/equipement/{idEquipement}/port",
+    *    @Route ("/api/filter/baie/{idBaie}/equipement/{idEquipement}/port",
     *      name="filterbep")
     */
     BaieEquipementPortFilterAction(idBaie,idEquipement) {

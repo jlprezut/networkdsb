@@ -19,7 +19,7 @@ class equipementController extends nodefony.Controller {
     }
 
     /**
-    *    @Route ("/equipement",
+    *    @Route ("/api/equipement",
     *      name="equipement")
     */
     EquipementAction() {
@@ -31,9 +31,9 @@ class equipementController extends nodefony.Controller {
               throw error ;
             }) ;
     }
-    
+
     /**
-    *    @Route ("/equipement/{idEquipement}",
+    *    @Route ("/api/equipement/{idEquipement}",
     *      name="equipementd")
     */
     EquipementDetailAction(idEquipement) {
@@ -45,9 +45,9 @@ class equipementController extends nodefony.Controller {
               throw error ;
             }) ;
     }
-    
+
     /**
-    *    @Route ("/equipement/{idequipement}/port",
+    *    @Route ("/api/equipement/{idequipement}/port",
     *      name="equipementp")
     */
     EquipementPortListeAction(idEquipement) {

@@ -11,14 +11,15 @@ class appController extends nodefony.Controller {
     super(container, context);
     // start session
     this.startSession();
-    this.dsbdb = this.getConnection("dsb") ;
+//    this.dsbdb = this.getConnection("dsb") ;
   }
 
 /**
  *    @Route ("/",
- *      name="home")
+ *      name="homeApp")
  */
   indexAction() {
+    return this.redirect('/secure/mobile') ;
     return this.render("app::index.html.twig", {
       name: this.kernel.projectName,
 			description: this.kernel.package.description});

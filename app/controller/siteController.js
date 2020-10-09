@@ -19,7 +19,7 @@ class siteController extends nodefony.Controller {
     }
 
     /**
-    *    @Route ("/site",
+    *    @Route ("/api/site",
     *      name="site")
     */
     SiteListAction() {
@@ -33,7 +33,7 @@ class siteController extends nodefony.Controller {
     }
 
     /**
-    *    @Route ("/site/{idSite}",
+    *    @Route ("/api/site/{idSite}",
     *      name="sited")
     */
     SiteDetailAction(idSite) {
@@ -47,11 +47,11 @@ class siteController extends nodefony.Controller {
     }
 
     /**
-    *    @Route ("/site/{idSite}/salle",
+    *    @Route ("/api/site/{idSite}/salle",
     *      name="sitesa")
     */
     SiteSalleListAction(idSite) {
-      return this.queryService.callProcedure(`call salle_list(${idSite})`)
+      return this.queryService.callQuery(`select * from salle_list where id_site = ${idSite}`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })

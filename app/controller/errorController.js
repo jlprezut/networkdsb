@@ -17,9 +17,9 @@ class errorController extends nodefony.controller {
             'description': "API error"
         }, this.context) ;
     }
-    
+
     /**
-    *    @Route ("/error/port",
+    *    @Route ("/api/error/port",
     *      name="porterror")
     */
     ErrorPortAction() {
@@ -31,7 +31,7 @@ class errorController extends nodefony.controller {
               throw error ;
             }) ;
     }
-    
+
 }
 
 module.exports = errorController;

@@ -9,6 +9,7 @@ class userController extends nodefony.controller {
     constructor(container, context) {
         super(container, context);
         // start session
+        // this.context.remoteAddress
         this.startSession();
         this.queryService = this.get("query");
         this.api = new nodefony.api.Json({
@@ -19,7 +20,7 @@ class userController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/user",
+    *    @Route ("/api/user",
     *      name="users")
     */
     UsersAction() {
@@ -33,7 +34,7 @@ class userController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/user/{iduser}",
+    *    @Route ("/api/user/{iduser}",
     *      name="user")
     */
     UserAction(idUser) {
@@ -47,7 +48,7 @@ class userController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/user/{idUser}/port",
+    *    @Route ("/api/user/{idUser}/port",
     *      name="userPort")
     */
     UserPortAction(idUser) {
@@ -61,7 +62,21 @@ class userController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/user/{idUser}/link/{idPort}",
+    *    @Route ("/api/user/{idUser}/port/{idPort}/comment",
+    *      name="userPortComment")
+    */
+    UserPortCommentAction(idUser, idPort) {
+      return this.queryService.callProcedure(`CALL linkuser_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')`)
+            .then((reponse) => {
+                return this.api.render(reponse) ;
+            })
+            .catch((error) => {
+              throw error ;
+            }) ;
+    }
+
+    /**
+    *    @Route ("/api/user/{idUser}/link/{idPort}",
     *      name="userl")
     */
     UserPortLinkAction(idUser,idPort) {
@@ -75,7 +90,7 @@ class userController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/user/{idUser}/unlink/{idPort}",
+    *    @Route ("/api/user/{idUser}/unlink/{idPort}",
     *      name="userul")
     */
     UserPortUnlinkAction(idUser,idPort) {
@@ -89,7 +104,7 @@ class userController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/user/{idUser}/inventory",
+    *    @Route ("/api/user/{idUser}/inventory",
     *      name="userInventory")
     */
     UserInventoryAction(idUser) {

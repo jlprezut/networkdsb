@@ -50,53 +50,87 @@ module.exports = {
 
     firewalls: {
       // SECURITY AREA  <passport-local>
-      nodefony_area: {
+      ldap_area: {
         pattern: /^\/secure/,
-        provider: "nodefony",
+        provider: null,
         form_login: {
           login_path: "/login/secure",
           check_path: "/login/check",
-          default_target_path: "/users"
+          default_target_path: "/secure/mobile"
         },
-        "passport-local": {
+        "passport-ldap": {
+          server: {
+            url: 'ldap://192.168.100.47',
+            searchBase: 'dc=efixo,dc=com',
+            searchFilter: '(uid={{username}})'
+          },
           usernameField: 'username',
-          passwordField: 'passwd'
+          passwordField: 'passwd',
+          profile_wrapper: {
+            username: 'profile.uid',
+            name: 'profile.sn',
+            surname: 'profile.givenName',
+            email: 'profile.mail',
+            displayName: 'profile.cn'
+          }
         },
         logout: "/logout",
-        context: null,
-        redirectHttps: true
+        context: 'ldap'
       },
+
+      // nodefony_area: {
+      //   pattern: /^\/secure/,
+      //   provider: "nodefony",
+      //   form_login: {
+      //     login_path: "/login/secure",
+      //     check_path: "/login/check",
+      //     default_target_path: "/users"
+      //   },
+      //   "passport-local": {
+      //     usernameField: 'username',
+      //     passwordField: 'passwd'
+      //   },
+      //   logout: "/logout",
+      //   context: null,
+      //   redirectHttps: true
+      // },
       // SECURITY AREA LOGIN API  <passport-local>
-      login_api_area: {
-        pattern: /^\/api\/jwt\/login/,
-        provider: "nodefony",
-        "passport-local": {
-          usernameField: 'username',
-          passwordField: 'passwd'
-        },
-        stateless: true,
-        redirectHttps: true,
-        crossDomain: cors
-      },
+      // login_api_area: {
+      //   pattern: /^\/api\/jwt\/login/,
+      //   provider: "nodefony",
+      //   "passport-local": {
+      //     usernameField: 'username',
+      //     passwordField: 'passwd'
+      //   },
+      //   stateless: true,
+      //   redirectHttps: true,
+      //   crossDomain: cors
+      // },
       // SECURITY AREA  API  <passport-jwt>
       api_area: {
         pattern: /^\/api/,
         redirectHttps: true,
         stateless: true,
-        "passport-jwt": {
-          algorithms: "RS256",
-          //secretOrKey:"Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
-          certificats: {
-            private: path.resolve("config", "certificates", "ca", "private", "ca.key.pem"),
-            public: path.resolve("config", "certificates", "ca", "public", "public.key.pem")
-          },
-          jwtFromRequest: { // fromCookie or fromHeader
-            extractor: "fromHeader",
-            params: ["jwt"]
-          }
-        },
         crossDomain: cors
       }
+      // api_area: {
+      //   pattern: /^\/api/,
+      //   redirectHttps: true,
+      //   stateless: true,
+      //   "passport-jwt": {
+      //     algorithms: "RS256",
+      //     //secretOrKey:"Les sanglots longs Des violons De l’automne Blessent mon cœur D’une langueur Monotone."
+      //     certificats: {
+      //       private: path.resolve("config", "certificates", "ca", "private", "ca.key.pem"),
+      //       public: path.resolve("config", "certificates", "ca", "public", "public.key.pem")
+      //     },
+      //     jwtFromRequest: { // fromCookie or fromHeader
+      //       extractor: "fromHeader",
+      //       params: ["jwt"]
+      //     }
+      //   },
+      //   crossDomain: cors
+      // }
     }
   }
 };

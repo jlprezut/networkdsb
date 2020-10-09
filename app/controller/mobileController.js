@@ -14,15 +14,25 @@ class mobileController extends nodefony.Controller {
     this.dsbdb = this.getConnection("dsb") ;
   }
 
-/**
- *    @Route ("/mobile",
- *      name="homemobile")
- */
+  /**
+   *    @Route ("/secure/mobile",
+   *      name="home")
+   */
   mobileAction() {
     return this.render("app::mobile.html.twig", {
       name: this.kernel.projectName,
-			description: this.kernel.package.description});
+  		description: this.kernel.package.description});
   }
+
+  /**
+   *    @Route ("/secure/getrole",
+   *      name="role")
+   */
+  getRoleAction() {
+    return this.renderJson({user: this.getUser().username}) ;
+  }
+
+
 
 }
 

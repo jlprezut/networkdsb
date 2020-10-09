@@ -4,23 +4,34 @@
 {% set info = getFlashBag("info") %}
 
 {% block body %}
-
+{% set user = getUser() %}
+<div>
+{% block header %}
+{{ render( controller("users:users:header" )) }}
+{% endblock %}
+</div>
 <div id='bandeauTitre'>
   <div>
-    <h1>Architecture DSB - Salle Serveur (version Mobile)</h1>
+  <BR><BR><BR>
   </div>
 </div>
 
-<div id="memorisation" class="memorisation">
-  <button id="cleanMemo">X</button>
-  Origine :
-  <span id="memoId"></span>
+<div id="DIV_MainMenu" class="myBody">
+  <BR><BR><BR>
+  <div class="containerButton">
+    <button class="btn" href="#" id='errorLink'>Erreurs</button>
+  </div>
+  <BR>
+  <div class="containerButton">
+    <button class="btn" href="#" id='parcourirLink'>Parcourir</button>
+  </div>
+  <BR>
+  <div class="containerButton">
+    <button class="btn" href="#" id='utilisateursLink'>Utilisateurs</button>
+  </div>
 </div>
 
-<div id="container">
-  <div>
-    <a href='#' id='errorList'>Erreurs</a>
-  </div>
+<div id="DIV_Naviguer" style="display:none">
   <div>
     <select id="listeUser" name="listeUser" >
       <option value="0">Choisir un utilisateur</option>
@@ -63,6 +74,34 @@
   </div>
 </div>
 
-<div id="chartdiv"></div>
+<div id="DIV_erreurs" style="display:none">
+  <div id="DIV_BackErreur">
+    <img id='backfromErreur' class="backLink" alt='Retour'><BR>
+  </div>
+  <span id="idErreurList"></span>
+</div>
+
+<div id="DIV_utilisateurs" style="display:none">
+  <div id="DIV_BackUtilisateur">
+    <img id='backfromUtilisateurs' class="backLink" alt='Retour'><BR>
+  </div>
+  <span id="idUtilisateursList"></span>
+</div>
+
+<div id="DIV_Parcourir" style="display:none">
+  <div id="memorisation" class="memorisation">
+    <button id="cleanMemo">X</button>
+    Origine :
+    <span id="memoId"></span>
+  </div>
+
+  <div id="DIV_Parcourir_Back">
+    <img id='backFromParcourir' class="backLink" alt='Retour'><BR>
+  </div>
+
+  <div id="DIV_vis">
+  </div>
+  <span id="actionPortOne"></span>
+</div>
 
 {% endblock %}
