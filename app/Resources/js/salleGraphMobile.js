@@ -39,7 +39,7 @@ class SalleGraphMobile extends nodefony.Service {
 
             let data = { nodes: node, edges: edge } ;
             let options = {
-              width: document.body.clientWidth,
+              width: `document.body.clientWidth`,
               height: '400px',
               layout: {
                 hierarchical: {
