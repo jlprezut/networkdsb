@@ -57,7 +57,7 @@ class PortGraphMobile extends nodefony.Service {
               imageValue = imageValue + '-error' ;
             } else if (item.up === 0) {
               imageValue = imageValue + '-down' ;
-            } else if (item.nb_link === nbLinkNormal ) {
+            } else if (item.nb_link >= nbLinkNormal ) {
               imageValue = imageValue + '-connected' ;
             }
 

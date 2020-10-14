@@ -74,12 +74,13 @@ class EquipementGraphMobile extends nodefony.Service {
           this.kernel.network = new this.vis.Network(divNetwork, data, options) ;
           this.kernel.network.kernel = this.kernel ;
 
-          this.kernel.network.on("doubleClick", this.clicEventOne) ;
+          this.kernel.network.on("doubleClick", this.doubleClicEventOne) ;
+          this.kernel.network.on("click", this.clickEvent) ;
         });
     });
   }
 
-  clicEventOne(params) {
+  doubleClicEventOne(params) {
     let nodeClic = this.body.data.nodes.get(params.nodes[0]) ;
     if (nodeClic.type_obj === "equipement") {
       this.kernel.baieGraph.affichageOne(nodeClic.id_baie) ;
@@ -87,6 +88,20 @@ class EquipementGraphMobile extends nodefony.Service {
     if (nodeClic.type_obj === "port") {
         this.kernel.portGraph.affichageOne(nodeClic.id_obj) ;
     }
+  }
+
+  clickEvent(params) {
+    let content = '' ;
+    let actionZone = document.getElementById("actionPortOne") ;
+    let nodeClic = this.body.data.nodes.get(params.nodes[0]) ;
+    if (nodeClic.type_obj === "equipement") {
+      content += `<a href='#'
+                          onclick="mobile.eventUserAction({
+                            'idEquipement': '${nodeClic.id_obj}' },
+                            'portList','listePort')"
+                      >Liste des ports</a></br>` ;
+    }
+    actionZone.innerHTML = content ;
   }
 
 }

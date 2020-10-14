@@ -23,6 +23,7 @@ import tools from "../js/tools.js" ;
 import filtreListe from "../js/filtreListe.js" ;
 import errorGraphMobile from "../js/errorGraphMobile.js" ;
 import portGraphMobile from "../js/portGraphMobile.js" ;
+import portListMobile from "../js/portListMobile.js" ;
 import siteGraphMobile from "../js/siteGraphMobile.js" ;
 import salleGraphMobile from "../js/salleGraphMobile.js" ;
 import baieGraphMobile from "../js/baieGraphMobile.js" ;
@@ -86,6 +87,8 @@ class Mobile extends nodefony.Service{
     this.set("errorGraphMobile", this.errorGraph) ;
     this.portGraph = new portGraphMobile(this) ;
     this.set("portGraphMobile", this.portGraph) ;
+    this.portList = new portListMobile(this) ;
+    this.set("portListMobile", this.portList) ;
     this.siteGraph = new siteGraphMobile(this) ;
     this.set("siteGraphMobile", this.siteGraph) ;
     this.salleGraph = new salleGraphMobile(this) ;
@@ -110,6 +113,7 @@ class Mobile extends nodefony.Service{
     this.memo.initialize() ;
     this.errorGraph.initialize() ;
     this.portGraph.initialize() ;
+    this.portList.initialize() ;
     this.siteGraph.initialize() ;
     this.salleGraph.initialize() ;
     this.baieGraph.initialize() ;
