@@ -23,17 +23,7 @@ class mobileController extends nodefony.Controller {
       name: this.kernel.projectName,
   		description: this.kernel.package.description});
   }
-
-  /**
-   *    @Route ("/secure/getrole",
-   *      name="role")
-   */
-  getRoleAction() {
-    return this.renderJson({user: this.getUser().username}) ;
-  }
-
-
-
+  
 }
 
 module.exports = mobileController;

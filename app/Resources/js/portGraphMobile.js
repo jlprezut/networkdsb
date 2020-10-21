@@ -155,22 +155,26 @@ class PortGraphMobile extends nodefony.Service {
       content += 'Port ' + myNode1.item.name + ' <-> Port : ' + myNode2.item.name ;
       content += '<HR>' ;
       content += comment ;
+      if (this.kernel.modifAutoriser()) {
       content += `<BR><a href='#'
-                          onclick="mobile.eventUserAction({
-                            'idPort': ${myEdge.item.id_obj_port1},
-                            'idPortSource': ${myEdge.item.id_obj_port2},
-                            'comment': '${myEdge.item.comment}' },
-                            'portAction','modifyCommentLink')"
-                      >Modifier le commentaire</a></br>` ;
+                            onclick="mobile.eventUserAction({
+                              'idPort': ${myEdge.item.id_obj_port1},
+                              'idPortSource': ${myEdge.item.id_obj_port2},
+                              'comment': '${myEdge.item.comment}' },
+                              'portAction','modifyCommentLink')"
+                        >Modifier le commentaire</a></br>` ;
+        }
       if (!(myNode1.item.equipement_name.includes('Quadrupleur') &&
           myNode2.item.equipement_name.includes('Quadrupleur'))) {
-        content += '<HR>'
-        content += `<a href='#'
-                        onclick="mobile.eventUserAction({
-                          'idPort1': ${myEdge.item.id_obj_port1},
-                          'idPort2': ${myEdge.item.id_obj_port2} },
-                          'portAction','unlinkPort')"
-                    >Supprimer la liaison</a>`
+        if (this.kernel.modifAutoriser()) {
+          content += '<HR>'
+          content += `<a href='#'
+                          onclick="mobile.eventUserAction({
+                            'idPort1': ${myEdge.item.id_obj_port1},
+                            'idPort2': ${myEdge.item.id_obj_port2} },
+                            'portAction','unlinkPort')"
+                      >Supprimer la liaison</a>`
+        }
       }
     }
     if (myEdge.item.type_obj == 'linkUser') {
@@ -179,19 +183,23 @@ class PortGraphMobile extends nodefony.Service {
       content += myUser.item.name + ' <-> Port : ' + myUserNode.item.name ;
       content += '<HR>' ;
       content += comment ;
-      content += `<BR><a href='#'
-                          onclick="mobile.eventUserAction({
-                            'idPort': ${myEdge.item.id_obj_port1},
-                            'idUser': ${myEdge.item.id_obj_port2},
-                            'comment': '${myEdge.item.comment}' },
-                            'userAction','modifyComment')"
-                      >Modifier le commentaire</a></br>` ;
+      if (this.kernel.modifAutoriser()) {
+        content += `<BR><a href='#'
+                            onclick="mobile.eventUserAction({
+                              'idPort': ${myEdge.item.id_obj_port1},
+                              'idUser': ${myEdge.item.id_obj_port2},
+                              'comment': '${myEdge.item.comment}' },
+                              'userAction','modifyComment')"
+                        >Modifier le commentaire</a></br>` ;
+      }
       content += '<HR>'
-      content += `<a href='#'
-                      onclick="mobile.eventUserAction({
-                        'idPort': ${myEdge.item.id_obj_port1} },
-                        'userAction','unlinkUserPort')"
-                  >Supprimer la liaison</a>`
+      if (this.kernel.modifAutoriser()) {
+        content += `<a href='#'
+                        onclick="mobile.eventUserAction({
+                          'idPort': ${myEdge.item.id_obj_port1} },
+                          'userAction','unlinkUserPort')"
+                    >Supprimer la liaison</a>`
+      }
     }
     actionZone.innerHTML = content ;
   }
@@ -210,40 +218,46 @@ class PortGraphMobile extends nodefony.Service {
                         >Liste des ports</a></br>` ;
     } else {
       content = "Port " + myNode.item.name ;
-      content += `<BR><a href='#'
-                      onclick="mobile.eventUserAction({
-                        'idPort': ${myNode.item.id_obj} },
-                        'memo',
-                        'setMemoId')"
-                      >Mémoriser le port</a>`;
-      content += `<BR><a href='#'
-                      onclick="mobile.eventUserAction({
-                        'idPort': ${myNode.item.id_obj} },
-                        'portAction',
-                        'linkPort')"
-                      >Lier le port</a>` ;
+      if (this.kernel.modifAutoriser()) {
+        content += `<BR><a href='#'
+                        onclick="mobile.eventUserAction({
+                          'idPort': ${myNode.item.id_obj} },
+                          'memo',
+                          'setMemoId')"
+                        >Mémoriser le port</a>`;
+        content += `<BR><a href='#'
+                        onclick="mobile.eventUserAction({
+                          'idPort': ${myNode.item.id_obj} },
+                          'portAction',
+                          'linkPort')"
+                        >Lier le port</a>` ;
+      }
       content += '<HR>' ;
       if (!(myNode.item.equipement_name.includes('Quadrupleur'))) {
-        content += `<a href='#'
-                            onclick="mobile.eventUserAction({
-                              'idPort': ${myNode.item.id_obj}},
-                              'portAction',
-                              'addQuadrupleur')"
-                          >Ajouter un quadrupleur</a><HR>` ;
+        if (this.kernel.modifAutoriser()) {
+          content += `<a href='#'
+                              onclick="mobile.eventUserAction({
+                                'idPort': ${myNode.item.id_obj}},
+                                'portAction',
+                                'addQuadrupleur')"
+                            >Ajouter un quadrupleur</a><HR>` ;
+        }
       }
       if (myNode.item.comment !== '' && myNode.item.comment !== null) {
         content += myNode.item.comment ;
       } else {
         content += `<I>pas de commentaire</I>` ;
       }
-      content += `<BR><a href='#'
-                          onclick="mobile.eventUserAction({
-                            'idPort': ${myNode.item.id_obj},
-                            'comment': '${myNode.item.comment}',
-                            'refresh' : 'One' },
-                            'portAction',
-                            'modifyCommentPort')"
-                        >Modifier le commentaire</a></br>` ;
+      if (this.kernel.modifAutoriser()) {
+        content += `<BR><a href='#'
+                            onclick="mobile.eventUserAction({
+                              'idPort': ${myNode.item.id_obj},
+                              'comment': '${myNode.item.comment}',
+                              'refresh' : 'One' },
+                              'portAction',
+                              'modifyCommentPort')"
+                          >Modifier le commentaire</a></br>` ;
+        }
       }
     actionZone.innerHTML = content ;
   }

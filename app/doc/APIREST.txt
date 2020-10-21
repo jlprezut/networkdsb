@@ -26,17 +26,18 @@
 /port/{id}                              OK        call port_list('port',${idPort})
 /port/{id}/comment                      OK        call port_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')
 /port/{id}/links                        OK        call port_links(${idPort})
-/port/{id}/describe                     OK        select * from port_describe where id_port = ${idPort}
+/port/{id}/describe                     OK        call port_describe(${idPort})
 /port/{id}/link                         OK        select * from port_link where id_obj = ${idPort}
 /port/{id}/link/{dest}                  OK        call create_link_RB(${idPort},${idDest},'${this.context.remoteAddress}')
 /port/{id}/link/{dest}/comment          OK        call link_comment_RB(${idPort},${idDest},'${this.context.request.url.query.comment}')
-/port/{id}/unlink/{dest}                OK        call delete_link_RB(${idPort},${idDest},'${this.context.remoteAddress}','${this.context.remoteAddress}')
+/port/{id}/unlink/{dest}                OK        call delete_link_RB(${idPort},${idDest},'${this.context.remoteAddress}'')
 
 /quadrupleur/empty                      OK        call get_port0_empty_quadrupleur()
 
 /user                                   OK        SELECT * from vue_users
 /user/{id}                              OK        SELECT * from vue_users where id_obj = ${idUser}
 /user/{id}/port                         OK        call port_list('user',${idUser})
+/user/{id}/port/{id}/comment            OK        CALL linkuser_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')
 /user/{id}/link/{dest}                  OK        call create_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}')
 /user/{id}/unlink/{dest}                OK        call delete_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}')
 /user/{id}/inventory                    OK        call user_arbo_port(${idUser})

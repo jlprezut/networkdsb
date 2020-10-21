@@ -124,11 +124,21 @@ class Mobile extends nodefony.Service{
     this.userAction.initialize() ;
     this.portAction.initialize() ;
 
+    this.user = null ;
+    this.api.get('/secure/getrole')
+      .then((r) => {
+        this.user = r ;
+      })
+
     this.network = null ;
   }
 
   eventUserAction(idObj, typeObj, action) {
     this[typeObj][action](idObj) ;
+  }
+
+  modifAutoriser() {
+    return (this.user.username === "jlprezut" || this.user.username === "stliba" ) ;
   }
 
 }

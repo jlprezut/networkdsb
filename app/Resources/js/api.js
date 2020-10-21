@@ -24,7 +24,7 @@ class Api extends nodefony.Service {
       headers: {}
     }, options);
     return axios(opt)
-      .then(response => response.data.result)
+      .then(response => response.data.result )
       .catch((error) => {
           throw error;
       });
