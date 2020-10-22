@@ -27,7 +27,7 @@ import portAction from "../js/portAction.js" ;
 import portGraph from "../js/portGraph.js" ;
 import salleGraph from "../js/salleGraph.js" ;
 
-import nodefony from 'nodefony' ;
+import nodefony from 'nodefony-client' ;
 
 /*
  *	Class Bundle App

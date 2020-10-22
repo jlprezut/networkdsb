@@ -33,7 +33,8 @@ import userGraphMobile from "../js/userGraphMobile.js" ;
 import userAction from "../js/userAction.js" ;
 import portAction from "../js/portAction.js" ;
 
-import nodefony from 'nodefony' ;
+import nodefony from 'nodefony-client' ;
+console.log(nodefony)
 
 /*
  *	Class Bundle App
@@ -44,7 +45,7 @@ class Mobile extends nodefony.Service{
     super("kernel");
     this.set("kernel", this) ;
     this.initSyslog() ;
-    const { promisify } = require('util');
+    //const { promisify } = require('util');
     this.loadServices() ;
     this.initializeServices() ;
     this.loadDataHTML() ;
