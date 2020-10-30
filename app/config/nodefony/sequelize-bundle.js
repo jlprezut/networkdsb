@@ -41,12 +41,18 @@
  *         }
  *
  */
+ //console.log(process.env && process.env.NODE_ENV === "production", kernel.environment, kernel.debug ,kernel)
+ let dbname = "networkdsb_DEV";
+if ( process.env && process.env.NODE_ENV === "production"){
+  dbname = "networkdsb_DEV";
+}
+
 module.exports = {
   debug: false,
   connectors: {
               dsb: {
                 driver: "mysql",
-                dbname: 'networkdsb_DEV',
+                dbname: dbname,
                 username: 'networkUser',
                 password: 'networkUser',
                 options: {

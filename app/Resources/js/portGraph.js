@@ -1,4 +1,4 @@
-import nodefony from 'nodefony' ;
+import nodefony from 'nodefony-client' ;
 
 class PortGraph extends nodefony.Service {
 

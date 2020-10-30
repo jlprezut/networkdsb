@@ -36,8 +36,8 @@
   "dependencies": {
     "axios": "^0.20.0",
     "mongoose": "^5.9.24",
-    "nodefony": "^6.0.0-beta.15",
-    "pm2": "^4.4.0",
+    "nodefony": "^6.0.1",
+    "pm2": "^4.5.0",
     "pm2-logrotate": "^2.7.0",
     "sequelize": "^6.3.3",
     "vis": "^4.21.0-EOL",
@@ -47,7 +47,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "devDependencies": {
-    "node-gyp": "^7.0.0",
+    "node-gyp": "^7.1.2",
     "node-pre-gyp": "^0.15.0"
   },
   "author": "admin <admin@nodefony.com>",

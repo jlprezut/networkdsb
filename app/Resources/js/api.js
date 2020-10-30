@@ -1,5 +1,5 @@
 import axios from 'axios';
-import nodefony from 'nodefony' ;
+import nodefony from 'nodefony-client' ;
 
 class Api extends nodefony.Service {
 

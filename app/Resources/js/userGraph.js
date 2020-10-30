@@ -1,4 +1,4 @@
-import nodefony from 'nodefony' ;
+import nodefony from 'nodefony-client' ;
 
 class UserGraph extends nodefony.Service {
 
