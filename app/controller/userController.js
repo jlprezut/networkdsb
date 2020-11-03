@@ -117,6 +117,20 @@ class userController extends nodefony.controller {
             }) ;
     }
 
+    /**
+    *    @Route ("/api/login/{login}",
+    *      name="userLogin")
+    */
+    UserLoginAction(login) {
+      return this.queryService.callProcedure(`CALL getUserFromLogin('${login}')`)
+            .then((reponse) => {
+                return this.api.render(reponse) ;
+            })
+            .catch((error) => {
+              throw error ;
+            }) ;
+    }
+
 }
 
 module.exports = userController;

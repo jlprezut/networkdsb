@@ -50,6 +50,18 @@ class Mobile extends nodefony.Service{
     this.initializeServices() ;
     this.loadDataHTML() ;
     this.log("start Mobile");
+
+    this.user = null ;
+    this.api.get('/secure/getrole')
+      .then((r) => {
+        this.user = r ;
+        this.api.get(`/api/login/${this.user.username}`)
+          .then((r) => {
+            if (r.id_user != 'null') {
+              this.userGraph.detailUtilisateur({ 'idUser': r[0].id_user, 'name': r[0].nom_user }) ;
+            }
+          });
+      })
   }
 
   loadDataHTML() {
@@ -124,12 +136,6 @@ class Mobile extends nodefony.Service{
     this.filtreListe.initialize() ;
     this.userAction.initialize() ;
     this.portAction.initialize() ;
-
-    this.user = null ;
-    this.api.get('/secure/getrole')
-      .then((r) => {
-        this.user = r ;
-      })
 
     this.network = null ;
   }
