@@ -41,15 +41,21 @@ class UserAction extends nodefony.Service {
       if (p[0].id_user == "null") {
         this.swal.fire({title: "Pas d'utilisateur lié", showConfirmButton: true, icon: 'error'}) ;
       } else {
-        this.api.get(`/api/user/${p[0].id_user}/unlink/${idPort}`)
-        .then((r) => {
-          if (r[0].resultat == 1) {
-            this.swal.fire({title: 'Suppression réussie', showConfirmButton: true, icon: 'success'}) ;
-            this.portGraph.affichageOne(idPort) ;
-          } else {
-            this.swal.fire({title: "Pas possible de supprimer la liaison", showConfirmButton: true, icon: 'error'}) ;
-          }
-        });
+        let memo_p = p[0] ;
+        this.swal.fire({title:"Confirmez-vous", text:"la suppression de la Liaison ?", showCancelButton: true, icon:'question'})
+          .then((response) => {
+            if (response.isConfirmed) {
+              this.api.get(`/api/user/${memo_p.id_user}/unlink/${idPort}`)
+              .then((r) => {
+                if (r[0].resultat == 1) {
+                  this.swal.fire({title: 'Suppression réussie', showConfirmButton: true, icon: 'success'}) ;
+                  this.portGraph.affichageOne(idPort) ;
+                } else {
+                  this.swal.fire({title: "Pas possible de supprimer la liaison", showConfirmButton: true, icon: 'error'}) ;
+                }
+              });
+            }
+          });
       }
     });
   }

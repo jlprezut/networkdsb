@@ -133,11 +133,11 @@ class UserGraphMobile extends nodefony.Service {
         let actionZone = document.getElementById("actionPortOne") ;
         actionZone.innerHTML = '' ;
 
-        this.kernel.network.on("doubleClick", this.clicEventAll) ;
+        this.kernel.network.on("doubleClick", this.doubleClicEventAll) ;
       });
   }
 
-  clicEventAll(params) {
+  doubleClicEventAll(params) {
     let nodeClic = this.body.data.nodes.get(params.nodes[0]) ;
     this.kernel.userGraph.affichageOne({ 'idUser': nodeClic.id_obj }) ;
   }
@@ -161,17 +161,22 @@ class UserGraphMobile extends nodefony.Service {
             let imageValue ;
             let titleValue ;
             r.forEach((item, i) => {
-              if (item.nb_link === 0 ) {
-                imageValue = `/app/images/RJ45.png` ;
+              if (item.type_acces === 'RJ45') {
+                imageValue = '/app/images/RJ45' ;
               } else {
-                imageValue = `/app/images/RJ45-connected.png`
+                imageValue = '/app/images/Fibre' ;
+              }
+              if (item.nb_link > 0 ) {
+                imageValue += `-connected`
               }
               if (item.up === 0) {
-                imageValue = `/app/images/RJ45-down.png` ;
+                imageValue += `-down` ;
               }
               if (item.is_error === 1) {
-                imageValue = `/app/images/RJ45-error.png` ;
+                imageValue += `-error` ;
               }
+
+              imageValue += '.png' ;
 
               if (item.nom_user === null) {
                 titleValue = '' ;
@@ -210,12 +215,13 @@ class UserGraphMobile extends nodefony.Service {
             let actionZone = document.getElementById("actionPortOne") ;
             actionZone.innerHTML = '' ;
 
-            this.kernel.network.on("doubleClick", this.clicEventOne) ;
+            this.kernel.network.on("doubleClick", this.doubleClicEventOne) ;
+            this.kernel.network.on("click", this.clicEventOne) ;
         });
     });
   }
 
-  clicEventOne(params) {
+  doubleClicEventOne(params) {
     let nodeClic = this.body.data.nodes.get(params.nodes[0]) ;
     if (nodeClic.type_obj === "user") {
       this.kernel.userGraph.affichageAll() ;
@@ -223,6 +229,29 @@ class UserGraphMobile extends nodefony.Service {
     if (nodeClic.type_obj === "port") {
         this.kernel.portGraph.affichageOne(nodeClic.id_obj) ;
     }
+  }
+
+  clicEventOne(params) {
+    let actionZone = document.getElementById("actionPortOne") ;
+    let content = '' ;
+    let nodeClic = this.body.data.nodes.get(params.nodes[0]) ;
+    if (nodeClic.type_obj === "user") {
+      content += `<a href='#'
+                          onclick="mobile.eventUserAction({
+                            'idUser': ${nodeClic.id_obj}},
+                            'userAction','linkUserPort')">
+                            Lier le port</a>
+                            </br>` ;
+    }
+    if (nodeClic.type_obj === "port") {
+      content += `<a href='#'
+                          onclick="mobile.eventUserAction({
+                            'idPort': ${nodeClic.id_obj}},
+                            'userAction','unlinkUserPort')">
+                            Délier le port</a>
+                            </br>` ;
+    }
+    actionZone.innerHTML = content ;
   }
 
   linkEventOne(event) {

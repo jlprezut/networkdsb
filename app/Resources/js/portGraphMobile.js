@@ -48,7 +48,11 @@ class PortGraphMobile extends nodefony.Service {
               }
 
             } else {
-              imageValue = '/app/images/RJ45'
+              if (item.type_acces === 'RJ45') {
+                imageValue = '/app/images/RJ45' ;
+              } else {
+                imageValue = '/app/images/Fibre' ;
+              }
               labelValue = `Baie : ${item.baie_name}\n${item.equipement_name}\nPort ${item.name}` ;
               nbLinkNormal = 1 ;
             }

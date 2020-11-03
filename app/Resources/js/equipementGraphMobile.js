@@ -32,18 +32,21 @@ class EquipementGraphMobile extends nodefony.Service {
           let imageValue ;
           let titleValue ;
           r.forEach((item, i) => {
-            if (item.nb_link === 0 ) {
-              imageValue = `/app/images/RJ45.png` ;
+            if (item.type_acces === 'RJ45') {
+              imageValue = '/app/images/RJ45' ;
             } else {
-              imageValue = `/app/images/RJ45-connected.png` ;
+              imageValue = '/app/images/Fibre' ;
+            }
+            if (item.nb_link > 0 ) {
+              imageValue += `-connected` ;
             }
             if (item.up === 0) {
-              imageValue = `/app/images/RJ45-down.png` ;
+              imageValue += `-down` ;
             }
             if (item.is_error === 1) {
-              imageValue = `/app/images/RJ45-error.png` ;
+              imageValue += `-error` ;
             }
-
+            imageValue += '.png' ;
             if (item.nom_user === null) {
               titleValue = '' ;
             } else {
