@@ -47,20 +47,6 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/api/port/{idPort}/comment",
-    *      name="portcomment")
-    */
-    PortCommentAction(idPort) {
-      return this.queryService.callProcedure(`CALL port_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')`)
-            .then((reponse) => {
-                return 'OK' ;
-            })
-            .catch((error) => {
-              throw error ;
-            }) ;
-    }
-
-    /**
     *    @Route ("/api/port/{idPort}/links",
     *      name="portls")
     */
@@ -131,11 +117,11 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/api/port/{idPort}/link/{idDest}/comment",
-    *      name="portlcomment")
+    *    @Route ("/api/port/{idPort}/unlink/{idDest}",
+    *      name="portu")
     */
-    PortLinkCommentAction(idPort,idDest) {
-      return this.queryService.callProcedure(`CALL link_comment_RB(${idPort},${idDest},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')`)
+    PortUnlinkAction(idPort,idDest) {
+      return this.queryService.callProcedure(`CALL delete_link_RB(${idPort},${idDest},'${this.context.remoteAddress}')`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })
@@ -145,13 +131,91 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/api/port/{idPort}/unlink/{idDest}",
-    *      name="portu")
+    *    @Route ("/api/meta/{typeObj}/{idObj}",
+    *      name="portmeta")
     */
-    PortUnlinkAction(idPort,idDest) {
-      return this.queryService.callProcedure(`CALL delete_link_RB(${idPort},${idDest},'${this.context.remoteAddress}')`)
+    metaFreeAction(typeObj,idObj) {
+      return this.queryService.callProcedure(`CALL freeMetaObj('${typeObj}',${idObj})`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
+            })
+            .catch((error) => {
+              throw error ;
+            }) ;
+    }
+
+    /**
+    *    @Route ("/api/meta/{typeObj}/{idObj}/{idMeta}",
+    *      name="portAddDonnees")
+    */
+    addDonneesAction(typeObj,idObj,idMeta) {
+      return this.queryService.callProcedure(`CALL addDonneesObj('${typeObj}',${idObj},${idMeta},'${this.context.request.url.query.valeur}')`)
+            .then((reponse) => {
+                return this.api.render(reponse) ;
+            })
+            .catch((error) => {
+              throw error ;
+            }) ;
+    }
+
+    /**
+    *    @Route ("/api/parcours/{typeObj}/{idObj}",
+    *      name="porttest")
+    */
+    ParcoursAction(typeObj,idObj) {
+
+      return this.queryService.callProcedure(`CALL parcours('${typeObj}',${idObj})`)
+            .then((reponse) => {
+                var listFonctionsDefered=[];
+                var r = reponse ;
+                var t = this ;
+                for(var i=0; i<r.length; i++){
+                  listFonctionsDefered[i]=(t.queryService.callProcedure(`call getMetaDonnees('${reponse[i].type_obj}',${reponse[i].id_obj})`)
+                      .then((reponse) => {
+                          return reponse ;
+                        })) ;
+      					}
+                for(var i=0; i<r.length; i++){
+                  listFonctionsDefered[i+r.length]=(t.queryService.callProcedure(`call getExtraDonnees('${reponse[i].type_obj}',${reponse[i].id_obj})`)
+                      .then((reponse) => {
+                          return reponse ;
+                        })) ;
+      					}
+                return Promise.all(listFonctionsDefered).then(function(listResultats){
+                  for(var i=0; i<r.length; i++){
+                    r[i].metaDonnees = listResultats[i] ;
+                    r[i].extraDonnees = listResultats[i+r.length] ;
+                  }
+                  return t.api.render(r) ;
+                })
+            })
+            .catch((error) => {
+              throw error ;
+            }) ;
+    }
+
+    /**
+    *    @Route ("/api/search",
+    *      name="portsearch")
+    */
+    searchAction() {
+      return this.queryService.callProcedure(`CALL search_text('${this.context.request.url.query.texte}')`)
+            .then((reponse) => {
+                var listFonctionsDefered=[];
+                var r = reponse ;
+                var t = this ;
+                for(var i=0; i<r.length; i++){
+                  listFonctionsDefered[i]=(t.queryService.callProcedure(`call getExtraDonnees('${reponse[i].type_obj}',${reponse[i].id_obj})`)
+                      .then((reponse) => {
+                          return reponse ;
+                        })) ;
+                }
+                return Promise.all(listFonctionsDefered).then(function(listResultats){
+                  for(var i=0; i<r.length; i++){
+                    r[i].extraDonnees = listResultats[i] ;
+                  }
+                  return t.api.render(r) ;
+                })
             })
             .catch((error) => {
               throw error ;

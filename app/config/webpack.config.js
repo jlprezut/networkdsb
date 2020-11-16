@@ -12,6 +12,7 @@ const package = require(path.resolve("package.json"));
 const bundleConfig = require(path.resolve(__dirname, "config.js"));
 const bundleName = package.name;
 const publicPath = "/app/assets/";
+const debug = kernel.debug?"*":false;
 
 let wpconfig = null;
 let dev = true;
@@ -106,7 +107,8 @@ module.exports = merge(wpconfig, {
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+        'NODE_DEBUG': JSON.stringify(debug)
       }
     }),
   ],

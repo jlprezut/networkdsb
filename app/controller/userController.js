@@ -62,20 +62,6 @@ class userController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/api/user/{idUser}/port/{idPort}/comment",
-    *      name="userPortComment")
-    */
-    UserPortCommentAction(idUser, idPort) {
-      return this.queryService.callProcedure(`CALL linkuser_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')`)
-            .then((reponse) => {
-                return this.api.render(reponse) ;
-            })
-            .catch((error) => {
-              throw error ;
-            }) ;
-    }
-
-    /**
     *    @Route ("/api/user/{idUser}/link/{idPort}",
     *      name="userl")
     */

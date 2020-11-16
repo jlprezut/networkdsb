@@ -35,7 +35,8 @@ class ErrorGraphMobile extends nodefony.Service{
     let actionZone = document.getElementById("actionPortOne") ;
     actionZone.innerHTML = '' ;
 
-    this.portGraph.affichageOne(idPort) ;
+    // this.portGraph.affichageOne(idPort) ;
+    this.kernel.parcours.affichageOne({ 'typeObj': 'Port', 'idObj': idPort }) ;
   }
 
   backMenu() {
