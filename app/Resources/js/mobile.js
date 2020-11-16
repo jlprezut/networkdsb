@@ -48,6 +48,7 @@ class Mobile extends nodefony.Service{
     this.api.get('/secure/getrole')
       .then((r) => {
         this.user = r ;
+        this.errorGraph.initialize() ;
         this.api.get(`/api/login/${this.user.username}`)
           .then((r) => {
             if (r.id_user != 'null') {
@@ -55,6 +56,9 @@ class Mobile extends nodefony.Service{
             }
           });
       })
+
+    this.searchGraph.initialize() ;
+
   }
 
   loadDataHTML() {
@@ -105,8 +109,7 @@ class Mobile extends nodefony.Service{
   initializeServices() {
     this.api.initialize() ;
     this.memo.initialize() ;
-    this.errorGraph.initialize() ;
-    this.searchGraph.initialize() ;
+
     this.portList.initialize() ;
     this.parcours.initialize() ;
     this.metaDonnees.initialize() ;

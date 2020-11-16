@@ -17,15 +17,21 @@ class ErrorGraphMobile extends nodefony.Service{
   }
 
   listenEvents() {
-    let select = document.getElementById('errorLink') ;
-    select.addEventListener('click', (event) => {
-              this.listeErreur() ;
-    });
 
-    let imgBack = document.getElementById("backfromErreur") ;
-    imgBack.addEventListener('click', (event) => {
-              this.backMenu() ;
-    });
+    if (this.kernel.modifAutoriser()) {
+      let select = document.getElementById('errorLink') ;
+      select.addEventListener('click', (event) => {
+                this.listeErreur() ;
+      });
+
+      let imgBack = document.getElementById("backfromErreur") ;
+      imgBack.addEventListener('click', (event) => {
+                this.backMenu() ;
+      });
+    } else {
+      let DIV_button_Erreur = document.getElementById('DIV_button_Erreur') ;
+      DIV_button_Erreur.style.display=(false)?'block':'none';
+    }
   }
 
   showErreurPort(obj) {
@@ -35,7 +41,6 @@ class ErrorGraphMobile extends nodefony.Service{
     let actionZone = document.getElementById("actionPortOne") ;
     actionZone.innerHTML = '' ;
 
-    // this.portGraph.affichageOne(idPort) ;
     this.kernel.parcours.affichageOne({ 'typeObj': 'Port', 'idObj': idPort }) ;
   }
 
