@@ -44,7 +44,7 @@
  //console.log(process.env && process.env.NODE_ENV === "production", kernel.environment, kernel.debug ,kernel)
  let dbname = "networkdsb_DEV";
 if ( process.env && process.env.NODE_ENV === "production"){
-  dbname = "networkdsb_DEV";
+  dbname = "networkdsb";
 }
 
 module.exports = {
