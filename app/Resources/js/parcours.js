@@ -52,6 +52,11 @@ class Parcours extends nodefony.Service {
     let actionZone = document.getElementById("actionPortOne") ;
     actionZone.innerHTML = '' ;
 
+    if (this.kernel.network !== null) {
+      this.kernel.network.destroy() ;
+      this.kernel.network = null ;
+    }
+
     this.api.get(`/api/parcours/${typeObj}/${idObj}`)
       .then((r) => {
         let node = new this.vis.DataSet() ;
@@ -61,7 +66,8 @@ class Parcours extends nodefony.Service {
         let labelValue ;
         let nbLinkNormal ;
         let tmpTitle ;
-        let nodeFocus = '' ;
+
+        this.kernel.nodeFocus = '' ;
 
         r.forEach((item, i) => {
           titleValue = '' ;
@@ -170,7 +176,7 @@ class Parcours extends nodefony.Service {
                         item: item
                       }) ;
 
-            if (item.main === 1) nodeFocus = item.type_obj + "-" + item.id_obj ;
+            if (item.main === 1) this.kernel.nodeFocus = item.type_obj + "-" + item.id_obj ;
           }
 
         })
@@ -184,25 +190,25 @@ class Parcours extends nodefony.Service {
             tooltipDelay: 100,
           },
         };
-        if (this.kernel.network !== null) {
-          this.kernel.network.destroy() ;
-          this.kernel.network = null ;
-        }
+
         let divNetwork = document.getElementById("DIV_vis") ;
         this.kernel.network = new this.vis.Network(divNetwork, data, options) ;
         this.kernel.network.kernel = this.kernel ;
 
         this.kernel.network.on("doubleClick", this.doubleClickEvent) ;
         this.kernel.network.on("click", this.clickEvent) ;
-
-        if (nodeFocus !== '') {
-          let tab = []
-          tab.push(nodeFocus)
-          this.kernel.network.selectNodes(tab,true);
-          this.clickEventNode(this.kernel.network.body.data,this.kernel.network.body.data.nodes.get(nodeFocus));
-        }
+        this.kernel.network.once("afterDrawing", this.afterDrawingEvent) ;
 
     });
+  }
+
+  afterDrawingEvent(params) {
+    if (this.kernel.nodeFocus !== '') {
+      let tab = []
+      tab.push(this.kernel.nodeFocus)
+      this.selectNodes(tab,true);
+      this.kernel.parcours.clickEventNode(this.body.data,this.body.data.nodes.get(this.kernel.nodeFocus));
+    }
   }
 
   doubleClickEvent(params) {

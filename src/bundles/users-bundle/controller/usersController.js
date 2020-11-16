@@ -39,7 +39,8 @@ class usersController extends nodefony.Controller {
     return this.render("users::header.html.twig", {
       langs: this.get("translation").getLangs(),
       locale: this.getLocale(),
-      version: nodefony.version
+      version: nodefony.version,
+      env: process.env
     });
   }
 

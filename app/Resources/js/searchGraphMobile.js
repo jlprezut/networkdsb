@@ -32,6 +32,13 @@ class SearchGraphMobile extends nodefony.Service{
     goSearch.addEventListener('click', (event) => {
               this.goSearch() ;
     });
+
+    let texteSearch = document.getElementById("texteSearch") ;
+    texteSearch.addEventListener('keydown', (event) => {
+              if (event.key === 'Enter') {
+                this.goSearch() ;
+              }
+    })
   }
 
   showSearchObj(obj) {
@@ -80,13 +87,23 @@ class SearchGraphMobile extends nodefony.Service{
         for (let i=0; i< r.length; i++) {
           if (r[i].type_obj.includes('Link')) {
             content = content + `<a href='#' onclick="mobile.eventUserAction({ 'typeObj' : '${r[i].extraDonnees[0].type_id_from}', 'idObj': ${r[i].extraDonnees[0].id_from} },'searchGraph','showSearchObj')">` ;
-            content += `${r[i].type_obj} / ${r[i].extraDonnees[0].type_id_from} <-> ${r[i].extraDonnees[0].type_id_to}` ;
+            content += `${r[i].type_obj} | ` ;
+            if (r[i].extraDonnees[0].parents_from !== '') {
+              content += `[${r[i].extraDonnees[0].parents_from}] ` ;
+            }
+            content += `${r[i].extraDonnees[0].type_id_from} (${r[i].extraDonnees[0].libelle_from}) <-> `
+            if (r[i].extraDonnees[0].parents_to !== '') {
+              content += `[${r[i].extraDonnees[0].parents_to}] ` ;
+            }
+            content += `${r[i].extraDonnees[0].type_id_to}  (${r[i].extraDonnees[0].libelle_to})` ;
           } else {
             content = content + `<a href='#' onclick="mobile.eventUserAction({ 'typeObj' : '${r[i].type_obj}', 'idObj': ${r[i].id_obj} },'searchGraph','showSearchObj')">` ;
-            content += `${r[i].type_obj} / ` ;
-            content += r[i].extraDonnees[0].libelle ;
+            if (r[i].extraDonnees[0].parents !== '') {
+              content += `[${r[i].extraDonnees[0].parents}] ` ;
+            }
+            content += `${r[i].type_obj} (${r[i].extraDonnees[0].libelle})` ;
           }
-          content += ` --> ${r[i].valeur}`
+          content += ` --> match [${r[i].valeur}]`
           content += `</a><br>` ;
         }
         if (content === '') {
