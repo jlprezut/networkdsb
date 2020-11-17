@@ -17,6 +17,7 @@
     "@babel/core": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
     "autoprefixer": "^10.0.2",
+    "axios": "^0.21.0",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "css-hot-loader": "^1.4.4",
@@ -39,6 +40,9 @@
     "style-loader": "^2.0.0",
     "sweetalert2": "^10.0.2",
     "terser-webpack-plugin": "^5.0.3",
+    "vis": "^4.21.0-EOL",
+    "vis-data": "^7.0.0",
+    "vis-network": "^8.3.2",
     "webpack": "^5.4.0",
     "webpack-merge": "^5.0.9"
   },
