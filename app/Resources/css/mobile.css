@@ -1,34 +1,30 @@
-p
-{
-    color: blue ;
-    font-size: 12px ;
+p {
+  color: blue;
+  font-size: 12px;
 }
 
-h1
-{
-    background-color: white;
-    color: black;
-    text-align: center;
+h1 {
+  background-color: white;
+  color: black;
+  text-align: center;
 }
 
 .backLink {
   width: 40px;
   height: 40px;
   float: right;
-  content: url('/app/images/go-back.png');
+  content: url('../public/images/go-back.png');
 }
 
-#container
-{
-    display: flex;
-    justify-content: space-around;
-    background-color: black;
-    color: white;
+#container {
+  display: flex;
+  justify-content: space-around;
+  background-color: black;
+  color: white;
 }
 
-#container a:visited, #container a:link
-{
-    color:white;
+#container a:visited, #container a:link {
+  color: white;
 }
 
 .ampopup {

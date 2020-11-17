@@ -34,7 +34,7 @@
     "node": ">=10"
   },
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.0",
     "mongoose": "^5.9.24",
     "nodefony": "^6.1.0",
     "pm2": "^4.5.0",
@@ -43,12 +43,12 @@
     "vis": "^4.21.0-EOL",
     "vis-data": "^7.0.0",
     "vis-network": "^8.3.2",
-    "webpack": "^4.43.0",
+    "webpack": "^5.4.0",
     "webpack-dev-server": "^3.11.0"
   },
   "devDependencies": {
     "node-gyp": "^7.1.2",
-    "node-pre-gyp": "^0.15.0"
+    "node-pre-gyp": "^0.16.0"
   },
   "author": "admin <admin@nodefony.com>",
   "readmeFilename": "README.md",
