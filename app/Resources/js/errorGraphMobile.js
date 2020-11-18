@@ -21,7 +21,7 @@ class ErrorGraphMobile extends nodefony.Service{
     if (this.kernel.modifAutoriser()) {
       let select = document.getElementById('errorLink') ;
       select.addEventListener('click', (event) => {
-                this.listeErreur() ;
+                this.listeErreur({'typeObj': 'ListeErreur', 'idObj': '0'}) ;
       });
 
       let imgBack = document.getElementById("backfromErreur") ;
@@ -36,11 +36,6 @@ class ErrorGraphMobile extends nodefony.Service{
 
   showErreurPort(obj) {
     let idPort = obj.idPort ;
-    this.divErreurs.style.display=(false)?'block':'none';
-    this.divParcourir.style.display=(true)?'block':'none';
-    let actionZone = document.getElementById("actionPortOne") ;
-    actionZone.innerHTML = '' ;
-
     this.kernel.parcours.affichageOne({ 'typeObj': 'Port', 'idObj': idPort }) ;
   }
 
@@ -49,9 +44,16 @@ class ErrorGraphMobile extends nodefony.Service{
     this.divErreurs.style.display=(false)?'block':'none';
   }
 
-  listeErreur(){
-    this.divMainMenu.style.display=(false)?'block':'none';
-    this.divErreurs.style.display=(true)?'block':'none';
+  listeErreur(obj){
+    this.kernel.divMainMenu.style.display=(false)?'block':'none';
+    this.kernel.divUtilisateurs.style.display=(false)?'block':'none';
+    this.kernel.divParcourir.style.display=(false)?'block':'none';
+    this.kernel.divSearch.style.display=(false)?'block':'none';
+
+    this.kernel.divErreurs.style.display=(true)?'block':'none';
+
+
+    this.kernel.ariane.addLink({ 'class': 'errorGraph', 'methode': 'listeErreur', 'obj': { 'typeObj': 'ListeErreur', 'idObj': '0' }, 'libelle': 'Liste erreurs', 'tooltip': '' }) ;
 
     this.api.get('/api/error/port')
       .then((r) => {

@@ -22,11 +22,6 @@ class PortListMobile extends nodefony.Service{
 
   showPort(obj) {
     let idPort = obj.idPort ;
-    this.divErreurs.style.display=(false)?'block':'none';
-    this.divParcourir.style.display=(true)?'block':'none';
-    let actionZone = document.getElementById("actionPortOne") ;
-    actionZone.innerHTML = '' ;
-
     this.kernel.parcours.affichageOne({ 'typeObj' : 'Port', 'idObj' : idPort }) ;
   }
 
@@ -37,9 +32,16 @@ class PortListMobile extends nodefony.Service{
 
   listePort(obj){
     let idEquipement = obj.idEquipement ;
-    this.divMainMenu.style.display=(false)?'block':'none';
-    this.divParcourir.style.display=(false)?'block':'none';
-    this.divErreurs.style.display=(true)?'block':'none';
+    let nameEquipement = obj.name ;
+
+    this.kernel.divMainMenu.style.display=(false)?'block':'none';
+    this.kernel.divUtilisateurs.style.display=(false)?'block':'none';
+    this.kernel.divParcourir.style.display=(false)?'block':'none';
+    this.kernel.divSearch.style.display=(false)?'block':'none';
+
+    this.kernel.divErreurs.style.display=(true)?'block':'none';
+
+    this.kernel.ariane.addLink({ 'class': 'portList', 'methode': 'listePort', 'obj': { 'typeObj': 'ListePortEquipement', 'idObj': idEquipement, 'idEquipement': idEquipement, 'name': nameEquipement }, 'libelle': 'Liste ports', 'tooltip': nameEquipement }) ;
 
     this.api.get(`/api/equipement/${idEquipement}/port`)
       .then((r) => {

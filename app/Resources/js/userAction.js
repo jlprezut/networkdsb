@@ -65,7 +65,7 @@ class UserAction extends nodefony.Service {
               this.api.get(`/api/user/${memo_p.id_user}/unlink/${idPort}`)
               .then((r) => {
                 if (r[0].resultat == 1) {
-                  // this.kernel.network.deleteSelected() ;
+                  this.kernel.network.deleteSelected() ;
                   let actionZone = document.getElementById("actionPortOne") ;
                   actionZone.innerHTML = '' ;
                   this.swal.fire({title: 'Suppression réussie', showConfirmButton: true, icon: 'success'}) ;
@@ -98,12 +98,18 @@ class UserAction extends nodefony.Service {
     }
 
     detailUtilisateur(obj) {
-      this.divMainMenu.style.display=(false)?'block':'none';
-      this.divUtilisateurs.style.display=(true)?'block':'none';
-      this.divParcourir.style.display=(false)?'block':'none';
+      this.kernel.divMainMenu.style.display=(false)?'block':'none';
+      this.kernel.divSearch.style.display=(false)?'block':'none';
+      this.kernel.divParcourir.style.display=(false)?'block':'none';
+      this.kernel.divErreurs.style.display=(false)?'block':'none';
+
+      this.kernel.divUtilisateurs.style.display=(true)?'block':'none';
 
       let idUser = obj.idUser ;
       let nameUser = obj.name ;
+
+      this.kernel.ariane.addLink({ 'class': 'userAction', 'methode': 'detailUtilisateur', 'obj': { 'typeObj': 'ListePortUser', 'idObj': idUser, 'idUser': idUser, 'name': nameUser }, 'libelle': 'Liste ports', 'tooltip': nameUser }) ;
+
       this.api.get(`/api/user/${idUser}/inventory`)
         .then((text) => {
           let content = `<HR><a href='#' onclick="mobile.eventUserAction({ 'typeObj': 'User', 'idObj': ${idUser} }, 'parcours','affichageOne')">${nameUser}</a><HR>` ;
@@ -147,7 +153,6 @@ class UserAction extends nodefony.Service {
 
     affichageDetailPort(obj) {
       let idPort = obj.idPort ;
-      this.divUtilisateurs.style.display=(false)?'block':'none';
       this.kernel.parcours.affichageOne({ 'typeObj': 'Port', 'idObj': idPort }) ;
     }
 

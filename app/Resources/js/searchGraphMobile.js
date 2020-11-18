@@ -45,12 +45,7 @@ class SearchGraphMobile extends nodefony.Service{
     let idObj = obj.idObj ;
     let typeObj = obj.typeObj ;
 
-    this.divSearch.style.display=(false)?'block':'none';
-    this.divParcourir.style.display=(true)?'block':'none';
-    let actionZone = document.getElementById("actionPortOne") ;
-    actionZone.innerHTML = '' ;
-
-    // this.portGraph.affichageOne(idPort) ;
+    this.kernel.ariane.addLink({ 'class': 'searchGraph', 'methode': 'linkSearch', 'obj': { 'typeObj': 'Search', 'idObj': document.getElementById("texteSearch").value }, 'libelle': 'Search', 'tooltip': document.getElementById("texteSearch").value }) ;
     this.kernel.parcours.affichageOne({ 'typeObj': typeObj, 'idObj': idObj }) ;
   }
 
@@ -68,9 +63,20 @@ class SearchGraphMobile extends nodefony.Service{
     this.listeSearch(texteSearch.value) ;
   }
 
+  linkSearch(obj) {
+    this.prepareSearch() ;
+    document.getElementById("texteSearch").value = obj.idObj ;
+    this.goSearch() ;
+  }
+
   prepareSearch() {
-    this.divMainMenu.style.display=(false)?'block':'none';
-    this.divSearch.style.display=(true)?'block':'none';
+    this.kernel.divMainMenu.style.display=(false)?'block':'none';
+    this.kernel.divUtilisateurs.style.display=(false)?'block':'none';
+    this.kernel.divParcourir.style.display=(false)?'block':'none';
+    this.kernel.divErreurs.style.display=(false)?'block':'none';
+
+    this.kernel.divSearch.style.display=(true)?'block':'none';
+
     let texteSearch = document.getElementById("texteSearch") ;
     texteSearch.value = "" ;
     let contenu = document.getElementById('idSearchList') ;
@@ -78,9 +84,6 @@ class SearchGraphMobile extends nodefony.Service{
   }
 
   listeSearch(texteSearch){
-    this.divMainMenu.style.display=(false)?'block':'none';
-    this.divSearch.style.display=(true)?'block':'none';
-
     this.api.get('/api/search',{ params: {texte: texteSearch}})
       .then((r) => {
         let content = '' ;

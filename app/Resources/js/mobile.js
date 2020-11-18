@@ -23,6 +23,7 @@ import searchGraphMobile from "../js/searchGraphMobile" ;
 import portListMobile from "../js/portListMobile.js" ;
 import parcours from "../js/parcours.js" ;
 import metaDonnees from "../js/metaDonnees.js"
+import ariane from "../js/ariane.js"
 
 import userAction from "../js/userAction.js" ;
 import portAction from "../js/portAction.js" ;
@@ -44,6 +45,8 @@ class Mobile extends nodefony.Service{
     this.loadDataHTML() ;
     this.log("start Mobile");
 
+    this.arianeTab = [];
+
     this.user = null ;
     this.api.get('/secure/getrole')
       .then((r) => {
@@ -57,29 +60,27 @@ class Mobile extends nodefony.Service{
           });
       })
 
-    this.searchGraph.initialize() ;
-
   }
 
   loadDataHTML() {
     this.memo.hide() ;
 
     this.divMainMenu.style.display=(true)?'block':'none';
-    this.divNaviguer.style.display=(false)?'block':'none';
     this.divErreurs.style.display=(false)?'block':'none';
     this.divSearch.style.display=(false)?'block':'none';
     this.divParcourir.style.display=(false)?'block':'none';
     this.divUtilisateurs.style.display=(false)?'block':'none';
+    this.arianeID.innerHTML = '' ;
 
   }
 
   loadServices() {
     this.divMainMenu = document.getElementById("DIV_MainMenu") ;
-    this.divNaviguer = document.getElementById("DIV_Naviguer") ;
     this.divErreurs = document.getElementById("DIV_erreurs") ;
     this.divSearch = document.getElementById("DIV_search") ;
     this.divParcourir = document.getElementById("DIV_Parcourir") ;
     this.divUtilisateurs = document.getElementById("DIV_utilisateurs") ;
+    this.arianeID = document.getElementById("arianeID") ;
 
     this.api = new api(this) ;
     this.set("api",this.api);
@@ -99,6 +100,8 @@ class Mobile extends nodefony.Service{
     this.set("parcours", this.parcours) ;
     this.metaDonnees = new metaDonnees(this) ;
     this.set("metaDonnees", this.metaDonnees) ;
+    this.ariane = new ariane(this) ;
+    this.set("ariane", this.ariane) ;
 
     this.userAction = new userAction(this) ;
     this.set("userAction",this.userAction) ;
@@ -113,7 +116,7 @@ class Mobile extends nodefony.Service{
     this.portList.initialize() ;
     this.parcours.initialize() ;
     this.metaDonnees.initialize() ;
-
+    this.searchGraph.initialize() ;
     this.userAction.initialize() ;
     this.portAction.initialize() ;
 

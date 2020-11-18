@@ -21,12 +21,6 @@ class Parcours extends nodefony.Service {
   listenEvents() {
     let select = document.getElementById('parcourirLink') ;
     select.addEventListener('click', (event) => {
-      this.divMainMenu.style.display=(false)?'block':'none';
-      this.divParcourir.style.display=(true)?'block':'none';
-      this.divUtilisateurs.style.display=(false)?'block':'none';
-      this.kernel.divErreurs.style.display=(false)?'block':'none';
-      let actionZone = document.getElementById("actionPortOne") ;
-      actionZone.innerHTML = '' ;
       this.kernel.parcours.affichageOne({ 'typeObj' : 'null', 'idObj' : 'null' } ) ;
     });
 
@@ -45,10 +39,13 @@ class Parcours extends nodefony.Service {
     let typeObj = obj.typeObj ;
     let idObj = obj.idObj ;
 
-    this.divParcourir.style.display=(true)?'block':'none';
-    this.divMainMenu.style.display=(false)?'block':'none';
-    this.divUtilisateurs.style.display=(false)?'block':'none';
+    this.kernel.divMainMenu.style.display=(false)?'block':'none';
+    this.kernel.divUtilisateurs.style.display=(false)?'block':'none';
     this.kernel.divErreurs.style.display=(false)?'block':'none';
+    this.kernel.divSearch.style.display=(false)?'block':'none';
+
+    this.kernel.divParcourir.style.display=(true)?'block':'none';
+
     let actionZone = document.getElementById("actionPortOne") ;
     actionZone.innerHTML = '' ;
 
@@ -176,7 +173,11 @@ class Parcours extends nodefony.Service {
                         item: item
                       }) ;
 
-            if (item.main === 1) this.kernel.nodeFocus = item.type_obj + "-" + item.id_obj ;
+            if (item.type_obj === obj.typeObj && parseFloat(item.id_obj) === parseFloat(obj.idObj) )  {
+              this.kernel.ariane.addLink({ 'class': 'parcours', 'methode': 'affichageOne', 'obj': obj, 'libelle': labelValue, 'tooltip': titleValue }) ;
+              this.kernel.nodeFocus = item.type_obj + "-" + item.id_obj ;
+            }
+
           }
 
         })
@@ -349,7 +350,8 @@ class Parcours extends nodefony.Service {
       content += '<HR>' ;
       content += `<a href='#'
                           onclick="mobile.eventUserAction({
-                            'idEquipement': '${myNode.item.id_obj}' },
+                            'idEquipement': '${myNode.item.id_obj}',
+                            'name': '${myNode.item.extraDonnees[0].libelle}' },
                             'portList','listePort')"
                       >Liste des ports</a></BR>` ;
     }
