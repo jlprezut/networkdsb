@@ -27,7 +27,7 @@ class PortAction extends nodefony.Service {
         .then((r) => {
           if (r[0].resultat == 1) {
             this.swal.fire({title: 'Liaison réussie', showConfirmButton: true, icon: 'success'}) ;
-            this.kernel.parcours.affichageOne('Port',idPort) ;
+            this.kernel.parcours.affichageOne({ 'typeObj': 'Port', 'idObj': idPort }) ;
           } else {
             this.swal.fire({title: "Pas possible de réaliser la liaison", showConfirmButton: true, icon: 'error'}) ;
           }
