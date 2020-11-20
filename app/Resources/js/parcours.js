@@ -164,6 +164,14 @@ class Parcours extends nodefony.Service {
               edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
             }
 
+            if (item.type_obj === obj.typeObj && parseFloat(item.id_obj) === parseFloat(obj.idObj) )  {
+              this.kernel.ariane.addLink({ 'class': 'parcours', 'methode': 'affichageOne', 'obj': obj, 'libelle': labelValue, 'tooltip': titleValue }) ;
+              this.kernel.nodeFocus = item.type_obj + "-" + item.id_obj ;
+              item.mainNode = true ;
+            } else{
+              item.mainNode = false ;
+            }
+
             node.add({  id: item.type_obj + "-" + item.id_obj,
                         shape: 'image',
                         image: imageValue,
@@ -172,11 +180,6 @@ class Parcours extends nodefony.Service {
                         title: titleValue,
                         item: item
                       }) ;
-
-            if (item.type_obj === obj.typeObj && parseFloat(item.id_obj) === parseFloat(obj.idObj) )  {
-              this.kernel.ariane.addLink({ 'class': 'parcours', 'methode': 'affichageOne', 'obj': obj, 'libelle': labelValue, 'tooltip': titleValue }) ;
-              this.kernel.nodeFocus = item.type_obj + "-" + item.id_obj ;
-            }
 
           }
 
@@ -218,7 +221,7 @@ class Parcours extends nodefony.Service {
     }
     let nodeClic = this.body.data.nodes.get(params.nodes[0]) ;
 
-    if (nodeClic.item.main === 1) {
+    if (nodeClic.item.mainNode) {
       this.kernel.parcours.affichageOne({ 'typeObj' : nodeClic.item.type_obj_parent, 'idObj' : nodeClic.item.id_obj_parent }) ;
     } else {
       this.kernel.parcours.affichageOne({ 'typeObj' : nodeClic.item.type_obj,'idObj' : nodeClic.item.id_obj }) ;
