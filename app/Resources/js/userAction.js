@@ -113,35 +113,53 @@ class UserAction extends nodefony.Service {
       this.api.get(`/api/user/${idUser}/inventory`)
         .then((text) => {
           let content = `<HR><a href='#' onclick="mobile.eventUserAction({ 'typeObj': 'User', 'idObj': ${idUser} }, 'parcours','affichageOne')">${nameUser}</a><HR>` ;
-          let portLink = '' ;
+          let portClic = '' ;
+          let tooltip = '' ;
+
           for (let i=0; i< text.length; i++) {
-            if (text[i].niveau === 0) {
-              content = content + "<BR>" ;
-            } else {
-              if (text[i].commentaire_link !==  null) {
-                content = content + "--".repeat(text[i].niveau - 1) ;
-                content = content + "  " ;
-                content = content + text[i].commentaire_link + "<BR>" ;
+            tooltip = '' ;
+            text[i].metaDonnees.forEach((itemMeta,j) => {
+              tooltip += itemMeta.libelle_meta + " : " + itemMeta.valeur + "</BR>";
+            }) ;
+
+            if (text[i].type_obj === 'Link') {
+              if (tooltip !== '') {
+                content += "&emsp;".repeat(text[i].niveau) ;
+                content += "|" ;
+                content += `<span href='#' class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
+                content += "<BR>" ;
               }
-              content = content + "--".repeat(text[i].niveau - 1) ;
-              content = content + "|-" ;
-            }
-            if (text[i].type === "PreQuadrupleur") {
-              content = content + "Quadrupleur" ;
             } else {
-              portLink = `<a href="#" onclick="mobile.eventUserAction({ 'idPort': ${text[i].id_port}},'userAction','affichageDetailPort')">Port ${text[i].numero_port}</a>`
-              if (text[i].type === "Quadrupleur") {
-                content = content + portLink;
-              } else {
-                content = content + text[i].nom_baie + " / " + text[i].description ;
-                content = content + " (" + text[i].type + ")" ;
-                content = content + "  -->  " + portLink ;
-                if (text[i].commentaire_port !== null ) {
-                  content = content + " (" + text[i].commentaire_port + ") " ;
+              if (text[i].niveau === 0 && text[i].type_obj === 'LinkUser') {
+                if (tooltip !== '') {
+                  content += "<BR>" ;
+                  content += `<span href='#' class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
                 }
+                content += "<BR>" ;
+              } else {
+                if (text[i].niveau !== 0) {
+                    content += "&emsp;".repeat(text[i].niveau) ;
+                    content += "|--> " ;
+                }
+
+                if (text[i].extraDonnees[0].equipement_type === "PreQuadrupleur") {
+                  content += "Quadrupleur" ;
+                } else {
+                  portClic = `<a href="#" onclick="mobile.eventUserAction({ 'idPort': ${text[i].id_obj}},'userAction','affichageDetailPort')">Port ${text[i].extraDonnees[0].libelle}</a>`
+                  if (tooltip !== '') {
+                    portClic += `<span href='#' class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
+                  }
+                  if (text[i].extraDonnees[0].equipement_type === "Quadrupleur") {
+                    content += portClic;
+                  } else {
+                    content += text[i].extraDonnees[0].baie_libelle + " / " + text[i].extraDonnees[0].equipement_libelle ;
+                    content += " (" + text[i].extraDonnees[0].equipement_type + ")" ;
+                    content += " " + portClic ;
+                  }
+                }
+                content += "<BR>" ;
               }
             }
-            content = content + "<BR>" ;
           }
           if (content === '') {
             content = 'Aucune arborescence...' ;

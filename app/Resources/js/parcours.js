@@ -167,7 +167,7 @@ class Parcours extends nodefony.Service {
             node.add({  id: item.type_obj + "-" + item.id_obj,
                         shape: 'image',
                         image: imageValue,
-                        size: 20,
+                        size: 15,
                         label: labelValue,
                         title: titleValue,
                         item: item

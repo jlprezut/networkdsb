@@ -52,12 +52,27 @@ class equipementController extends nodefony.Controller {
     */
     EquipementPortListeAction(idEquipement) {
       return this.queryService.callProcedure(`call port_list('equipement',${idEquipement})`)
-            .then((reponse) => {
-                return this.api.render(reponse) ;
-            })
-            .catch((error) => {
-              throw error ;
-            }) ;
+          .then((reponse) => {
+              var listFonctionsDefered=[];
+              var r = reponse ;
+              var t = this ;
+              for(var i=0; i<r.length; i++){
+                listFonctionsDefered[i]=(t.queryService.callProcedure(`call getMetaDonnees('${r[i].type_obj}',${r[i].id_obj})`)
+                    .then((reponse) => {
+                        return reponse ;
+                      })) ;
+              }
+              return Promise.all(listFonctionsDefered).then(function(listResultats){
+                for(var i=0; i<r.length; i++){
+                  r[i].metaDonnees = listResultats[i] ;
+                }
+                return t.api.render(r) ;
+              })
+
+          })
+          .catch((error) => {
+            throw error ;
+      }) ;
     }
 
 }

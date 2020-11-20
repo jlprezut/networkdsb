@@ -95,12 +95,33 @@ class userController extends nodefony.controller {
     */
     UserInventoryAction(idUser) {
       return this.queryService.callProcedure(`CALL user_arbo_port(${idUser})`)
-            .then((reponse) => {
-                return this.api.render(reponse) ;
-            })
-            .catch((error) => {
+          .then((reponse) => {
+              var listFonctionsDefered=[];
+              var r = reponse ;
+              var t = this ;
+              for(var i=0; i<r.length; i++){
+                listFonctionsDefered[i]=(t.queryService.callProcedure(`call getMetaDonnees('${reponse[i].type_obj}',${reponse[i].id_obj})`)
+                    .then((reponse) => {
+                        return reponse ;
+                      })) ;
+              }
+              for(var i=0; i<r.length; i++){
+                listFonctionsDefered[i+r.length]=(t.queryService.callProcedure(`call getExtraDonnees('${reponse[i].type_obj}',${reponse[i].id_obj})`)
+                    .then((reponse) => {
+                        return reponse ;
+                      })) ;
+              }
+              return Promise.all(listFonctionsDefered).then(function(listResultats){
+                for(var i=0; i<r.length; i++){
+                  r[i].metaDonnees = listResultats[i] ;
+                  r[i].extraDonnees = listResultats[i+r.length] ;
+                }
+                return t.api.render(r) ;
+              })
+          })
+          .catch((error) => {
               throw error ;
-            }) ;
+          }) ;
     }
 
     /**

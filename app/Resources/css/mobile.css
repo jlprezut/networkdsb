@@ -16,6 +16,12 @@ h1 {
   content: url('../public/images/go-back.png');
 }
 
+.infoImg {
+  width: 20px;
+  height: 20px;
+  content: url('../public/images/Info.png');
+}
+
 .A_tooltip {
      color: #000000;
      /* text-shadow: 0 -1px 0 black;  */
