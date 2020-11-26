@@ -80,6 +80,8 @@ class UserAction extends nodefony.Service {
   }
 
   listeUtilisateurs() {
+      document.getElementById('idUtilisateursList').innerHTML = '' ;
+
       this.divMainMenu.style.display=(false)?'block':'none';
       this.divUtilisateurs.style.display=(true)?'block':'none';
 
@@ -87,13 +89,12 @@ class UserAction extends nodefony.Service {
         .then((r) => {
           let content = '' ;
           for (let i=0; i< r.length; i++) {
-            content = content + `<a href='#' onclick="mobile.eventUserAction( {'idUser': ${r[i].id_obj}, 'name': '${r[i].name}' },'userAction','detailUtilisateur')">${r[i].name}</a><br>` ;
+            content = content + `<span class='SpanLink' onclick="mobile.eventUserAction( {'idUser': ${r[i].id_obj}, 'name': '${r[i].name}' },'userAction','detailUtilisateur')">${r[i].name}</span><br>` ;
           }
           if (content === '') {
             content = 'Aucun utilisateur...' ;
           }
-          let contenu = document.getElementById('idUtilisateursList') ;
-          contenu.innerHTML = content ;
+          document.getElementById('idUtilisateursList').innerHTML = content ;
       });
     }
 
@@ -103,6 +104,7 @@ class UserAction extends nodefony.Service {
       this.kernel.divParcourir.style.display=(false)?'block':'none';
       this.kernel.divErreurs.style.display=(false)?'block':'none';
 
+      document.getElementById('idUtilisateursList').innerHTML = '' ;
       this.kernel.divUtilisateurs.style.display=(true)?'block':'none';
 
       let idUser = obj.idUser ;
@@ -112,7 +114,7 @@ class UserAction extends nodefony.Service {
 
       this.api.get(`/api/user/${idUser}/inventory`)
         .then((text) => {
-          let content = `<HR><a href='#' onclick="mobile.eventUserAction({ 'typeObj': 'User', 'idObj': ${idUser} }, 'parcours','affichageOne')">${nameUser}</a><HR>` ;
+          let content = `<HR><span class='SpanLink'  onclick="mobile.eventUserAction({ 'typeObj': 'User', 'idObj': ${idUser} }, 'parcours','affichageOne')">${nameUser}</span><HR>` ;
           let portClic = '' ;
           let tooltip = '' ;
 
@@ -126,14 +128,14 @@ class UserAction extends nodefony.Service {
               if (tooltip !== '') {
                 content += "&emsp;".repeat(text[i].niveau) ;
                 content += "|" ;
-                content += `<span href='#' class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
+                content += `<span class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
                 content += "<BR>" ;
               }
             } else {
               if (text[i].niveau === 0 && text[i].type_obj === 'LinkUser') {
                 if (tooltip !== '') {
                   content += "<BR>" ;
-                  content += `<span href='#' class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
+                  content += `<span class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
                 }
                 content += "<BR>" ;
               } else {
@@ -145,9 +147,9 @@ class UserAction extends nodefony.Service {
                 if (text[i].extraDonnees[0].equipement_type === "PreQuadrupleur") {
                   content += "Quadrupleur" ;
                 } else {
-                  portClic = `<a href="#" onclick="mobile.eventUserAction({ 'idPort': ${text[i].id_obj}},'userAction','affichageDetailPort')">Port ${text[i].extraDonnees[0].libelle}</a>`
+                  portClic = `<span class='SpanLink' onclick="mobile.eventUserAction({ 'idPort': ${text[i].id_obj}},'userAction','affichageDetailPort')">Port ${text[i].extraDonnees[0].libelle}</span>`
                   if (tooltip !== '') {
-                    portClic += `<span href='#' class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
+                    portClic += `<span class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
                   }
                   if (text[i].extraDonnees[0].equipement_type === "Quadrupleur") {
                     content += portClic;

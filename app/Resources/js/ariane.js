@@ -8,6 +8,7 @@ class Ariane extends nodefony.Service {
 
   initialize() {
     this.api = this.kernel.api ;
+    this.backTime = false ;
     this.log("Start") ;
     this.listenEvents() ;
   }
@@ -17,6 +18,9 @@ class Ariane extends nodefony.Service {
 
   goLink(id) {
     let currentObj = this.kernel.arianeTab[id] ;
+    if (currentObj === undefined) {
+      return ;
+    }
     this.kernel.arianeTab.splice(id,100) ;
     this.refreshAriane() ;
     this.kernel.eventUserAction(currentObj.obj, currentObj.class, currentObj.methode) ;
@@ -25,9 +29,9 @@ class Ariane extends nodefony.Service {
   refreshAriane() {
     this.kernel.arianeID.innerHTML = '' ;
     this.kernel.arianeTab.forEach((item,j) => {
-      this.kernel.arianeID.innerHTML = this.kernel.arianeID.innerHTML + ` / <a href='#'
+      this.kernel.arianeID.innerHTML = this.kernel.arianeID.innerHTML + ` / <span
                         onclick="mobile.eventUserAction(${j},
-                          'ariane','goLink')" class='A_tooltip'>${item.libelle}<span>${item.tooltip}</span></a>` ;
+                          'ariane','goLink')" class='A_tooltip'>${item.libelle}<span>${item.tooltip}</span></span>` ;
     }) ;
   }
 
@@ -46,6 +50,20 @@ class Ariane extends nodefony.Service {
       this.kernel.arianeTab.shift() ;
     }
     this.refreshAriane() ;
+  }
+
+  goBackLink() {
+    if (this.backTime) {
+      if (this.kernel.arianeTab.length - 2 >= 0) {
+        this.goLink(this.kernel.arianeTab.length - 2) ;
+      } else {
+        this.kernel.arianeTab.shift() ;
+        this.kernel.parcours.affichageOne({ 'typeObj' : 'User', 'idObj' : this.kernel.user.id_user } ) ;
+      }
+      this.backTime = false ;
+    } else {
+      this.backTime = true ;
+    }
   }
 
 }

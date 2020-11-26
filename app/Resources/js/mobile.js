@@ -55,6 +55,7 @@ class Mobile extends nodefony.Service{
         this.api.get(`/api/login/${this.user.username}`)
           .then((r) => {
             if (r.id_user != 'null') {
+              this.user.id_user = r[0].id_user ;
               this.parcours.affichageOne({ 'typeObj' : 'User', 'idObj' : r[0].id_user } ) ;
             }
           });
@@ -125,6 +126,10 @@ class Mobile extends nodefony.Service{
 
   eventUserAction(idObj, typeObj, action) {
     this[typeObj][action](idObj) ;
+  }
+
+  goBack() {
+    this.ariane.goBackLink() ;
   }
 
   modifAutoriser() {

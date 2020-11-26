@@ -17,35 +17,7 @@ class equipementController extends nodefony.Controller {
             'description': "API Equipement"
         }, this.context) ;
     }
-
-    /**
-    *    @Route ("/api/equipement",
-    *      name="equipement")
-    */
-    EquipementAction() {
-      return this.queryService.callQuery("select * from equipement_list")
-            .then((reponse) => {
-                return this.api.render(reponse) ;
-            })
-            .catch((error) => {
-              throw error ;
-            }) ;
-    }
-
-    /**
-    *    @Route ("/api/equipement/{idEquipement}",
-    *      name="equipementd")
-    */
-    EquipementDetailAction(idEquipement) {
-      return this.queryService.callQuery(`select * from equipement_list where id_obj = ${idEquipement}`)
-            .then((reponse) => {
-                return this.api.render(reponse) ;
-            })
-            .catch((error) => {
-              throw error ;
-            }) ;
-    }
-
+    
     /**
     *    @Route ("/api/equipement/{idequipement}/port",
     *      name="equipementp")

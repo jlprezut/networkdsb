@@ -51,3 +51,13 @@ h1 {
      transform: scale(1) rotate(0);
      visibility: visible;
 }
+
+.SpanLink {
+  text-decoration: underline;
+  text-decoration-color: blue ;
+  color: blue ;
+}
+
+.SpanLink:hover {
+  cursor: pointer ;
+}

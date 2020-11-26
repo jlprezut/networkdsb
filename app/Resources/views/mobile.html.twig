@@ -16,22 +16,30 @@
   </div>
 </div>
 
+<script language="JavaScript">
+history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        mobile.goBack() ;
+        history.go(1) ;
+    };
+</script>
+
 <div id="DIV_MainMenu" class="myBody">
   <BR><BR><BR>
   <div class="containerButton" id='DIV_button_Erreur'>
-    <button class="btn" href="#" id='errorLink'>Erreurs</button>
+    <button class="btn" id='errorLink'>Erreurs</button>
   </div>
   <BR>
   <div class="containerButton">
-    <button class="btn" href="#" id='parcourirLink'>Parcourir</button>
+    <button class="btn" id='parcourirLink'>Parcourir</button>
   </div>
   <BR>
   <div class="containerButton">
-    <button class="btn" href="#" id='utilisateursLink'>Utilisateurs</button>
+    <button class="btn" id='utilisateursLink'>Utilisateurs</button>
   </div>
   <BR>
   <div class="containerButton">
-    <button class="btn" href="#" id='searchLink'>Rechercher</button>
+    <button class="btn" id='searchLink'>Rechercher</button>
   </div>
 </div>
 
@@ -46,7 +54,7 @@
   <div id="DIV_BackSearch">
     <img id='backfromSearch' class="backLink" alt='Retour'><BR>
   </div>
-  <input id="texteSearch"> <button href="#" id='goSearch'>Rechercher</button> <BR> <BR>
+  <input id="texteSearch"> <button id='goSearch'>Rechercher</button> <BR> <BR>
   <span id="idSearchList"></span>
 </div>
 

@@ -19,81 +19,11 @@ class portController extends nodefony.controller {
     }
 
     /**
-    *    @Route ("/api/port",
-    *      name="port")
-    */
-    PortAction() {
-      return this.queryService.callProcedure("CALL port_list(NULL, NULL)")
-            .then((reponse) => {
-                return this.api.render(reponse) ;
-            })
-            .catch((error) => {
-              throw error ;
-            }) ;
-    }
-
-    /**
-    *    @Route ("/api/port/{idPort}",
-    *      name="portd")
-    */
-    PortDetailAction(idPort) {
-      return this.queryService.callProcedure(`CALL port_list('port',${idPort})`)
-            .then((reponse) => {
-                return this.api.render(reponse) ;
-            })
-            .catch((error) => {
-              throw error ;
-            }) ;
-    }
-
-    /**
-    *    @Route ("/api/port/{idPort}/links",
-    *      name="portls")
-    */
-    PortLinksAction(idPort) {
-      return this.queryService.callProcedure(`CALL port_links(${idPort})`)
-            .then((reponse) => {
-                return this.api.render(reponse) ;
-            })
-            .catch((error) => {
-              throw error ;
-            }) ;
-    }
-
-    /**
-    *    @Route ("/api/port/{idPort}/describe",
-    *      name="portdesc")
-    */
-    PortDescribeAction(idPort) {
-      return this.queryService.callProcedure(`CALL port_describe(${idPort})`)
-            .then((reponse) => {
-                return this.api.render(reponse) ;
-            })
-            .catch((error) => {
-              throw error ;
-            }) ;
-    }
-
-    /**
     *    @Route ("/api/port/{idPort}/text",
     *      name="porttxt")
     */
     PortTextAction(idPort) {
       return this.queryService.callQuery(`SELECT * from port_describe where id_port = ${idPort}`)
-            .then((reponse) => {
-                return this.api.render(reponse) ;
-            })
-            .catch((error) => {
-              throw error ;
-            }) ;
-    }
-
-    /**
-    *    @Route ("/api/port/{idPort}/link",
-    *      name="portll")
-    */
-    PortLinkListAction(idPort) {
-      return this.queryService.callQuery(`SELECT * from port_link where id_obj = ${idPort} `)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })

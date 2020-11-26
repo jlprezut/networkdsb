@@ -1,43 +1,12 @@
-/site                                   OK        select * from site_list
-/site/{id}                              OK        select * from site_list where id_obj = ${idSite}
-/site/{id}/salle                        OK        call salle_list(${idSite})
-
-/salle                                  OK        select * from salle_list
-/salle/{id}                             OK        select * from salle_list where id_obj = ${idSalle}
-/salle/{id}/baie                        OK        call baie_list(${idSalle})
-
-/baie                                   OK        select * from baie_list
-/baie/{id}                              OK        select * from baie_list where id_obj = ${idBaie}
-/baie/{id}/equipement                   OK        call equipement_list(${idBaie})
-
-/equipement                             OK        select * from equipement_list
-/equipement/{id}                        OK        select * from equipement_list where id_obj = ${idEquipement}
 /equipement/{id}/port                   OK        call port_list('equipement',${idEquipement})
 
-/filter/site                            OK        call filter_site(NULL,NULL)
-/filter/site/{id}/salle                 OK        call filter_site(${idSite},NULL)
-/filter/site/{id}/salle/{id}/baie       OK        call filter_site(${idSite},${idSalle})
-/filter/baie                            OK        call filter_baie(NULL,NULL)
-/filter/baie/{id}/equipement            OK        call filter_baie(${idBaie},NULL)
-/filter/baie/{id}/equipement/{id}/port  OK        call filter_baie(${idBaie},${idEquipement})
-/filter/user                            OK        call filter_user()
-
-/port                                   OK        call port_list(NULL, NULL)
-/port/{id}                              OK        call port_list('port',${idPort})
-/port/{id}/comment                      OK        call port_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')
-/port/{id}/links                        OK        call port_links(${idPort})
-/port/{id}/describe                     OK        call port_describe(${idPort})
-/port/{id}/link                         OK        select * from port_link where id_obj = ${idPort}
+/port/{id}/text                         OK        SELECT * from port_describe where id_port = ${idPort}
 /port/{id}/link/{dest}                  OK        call create_link_RB(${idPort},${idDest},'${this.context.remoteAddress}')
-/port/{id}/link/{dest}/comment          OK        call link_comment_RB(${idPort},${idDest},'${this.context.request.url.query.comment}')
 /port/{id}/unlink/{dest}                OK        call delete_link_RB(${idPort},${idDest},'${this.context.remoteAddress}'')
 
 /quadrupleur/empty                      OK        call get_port0_empty_quadrupleur()
 
-/user                                   OK        SELECT * from vue_users
-/user/{id}                              OK        SELECT * from vue_users where id_obj = ${idUser}
-/user/{id}/port                         OK        call port_list('user',${idUser})
-/user/{id}/port/{id}/comment            OK        CALL linkuser_comment_RB(${idPort},'${this.context.request.url.query.comment}','${this.context.remoteAddress}')
+/user                                   OK        SELECT * from vue_users 
 /user/{id}/link/{dest}                  OK        call create_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}')
 /user/{id}/unlink/{dest}                OK        call delete_user_port_RB(${idUser},${idPort},'${this.context.remoteAddress}')
 /user/{id}/inventory                    OK        call user_arbo_port(${idUser})

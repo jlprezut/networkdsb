@@ -59,7 +59,7 @@ class ErrorGraphMobile extends nodefony.Service{
       .then((r) => {
         let content = '' ;
         for (let i=0; i< r.length; i++) {
-          content = content + `<a href='#' onclick="mobile.eventUserAction({ 'idPort': ${r[i].id_port} },'errorGraph','showErreurPort')">Baie / ${r[i].nom_baie} / ${r[i].description} (${r[i].type}) / Port num : ${r[i].numero_port} (nb liens : ${r[i].nb_link})</a><br>` ;
+          content = content + `<span class='SpanLink' onclick="mobile.eventUserAction({ 'idPort': ${r[i].id_port} },'errorGraph','showErreurPort')">Baie / ${r[i].nom_baie} / ${r[i].description} (${r[i].type}) / Port num : ${r[i].numero_port} (nb liens : ${r[i].nb_link})</span><br>` ;
         }
         if (content === '') {
           content = 'Aucune erreur...' ;

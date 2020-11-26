@@ -48,23 +48,23 @@ class PortListMobile extends nodefony.Service{
         let content = '' ;
         let tooltip = '' ;
         if (r.length > 0) {
-            content += `<a href='#' onclick="mobile.eventUserAction({ 'typeObj': 'Equipement', 'idObj': ${r[0].id_equipement} },'parcours','affichageOne')">${r[0].baie_name} / ${r[0].equipement_name}</a></BR></BR>`  ;
+            content += `<span class='SpanLink' onclick="mobile.eventUserAction({ 'typeObj': 'Equipement', 'idObj': ${r[0].id_equipement} },'parcours','affichageOne')">${r[0].baie_name} / ${r[0].equipement_name}</span></BR></BR>`  ;
         }
         for (let i=0; i< r.length; i++) {
-          content += `<a href='#' onclick="mobile.eventUserAction({ 'idPort': ${r[i].id_obj} },'portList','showPort')">Port ${r[i].name}`;
+          content += `<span class='SpanLink' onclick="mobile.eventUserAction({ 'idPort': ${r[i].id_obj} },'portList','showPort')">Port ${r[i].name}`;
           if (r[i].nom_user !== null) {
             content += ` [${r[i].nom_user}]` ;
           }
           if (r[i].nb_link > 0) {
             content += ` (nb liens : ${r[i].nb_link} --> ${r[i].next_link})` ;
           }
-          content += `</a>` ;
+          content += `</span>` ;
           tooltip = '' ;
           r[i].metaDonnees.forEach((itemMeta,j) => {
             tooltip += itemMeta.libelle_meta + " : " + itemMeta.valeur + "</BR>";
           }) ;
           if (tooltip !== '') {
-            content += `<span href='#' class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
+            content += `<span class='A_tooltip'>&nbsp;<img class='infoImg'><span>${tooltip}</span></span>` ;
           }
 
           content += `<br>` ;

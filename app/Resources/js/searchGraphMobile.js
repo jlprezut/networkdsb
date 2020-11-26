@@ -89,7 +89,7 @@ class SearchGraphMobile extends nodefony.Service{
         let content = '' ;
         for (let i=0; i< r.length; i++) {
           if (r[i].type_obj.includes('Link')) {
-            content = content + `<a href='#' onclick="mobile.eventUserAction({ 'typeObj' : '${r[i].extraDonnees[0].type_id_from}', 'idObj': ${r[i].extraDonnees[0].id_from} },'searchGraph','showSearchObj')">` ;
+            content = content + `<span class='SpanLink' onclick="mobile.eventUserAction({ 'typeObj' : '${r[i].extraDonnees[0].type_id_from}', 'idObj': ${r[i].extraDonnees[0].id_from} },'searchGraph','showSearchObj')">` ;
             content += `${r[i].type_obj} | ` ;
             if (r[i].extraDonnees[0].parents_from !== '') {
               content += `[${r[i].extraDonnees[0].parents_from}] ` ;
@@ -100,14 +100,14 @@ class SearchGraphMobile extends nodefony.Service{
             }
             content += `${r[i].extraDonnees[0].type_id_to}  (${r[i].extraDonnees[0].libelle_to})` ;
           } else {
-            content = content + `<a href='#' onclick="mobile.eventUserAction({ 'typeObj' : '${r[i].type_obj}', 'idObj': ${r[i].id_obj} },'searchGraph','showSearchObj')">` ;
+            content = content + `<span class='SpanLink' onclick="mobile.eventUserAction({ 'typeObj' : '${r[i].type_obj}', 'idObj': ${r[i].id_obj} },'searchGraph','showSearchObj')">` ;
             if (r[i].extraDonnees[0].parents !== '') {
               content += `[${r[i].extraDonnees[0].parents}] ` ;
             }
             content += `${r[i].type_obj} (${r[i].extraDonnees[0].libelle})` ;
           }
           content += ` --> match [${r[i].valeur}]`
-          content += `</a><br>` ;
+          content += `</span><br>` ;
         }
         if (content === '') {
           content = 'Aucun résultat...' ;
