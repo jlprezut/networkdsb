@@ -65,7 +65,7 @@ class portController extends nodefony.controller {
     *      name="portmeta")
     */
     metaFreeAction(typeObj,idObj) {
-      return this.queryService.callProcedure(`CALL freeMetaObj('${typeObj}',${idObj})`)
+      return this.queryService.callProcedure(`CALL freeMetaObj('${typeObj}',${idObj},${this.context.request.url.query.id_user})`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })

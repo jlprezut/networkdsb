@@ -136,6 +136,10 @@ class Mobile extends nodefony.Service{
     return (this.user.employeeType === "admin" ) ;
   }
 
+  ajoutDonneesAutoriser() {
+    return (this.user.employeeType !== "guest" ) ;
+  }
+
 }
 
 /*

@@ -439,7 +439,7 @@ class Parcours extends nodefony.Service {
 
     content += '<HR>' ;
     myNode.item.metaDonnees.forEach((itemMeta,j) => {
-      if (this.kernel.modifAutoriser()) {
+      if (this.kernel.modifAutoriser() || itemMeta.id_user === this.kernel.user.id_user) {
         content += `<span class='SpanLink'
                             onclick="mobile.eventUserAction({
                               'type_obj': '${myNode.item.type_obj}',
@@ -454,7 +454,7 @@ class Parcours extends nodefony.Service {
         content += `${itemMeta.libelle_meta} : ${itemMeta.valeur}</BR>` ;
       }
     }) ;
-    if (this.kernel.modifAutoriser()) {
+    if (this.kernel.ajoutDonneesAutoriser()) {
       content += `<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'type_obj': '${myNode.item.type_obj}',
