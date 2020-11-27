@@ -54,17 +54,35 @@ class Parcours extends nodefony.Service {
       this.kernel.network = null ;
     }
 
-    this.api.get(`/api/parcours/${typeObj}/${idObj}`)
-      .then((r) => {
-        let node = new this.vis.DataSet() ;
-        let edge = new this.vis.DataSet() ;
+    var listFonctionsDefered=[];
+    var t = this ;
+    listFonctionsDefered[0]=(this.api.get(`/api/parcours/${typeObj}/${idObj}`)
+          .then((reponse) => {
+              return reponse ;
+            })) ;
+    this.memo.memoTab.forEach((item, i) => {
+      listFonctionsDefered[i+1]=(this.api.get(`/api/parcours/${item.type_obj}/${item.id_obj}`)
+            .then((reponse) => {
+                return reponse ;
+              })) ;
+    });
+
+    var t = this ;
+
+    //this.api.get(`/api/parcours/${typeObj}/${idObj}`)
+    //  .then((r) => {
+    return Promise.all(listFonctionsDefered)
+      .then(function(listResultats){
+        let node = new t.vis.DataSet() ;
+        let edge = new t.vis.DataSet() ;
         let titleValue ;
         let imageValue ;
         let labelValue ;
         let nbLinkNormal ;
         let tmpTitle ;
 
-        this.kernel.nodeFocus = '' ;
+        t.kernel.nodeFocus = '' ;
+        listResultats.forEach((r, j) => {
 
         r.forEach((item, i) => {
           titleValue = '' ;
@@ -80,7 +98,9 @@ class Parcours extends nodefony.Service {
               }
             }) ;
             if (trouve.length === 0) {
-              edge.add({id: (item.type_obj + "-" + item.id_obj), from: (item.extraDonnees[0].type_id_from + "-" + item.extraDonnees[0].id_from), to: (item.extraDonnees[0].type_id_to + "-" + item.extraDonnees[0].id_to), title: titleValue, item: item}) ;
+              if (edge.get(item.type_obj + "-" + item.id_obj) === null) {
+                edge.add({id: (item.type_obj + "-" + item.id_obj), from: (item.extraDonnees[0].type_id_from + "-" + item.extraDonnees[0].id_from), to: (item.extraDonnees[0].type_id_to + "-" + item.extraDonnees[0].id_to), title: titleValue, item: item}) ;
+              }
             }
           } else {
             if (item.type_obj == 'Port') {
@@ -121,7 +141,9 @@ class Parcours extends nodefony.Service {
 
               imageValue = imageValue + '.png' ;
 
-              edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+              if (edge.get(item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent) === null) {
+                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+              }
             }
 
 
@@ -142,7 +164,9 @@ class Parcours extends nodefony.Service {
               labelValue = item.extraDonnees[0].libelle ;
               titleValue = `Salle : ${item.extraDonnees[0].libelle}<HR>${titleValue}`;
 
-              edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+              if (edge.get(item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent) === null) {
+                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+              }
             }
 
             if (item.type_obj.includes('Baie')) {
@@ -153,7 +177,10 @@ class Parcours extends nodefony.Service {
               } else {
                 titleValue = `Baie : ${item.extraDonnees[0].libelle}<HR>${titleValue}`;
               }
-              edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+
+              if (edge.get(item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent) === null) {
+                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+              }
             }
 
             if (item.type_obj.includes('Equipement')) {
@@ -161,18 +188,22 @@ class Parcours extends nodefony.Service {
               labelValue = item.extraDonnees[0].libelle ;
               titleValue = `${item.extraDonnees[0].type} : ${item.extraDonnees[0].libelle}<HR>${titleValue}`;
 
-              edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+              if (edge.get(item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent) === null) {
+                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+              }
             }
 
             if (item.type_obj === obj.typeObj && parseFloat(item.id_obj) === parseFloat(obj.idObj) )  {
-              this.kernel.ariane.addLink({ 'class': 'parcours', 'methode': 'affichageOne', 'obj': obj, 'libelle': labelValue, 'tooltip': titleValue }) ;
-              this.kernel.nodeFocus = item.type_obj + "-" + item.id_obj ;
+              t.kernel.ariane.addLink({ 'class': 'parcours', 'methode': 'affichageOne', 'obj': obj, 'libelle': labelValue, 'tooltip': titleValue }) ;
+              t.kernel.nodeFocus = item.type_obj + "-" + item.id_obj ;
               item.mainNode = true ;
             } else{
               item.mainNode = false ;
             }
 
-            node.add({  id: item.type_obj + "-" + item.id_obj,
+            if (node.get(item.type_obj + "-" + item.id_obj) === null)
+            {
+              node.add({  id: item.type_obj + "-" + item.id_obj,
                         shape: 'image',
                         image: imageValue,
                         size: 15,
@@ -180,11 +211,11 @@ class Parcours extends nodefony.Service {
                         title: titleValue,
                         item: item
                       }) ;
-
+            }
           }
 
         })
-
+    });
         let data = { nodes: node, edges: edge } ;
         let options = {
           width: `document.body.clientWidth`,
@@ -196,12 +227,14 @@ class Parcours extends nodefony.Service {
         };
 
         let divNetwork = document.getElementById("DIV_vis") ;
-        this.kernel.network = new this.vis.Network(divNetwork, data, options) ;
-        this.kernel.network.kernel = this.kernel ;
+        t.kernel.network = new t.vis.Network(divNetwork, data, options) ;
+        t.kernel.network.kernel = t.kernel ;
 
-        this.kernel.network.on("doubleClick", this.doubleClickEvent) ;
-        this.kernel.network.on("click", this.clickEvent) ;
-        this.kernel.network.once("afterDrawing", this.afterDrawingEvent) ;
+        t.memo.highlightNode() ;
+
+        t.kernel.network.on("doubleClick", t.doubleClickEvent) ;
+        t.kernel.network.on("click", t.clickEvent) ;
+        t.kernel.network.once("afterDrawing", t.afterDrawingEvent) ;
 
     });
   }
@@ -318,11 +351,27 @@ class Parcours extends nodefony.Service {
   clickEventNode(data, myNode) {
     let actionZone = document.getElementById("actionPortOne") ;
     let content = '' ;
+    let lockUnlock = '' ;
 
     this.kernel.network.focus(myNode.id,{'locked': true, 'animation': true}) ;
 
+    lockUnlock += `&nbsp;(<span class='SpanLink'
+                    onclick="mobile.eventUserAction({
+                      'type_obj': '${myNode.item.type_obj}',
+                      'id_obj': ${myNode.item.id_obj} },
+                      'memo',
+                      'addMemoTab')"
+                    >Lock</span> / `;
+    lockUnlock += `<span class='SpanLink'
+                    onclick="mobile.eventUserAction({
+                      'type_obj': '${myNode.item.type_obj}',
+                      'id_obj': ${myNode.item.id_obj} },
+                      'memo',
+                      'delMemoTab')"
+                    >Unlock</span>)`;
+
     if (myNode.item.type_obj === 'User') {
-      content = 'User : ' + myNode.item.extraDonnees[0].libelle + '<HR>' ;
+      content += 'User : ' + myNode.item.extraDonnees[0].libelle + lockUnlock + '<HR>' ;
       content += `<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idUser': ${myNode.item.id_obj},
@@ -340,16 +389,16 @@ class Parcours extends nodefony.Service {
       }
     }
     if (myNode.item.type_obj === 'Site') {
-      content = "Site : " + myNode.item.extraDonnees[0].libelle ;
+      content += "Site : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
     }
     if (myNode.item.type_obj === 'Salle') {
-      content = "Salle : " + myNode.item.extraDonnees[0].libelle ;
+      content += "Salle : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
     }
     if (myNode.item.type_obj === 'Baie') {
-      content = "Baie : " + myNode.item.extraDonnees[0].libelle ;
+      content += "Baie : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
     }
     if (myNode.item.type_obj === 'Equipement') {
-      content = "Equipement : " + myNode.item.extraDonnees[0].libelle ;
+      content += "Equipement : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
       content += '<HR>' ;
       content += `<span class='SpanLink'
                           onclick="mobile.eventUserAction({
@@ -359,12 +408,13 @@ class Parcours extends nodefony.Service {
                       >Liste des ports</span></BR>` ;
     }
     if (myNode.item.type_obj === 'Port') {
-      content = "Port : " + myNode.item.extraDonnees[0].libelle ;
+      content += "Port : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
       content += '<HR>' ;
       if (this.kernel.modifAutoriser()) {
         content += `<span class='SpanLink'
                         onclick="mobile.eventUserAction({
-                          'idPort': ${myNode.item.id_obj} },
+                          'type_obj': '${myNode.item.type_obj}',
+                          'id_obj': ${myNode.item.id_obj} },
                           'memo',
                           'setMemoId')"
                         >Mémoriser le port</span></BR>`;

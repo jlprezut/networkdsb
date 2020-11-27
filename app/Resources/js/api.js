@@ -17,6 +17,14 @@ class Api extends nodefony.Service {
   }
 
   http(url, method, options) {
+    if (this.kernel.user !== null) {
+      if (options === undefined) {
+        options = { 'params' : {} } ;
+      }
+      options.params.id_user = this.kernel.user.id_user ;
+    }
+
+    //options.params.id_user = this.kernel.user.id_user ;
     let opt = Object.assign({
       method: method || "get",
       url: url,

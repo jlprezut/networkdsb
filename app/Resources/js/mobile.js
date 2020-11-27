@@ -133,7 +133,7 @@ class Mobile extends nodefony.Service{
   }
 
   modifAutoriser() {
-    return (this.user.username === "jlprezut" || this.user.username === "stliba" ) ;
+    return (this.user.employeeType === "admin" ) ;
   }
 
 }

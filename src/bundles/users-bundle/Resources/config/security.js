@@ -71,7 +71,8 @@ module.exports = {
             name: 'profile.sn',
             surname: 'profile.givenName',
             email: 'profile.mail',
-            displayName: 'profile.cn'
+            displayName: 'profile.cn',
+            employeeType: 'profile.employeeType'
           }
         },
         logout: "/logout",
