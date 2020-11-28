@@ -39,6 +39,7 @@ class Mobile extends nodefony.Service{
   constructor() {
     super("kernel");
     this.set("kernel", this) ;
+
     this.initSyslog() ;
     this.loadServices() ;
     this.initializeServices() ;
@@ -56,7 +57,9 @@ class Mobile extends nodefony.Service{
           .then((r) => {
             if (r.id_user != 'null') {
               this.user.id_user = r[0].id_user ;
-              this.parcours.affichageOne({ 'typeObj' : 'User', 'idObj' : r[0].id_user } ) ;
+              if (this.user.employeeType !== 'guest') {
+                this.parcours.affichageOne({ 'typeObj' : 'User', 'idObj' : r[0].id_user } ) ;
+              }
             }
           });
       })
@@ -71,6 +74,10 @@ class Mobile extends nodefony.Service{
     this.divSearch.style.display=(false)?'block':'none';
     this.divParcourir.style.display=(false)?'block':'none';
     this.divUtilisateurs.style.display=(false)?'block':'none';
+    document.getElementById('DIV_button_Erreur').style.display=(false)?'block':'none';
+    document.getElementById('DIV_button_parcourir').style.display=(true)?'block':'none';
+    document.getElementById('DIV_button_utilisateurs').style.display=(true)?'block':'none';
+    document.getElementById('DIV_button_search').style.display=(true)?'block':'none';
     this.arianeID.innerHTML = '' ;
 
   }
@@ -132,7 +139,7 @@ class Mobile extends nodefony.Service{
     this.ariane.goBackLink() ;
   }
 
-  modifAutoriser() {
+  isAdmin() {
     return (this.user.employeeType === "admin" ) ;
   }
 

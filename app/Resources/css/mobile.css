@@ -9,6 +9,10 @@ h1 {
   text-align: center;
 }
 
+.masquer {
+  display: none;
+}
+
 .backLink {
   width: 40px;
   height: 40px;
@@ -24,16 +28,12 @@ h1 {
 
 .A_tooltip {
      color: #000000;
-     text-decoration: underline;
-     text-decoration-color: blue ;
-     color: blue ;
      /* text-shadow: 0 -1px 0 black;  */
 }
 
 .A_tooltip:hover, .A_tooltip:focus{
      background: rgba(250,250,250,.4);
      box-shadow: 0 1px 0 rgba(255,255,255,.4);
-     cursor: pointer ;
 }
 
 .A_tooltip span{

@@ -22,6 +22,7 @@ class Api extends nodefony.Service {
         options = { 'params' : {} } ;
       }
       options.params.id_user = this.kernel.user.id_user ;
+      //options.params.is_admin = this.kernel.isAdmin() ;
     }
 
     //options.params.id_user = this.kernel.user.id_user ;

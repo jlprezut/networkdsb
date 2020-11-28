@@ -17,8 +17,9 @@ class ErrorGraphMobile extends nodefony.Service{
   }
 
   listenEvents() {
+    if (this.kernel.isAdmin()) {
+      document.getElementById('DIV_button_Erreur').style.display=(true)?'block':'none';
 
-    if (this.kernel.modifAutoriser()) {
       let select = document.getElementById('errorLink') ;
       select.addEventListener('click', (event) => {
                 this.listeErreur({'typeObj': 'ListeErreur', 'idObj': '0'}) ;
@@ -29,8 +30,7 @@ class ErrorGraphMobile extends nodefony.Service{
                 this.backMenu() ;
       });
     } else {
-      let DIV_button_Erreur = document.getElementById('DIV_button_Erreur') ;
-      DIV_button_Erreur.style.display=(false)?'block':'none';
+      document.getElementById('DIV_button_Erreur').style.display=(false)?'block':'none';
     }
   }
 

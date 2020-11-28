@@ -31,7 +31,7 @@ class Ariane extends nodefony.Service {
     this.kernel.arianeTab.forEach((item,j) => {
       this.kernel.arianeID.innerHTML = this.kernel.arianeID.innerHTML + ` / <span
                         onclick="mobile.eventUserAction(${j},
-                          'ariane','goLink')" class='A_tooltip'>${item.libelle}<span>${item.tooltip}</span></span>` ;
+                          'ariane','goLink')" class='A_tooltip SpanLink'>${item.libelle}<span>${item.tooltip}</span></span>` ;
     }) ;
   }
 

@@ -47,7 +47,7 @@ class MetaDonnees extends nodefony.Service {
           ]).then((result) => {
             if (result.value) {
               if (result.value[0] && result.value[1]) {
-                return this.api.get(`/api/meta/${typeObj}/${idObj}/${result.value[0]}`,{ params: {valeur: result.value[1]}})
+                return this.api.get(`/api/meta/${typeObj}/${idObj}/${result.value[0]}`,{ params: {'valeur': result.value[1], 'id_owner': this.kernel.user.id_user }})
                   .then((r) => {
                     let node ;
                     let myObj ;
@@ -86,12 +86,13 @@ class MetaDonnees extends nodefony.Service {
     let idMeta = obj.id_meta ;
     let libelleMeta = obj.libelle_meta ;
     let valeur = obj.valeur ;
+    let idOwner = obj.id_user ;
 
     return this.swal.fire({title:'Modifier la catégorie : ' + libelleMeta, text: 'Laisser vide pour supprimer la catégorie', input: 'text', inputValue: valeur,
         showCancelButton: true, confirmButtonText: 'Enregistrer' })
       .then((newValeur) => {
           if (newValeur.isConfirmed) {
-            return this.api.get(`/api/meta/${typeObj}/${idObj}/${idMeta}`,{ params: {valeur: newValeur.value}})
+            return this.api.get(`/api/meta/${typeObj}/${idObj}/${idMeta}`,{ params: {'valeur': newValeur.value, 'id_owner': idOwner }})
               .then((r) => {
                 let node ;
                 let myObj ;
@@ -104,7 +105,7 @@ class MetaDonnees extends nodefony.Service {
                 }
                 if (r.length === 0) {
                   myObj.item.metaDonnees.forEach((itemMeta,j) => {
-                    if (itemMeta.id_meta === idMeta) {
+                    if (itemMeta.id_meta === idMeta && itemMeta.id_user === idOwner) {
                       myObj.item.metaDonnees.splice(j,1) ;
                     }
                   })
@@ -117,7 +118,7 @@ class MetaDonnees extends nodefony.Service {
                   }
                 } else {
                   myObj.item.metaDonnees.forEach((itemMeta,j) => {
-                    if (itemMeta.id_meta === idMeta) {
+                    if (itemMeta.id_meta === idMeta && itemMeta.id_user === idOwner) {
                       myObj.item.metaDonnees.splice(j,1) ;
                     }
                   })

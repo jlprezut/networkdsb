@@ -79,7 +79,7 @@ class portController extends nodefony.controller {
     *      name="portAddDonnees")
     */
     addDonneesAction(typeObj,idObj,idMeta) {
-      return this.queryService.callProcedure(`CALL addDonneesObj('${typeObj}',${idObj},${idMeta},'${this.context.request.url.query.valeur}',${this.context.request.url.query.id_user})`)
+      return this.queryService.callProcedure(`CALL addDonneesObj('${typeObj}',${idObj},${idMeta},'${this.context.request.url.query.valeur}',${this.context.request.url.query.id_owner},${this.context.request.url.query.id_user})`)
             .then((reponse) => {
                 return this.api.render(reponse) ;
             })

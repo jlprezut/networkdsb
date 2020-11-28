@@ -292,7 +292,7 @@ class Parcours extends nodefony.Service {
 
       if (!(myNode1.item.extraDonnees[0].equipement_libelle.includes('Quadrupleur') &&
           myNode2.item.extraDonnees[0].equipement_libelle.includes('Quadrupleur'))) {
-        if (this.kernel.modifAutoriser()) {
+        if (this.kernel.isAdmin()) {
           content += `<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idPort1': ${myEdge.item.extraDonnees[0].id_from},
@@ -307,7 +307,7 @@ class Parcours extends nodefony.Service {
       let myUser = data.nodes.get(myEdge.item.extraDonnees[0].type_id_to + "-" + myEdge.item.extraDonnees[0].id_to) ;
       content += 'User : ' + myUser.item.extraDonnees[0].libelle + ' <-> Port : ' + myNode.item.extraDonnees[0].libelle ;
       content += '<HR>' ;
-      if (this.kernel.modifAutoriser()) {
+      if (this.kernel.isAdmin()) {
         content += `<span class='SpanLink'
                         onclick="mobile.eventUserAction({
                           'idPort': ${myEdge.item.extraDonnees[0].id_from} },
@@ -316,25 +316,30 @@ class Parcours extends nodefony.Service {
       }
     }
 
-    if (myEdge.item.type_obj == 'Link' || myEdge.item.type_obj == 'LinkUser') {
+    if (myEdge.item.type_obj === 'Link' || myEdge.item.type_obj === 'LinkUser') {
       content += '<HR>' ;
       myEdge.item.metaDonnees.forEach((itemMeta,j) => {
-        if (this.kernel.modifAutoriser()) {
+        if (this.kernel.isAdmin() || itemMeta.id_user === this.kernel.user.id_user) {
           content += `<span class='SpanLink'
                             onclick="mobile.eventUserAction({
                               'type_obj': '${myEdge.item.type_obj}',
                               'id_obj': ${myEdge.item.id_obj},
+                              'id_user': ${itemMeta.id_user},
                               'id_meta': ${itemMeta.id_meta},
                               'libelle_meta': '${itemMeta.libelle_meta}' ,
                               'valeur': '${itemMeta.valeur}'},
                               'metaDonnees','modifyDonnees')">
-                              ${itemMeta.libelle_meta}</span> : ${itemMeta.valeur}
+                              ${itemMeta.libelle_meta}</span>` ;
+          content += `<span class='A_tooltip'>&nbsp;<img class='infoImg'><span>${itemMeta.nom_user}</span></span>` ;
+          content += ` : ${itemMeta.valeur}
                               </BR>` ;
         } else {
-          content += `${itemMeta.libelle_meta} : ${itemMeta.valeur}</BR>` ;
+          content += `${itemMeta.libelle_meta}` ;
+          content += `<span class='A_tooltip'>&nbsp;<img class='infoImg'><span>${itemMeta.nom_user}</span></span>` ;
+          content += ` : ${itemMeta.valeur}</BR>` ;
         }
       }) ;
-      if (this.kernel.modifAutoriser()) {
+      if (this.kernel.ajoutDonneesAutoriser()) {
         content += `<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'type_obj': '${myEdge.item.type_obj}',
@@ -379,7 +384,7 @@ class Parcours extends nodefony.Service {
                             'userAction',
                             'detailUtilisateur')"
                         >Liste des ports</span></BR>` ;
-      if (this.kernel.modifAutoriser()) {
+      if (this.kernel.isAdmin()) {
         content += `<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idUser': ${myNode.item.id_obj}},
@@ -410,7 +415,7 @@ class Parcours extends nodefony.Service {
     if (myNode.item.type_obj === 'Port') {
       content += "Port : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
       content += '<HR>' ;
-      if (this.kernel.modifAutoriser()) {
+      if (this.kernel.isAdmin()) {
         content += `<span class='SpanLink'
                         onclick="mobile.eventUserAction({
                           'type_obj': '${myNode.item.type_obj}',
@@ -426,7 +431,7 @@ class Parcours extends nodefony.Service {
                         >Lier le port</span></BR>` ;
       }
       if (!(myNode.item.extraDonnees[0].equipement_libelle.includes('Quadrupleur'))) {
-        if (this.kernel.modifAutoriser()) {
+        if (this.kernel.isAdmin()) {
           content += `<span class='SpanLink'
                               onclick="mobile.eventUserAction({
                                 'idPort': ${myNode.item.id_obj}},
@@ -439,19 +444,24 @@ class Parcours extends nodefony.Service {
 
     content += '<HR>' ;
     myNode.item.metaDonnees.forEach((itemMeta,j) => {
-      if (this.kernel.modifAutoriser() || itemMeta.id_user === this.kernel.user.id_user) {
+      if (this.kernel.isAdmin() || itemMeta.id_user === this.kernel.user.id_user) {
         content += `<span class='SpanLink'
                             onclick="mobile.eventUserAction({
                               'type_obj': '${myNode.item.type_obj}',
                               'id_obj': ${myNode.item.id_obj},
+                              'id_user': ${itemMeta.id_user},
                               'id_meta': ${itemMeta.id_meta},
                               'libelle_meta': '${itemMeta.libelle_meta}' ,
                               'valeur': '${itemMeta.valeur}'},
                               'metaDonnees','modifyDonnees')">
-                              ${itemMeta.libelle_meta}</span> : ${itemMeta.valeur}
+                              ${itemMeta.libelle_meta}</span>` ;
+        content += `<span class='A_tooltip'>&nbsp;<img class='infoImg'><span>${itemMeta.nom_user}</span></span>` ;
+        content += ` : ${itemMeta.valeur}
                               </BR>` ;
       } else {
-        content += `${itemMeta.libelle_meta} : ${itemMeta.valeur}</BR>` ;
+        content += `${itemMeta.libelle_meta}`
+        content += `<span class='A_tooltip'>&nbsp;<img class='infoImg'><span>${itemMeta.nom_user}</span></span>` ;
+        content += ` : ${itemMeta.valeur}</BR>` ;
       }
     }) ;
     if (this.kernel.ajoutDonneesAutoriser()) {
