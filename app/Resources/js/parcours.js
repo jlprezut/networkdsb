@@ -263,10 +263,6 @@ class Parcours extends nodefony.Service {
 
   clickEvent(params) {
 
-    let actionZone = document.getElementById("actionPortOne") ;
-    let content = '' ;
-    actionZone.innerHTML = content ;
-
     if ((params.nodes.length === 0) && (params.edges.length ==  1)) {
       let myEdge = this.body.data.edges.get(params.edges[0]) ;
       this.kernel.parcours.clickEventEdge(this.body.data,myEdge) ;
@@ -278,6 +274,19 @@ class Parcours extends nodefony.Service {
       this.kernel.parcours.clickEventNode(this.body.data,myNode) ;
       return ;
     }
+    this.kernel.parcours.unlockAllLink() ;
+  }
+
+  unlockAllLink() {
+    let content = '' ;
+    if (this.kernel.memo.countMemoTab() > 0 ) {
+      content = `<span class='SpanLink'
+                    onclick="mobile.eventUserAction({ },
+                      'memo',
+                      'freeMemoTab')"
+                    >Unlock ALL</span>`;
+    }
+    document.getElementById("actionPortOne").innerHTML = content ;
   }
 
   clickEventEdge(data, myEdge) {
@@ -360,30 +369,34 @@ class Parcours extends nodefony.Service {
 
     this.kernel.network.focus(myNode.id,{'locked': true, 'animation': true}) ;
 
-    lockUnlock += `&nbsp;(<span class='SpanLink'
-                    onclick="mobile.eventUserAction({
-                      'type_obj': '${myNode.item.type_obj}',
-                      'id_obj': ${myNode.item.id_obj} },
-                      'memo',
-                      'addMemoTab')"
-                    >Lock</span> / `;
-    lockUnlock += `<span class='SpanLink'
+    if (this.kernel.memo.findMemoTab({ 'type_obj': myNode.item.type_obj, 'id_obj': myNode.item.id_obj }) === -1) {
+      lockUnlock += `&nbsp;(<span class='SpanLink'
+                      onclick="mobile.eventUserAction({
+                        'type_obj': '${myNode.item.type_obj}',
+                        'id_obj': ${myNode.item.id_obj} },
+                        'memo',
+                        'addMemoTab')"
+                      >Lock</span>)`;
+    } else {
+      lockUnlock += `&nbsp;(<span class='SpanLink'
                     onclick="mobile.eventUserAction({
                       'type_obj': '${myNode.item.type_obj}',
                       'id_obj': ${myNode.item.id_obj} },
                       'memo',
                       'delMemoTab')"
                     >Unlock</span>)`;
+    }
 
     if (myNode.item.type_obj === 'User') {
-      content += 'User : ' + myNode.item.extraDonnees[0].libelle + lockUnlock + '<HR>' ;
+      content += 'User ' ;
       content += `<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idUser': ${myNode.item.id_obj},
                             'name': '${myNode.item.extraDonnees[0].libelle}'},
                             'userAction',
                             'detailUtilisateur')"
-                        >Vue Liste</span></BR>` ;
+                        >(Vue Liste)</span>` ;
+      content += ' : ' + myNode.item.extraDonnees[0].libelle + lockUnlock + '<HR>' ;
       if (this.kernel.isAdmin()) {
         content += `<span class='SpanLink'
                           onclick="mobile.eventUserAction({
@@ -403,14 +416,14 @@ class Parcours extends nodefony.Service {
       content += "Baie : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
     }
     if (myNode.item.type_obj === 'Equipement') {
-      content += "Equipement : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
-      content += '<HR>' ;
+      content += "Equipement " ;
       content += `<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idEquipement': '${myNode.item.id_obj}',
                             'name': '${myNode.item.extraDonnees[0].libelle}' },
                             'portList','listePort')"
-                      >Vue Liste</span></BR>` ;
+                      >(Vue Liste)</span>` ;
+      content += " : " + myNode.item.extraDonnees[0].libelle + lockUnlock + "<HR>" ;
     }
     if (myNode.item.type_obj === 'Port') {
       content += "Port : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;

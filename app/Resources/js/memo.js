@@ -37,28 +37,44 @@ class Memo extends nodefony.Service {
   }
 
   addMemoTab(obj) {
-    let trouve = false ;
-
-    this.memoTab.forEach((item,j) => {
-      if (item.type_obj === obj.type_obj && parseFloat(item.id_obj) === parseFloat(obj.id_obj)) {
-        trouve = true ;
-      }
-    }) ;
-
-    if (!trouve) {
+    if (this.findMemoTab(obj) === -1) {
       this.memoTab.push(obj) ;
       this.highlightNode() ;
+      this.kernel.parcours.clickEventNode(this.kernel.network.body.data, this.kernel.network.body.data.nodes.get(obj.type_obj + "-" + obj.id_obj) ) ;
     }
   }
 
+  countMemoTab() {
+    return this.memoTab.length ;
+  }
+
+  freeMemoTab() {
+    this.memoTab.forEach((item,j) => {
+      this.kernel.network.canvas.body.nodes[item.type_obj + "-" + item.id_obj].options.borderWidth = 1 ;
+      this.kernel.network.canvas.body.nodes[item.type_obj + "-" + item.id_obj].options.shapeProperties.useBorderWithImage = false  ;
+      this.memoTab.splice(0,1) ;
+    }) ;
+    this.kernel.parcours.unlockAllLink() ;
+  }
+
   delMemoTab(obj) {
+    let indice = this.findMemoTab(obj) ;
+    if ( indice !== -1) {
+      this.kernel.network.canvas.body.nodes[obj.type_obj + "-" + obj.id_obj].options.borderWidth = 1 ;
+      this.kernel.network.canvas.body.nodes[obj.type_obj + "-" + obj.id_obj].options.shapeProperties.useBorderWithImage = false  ;
+      this.memoTab.splice(indice,1) ;
+    }
+    this.kernel.parcours.clickEventNode(this.kernel.network.body.data, this.kernel.network.body.data.nodes.get(obj.type_obj + "-" + obj.id_obj) ) ;
+  }
+
+  findMemoTab(obj) {
+    let trouve = -1 ;
     this.memoTab.forEach((item,j) => {
       if (item.type_obj === obj.type_obj && parseFloat(item.id_obj) === parseFloat(obj.id_obj)) {
-        this.kernel.network.canvas.body.nodes[obj.type_obj + "-" + obj.id_obj].options.borderWidth = 1 ;
-        this.kernel.network.canvas.body.nodes[obj.type_obj + "-" + obj.id_obj].options.shapeProperties.useBorderWithImage = false  ;
-        this.memoTab.splice(j,1) ;
+        trouve = j ;
       }
-    });
+    }) ;
+    return trouve ;
   }
 
   highlightNode() {
