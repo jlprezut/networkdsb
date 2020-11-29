@@ -383,7 +383,7 @@ class Parcours extends nodefony.Service {
                             'name': '${myNode.item.extraDonnees[0].libelle}'},
                             'userAction',
                             'detailUtilisateur')"
-                        >Liste des ports</span></BR>` ;
+                        >Vue Liste</span></BR>` ;
       if (this.kernel.isAdmin()) {
         content += `<span class='SpanLink'
                           onclick="mobile.eventUserAction({
@@ -410,7 +410,7 @@ class Parcours extends nodefony.Service {
                             'idEquipement': '${myNode.item.id_obj}',
                             'name': '${myNode.item.extraDonnees[0].libelle}' },
                             'portList','listePort')"
-                      >Liste des ports</span></BR>` ;
+                      >Vue Liste</span></BR>` ;
     }
     if (myNode.item.type_obj === 'Port') {
       content += "Port : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;

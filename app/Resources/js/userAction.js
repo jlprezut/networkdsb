@@ -89,7 +89,7 @@ class UserAction extends nodefony.Service {
         .then((r) => {
           let content = '' ;
           for (let i=0; i< r.length; i++) {
-            content = content + `<span class='SpanLink' onclick="mobile.eventUserAction( {'idUser': ${r[i].id_obj}, 'name': '${r[i].name}' },'userAction','detailUtilisateur')">${r[i].name}</span><br>` ;
+            content = content + `${r[i].name} <span class='SpanLink' onclick="mobile.eventUserAction( {'idUser': ${r[i].id_obj}, 'name': '${r[i].name}' },'userAction','detailUtilisateur')">(Vue liste)</span> / <span class='SpanLink'  onclick="mobile.eventUserAction({ 'typeObj': 'User', 'idObj': ${r[i].id_obj} }, 'parcours','affichageOne')">(Vue Graphique)</span><br>` ;
           }
           if (content === '') {
             content = 'Aucun utilisateur...' ;
@@ -114,7 +114,7 @@ class UserAction extends nodefony.Service {
 
       this.api.get(`/api/user/${idUser}/inventory`)
         .then((text) => {
-          let content = `<HR><span class='SpanLink'  onclick="mobile.eventUserAction({ 'typeObj': 'User', 'idObj': ${idUser} }, 'parcours','affichageOne')">${nameUser}</span><HR>` ;
+          let content = `<HR>${nameUser} <span class='SpanLink'  onclick="mobile.eventUserAction({ 'typeObj': 'User', 'idObj': ${idUser} }, 'parcours','affichageOne')"> (Vue Graphique)</span><HR>` ;
           let portClic = '' ;
           let tooltip = '' ;
 
