@@ -29,7 +29,7 @@ import userAction from "../js/userAction.js" ;
 import portAction from "../js/portAction.js" ;
 
 import nodefony from 'nodefony-client' ;
-console.log(process.env)
+
 
 /*
  *	Class Bundle App
@@ -39,6 +39,8 @@ class Mobile extends nodefony.Service{
   constructor() {
     super("kernel");
     this.set("kernel", this) ;
+
+    console.log(process.env)
 
     this.initSyslog() ;
     this.loadServices() ;

@@ -52,8 +52,8 @@ class Memo extends nodefony.Service {
     this.memoTab.forEach((item,j) => {
       this.kernel.network.canvas.body.nodes[item.type_obj + "-" + item.id_obj].options.borderWidth = 1 ;
       this.kernel.network.canvas.body.nodes[item.type_obj + "-" + item.id_obj].options.shapeProperties.useBorderWithImage = false  ;
-      this.memoTab.splice(0,1) ;
     }) ;
+    this.memoTab.splice(0,100) ;
     this.kernel.parcours.unlockAllLink() ;
   }
 

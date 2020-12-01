@@ -38,8 +38,8 @@ h1 {
 
 .A_tooltip span{
     position:absolute;
-    margin-top:23px;
-    margin-left:-35px;
+    margin-top:-43px;
+    margin-left:-5px;
     color:#000;
     font-size: small;
     background:rgba(200,200,200,.9);
@@ -49,6 +49,7 @@ h1 {
     transform:scale(0) rotate(-12deg);
     transition:all .25s;
     visibility: hidden;
+    z-index: 1050;
 }
 
 .A_tooltip:hover span, .A_tooltip:focus span{
