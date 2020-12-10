@@ -26,6 +26,30 @@ h1 {
   content: url('../public/images/Info.png');
 }
 
+.RJ45Img {
+  width: 20px;
+  height: 20px;
+  content: url('../public/images/RJ45.png');
+}
+
+.RJ45Img:hover {
+  cursor: pointer ;
+}
+
+.FibreImg {
+  width: 20px;
+  height: 20px;
+  content: url('../public/images/Fibre.png');
+}
+
+.FibreImg:hover {
+  cursor: pointer ;
+}
+
+.offImg {
+  opacity: 0.2;
+}
+
 .A_tooltip {
      color: #000000;
      /* text-shadow: 0 -1px 0 black;  */
@@ -65,4 +89,33 @@ h1 {
 
 .SpanLink:hover {
   cursor: pointer ;
+}
+
+
+table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  /* width: 100%; */
+}
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  width: 1px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {
+  background-color: #ddd;
+}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
 }

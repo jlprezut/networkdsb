@@ -17,7 +17,7 @@ class equipementController extends nodefony.Controller {
             'description': "API Equipement"
         }, this.context) ;
     }
-    
+
     /**
     *    @Route ("/api/equipement/{idequipement}/port",
     *      name="equipementp")
@@ -41,6 +41,20 @@ class equipementController extends nodefony.Controller {
                 return t.api.render(r) ;
               })
 
+          })
+          .catch((error) => {
+            throw error ;
+      }) ;
+    }
+
+    /**
+    *    @Route ("/api/equipement/{idequipement}/listing",
+    *      name="equipementlisting")
+    */
+    EquipementListingAction(idEquipement) {
+      return this.queryService.callProcedure(`call listing_equipement(${idEquipement})`)
+          .then((reponse) => {
+            return this.api.render(reponse) ;
           })
           .catch((error) => {
             throw error ;

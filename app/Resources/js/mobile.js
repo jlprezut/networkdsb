@@ -24,6 +24,7 @@ import portListMobile from "../js/portListMobile.js" ;
 import parcours from "../js/parcours.js" ;
 import metaDonnees from "../js/metaDonnees.js"
 import ariane from "../js/ariane.js"
+import baieListing from "../js/baieListing.js"
 
 import userAction from "../js/userAction.js" ;
 import portAction from "../js/portAction.js" ;
@@ -112,6 +113,8 @@ class Mobile extends nodefony.Service{
     this.set("metaDonnees", this.metaDonnees) ;
     this.ariane = new ariane(this) ;
     this.set("ariane", this.ariane) ;
+    this.baieListing = new baieListing(this) ;
+    this.set("baieListing", this.baieListing) ;
 
     this.userAction = new userAction(this) ;
     this.set("userAction",this.userAction) ;
@@ -129,6 +132,7 @@ class Mobile extends nodefony.Service{
     this.searchGraph.initialize() ;
     this.userAction.initialize() ;
     this.portAction.initialize() ;
+    this.baieListing.initialize() ;
 
     this.network = null ;
   }

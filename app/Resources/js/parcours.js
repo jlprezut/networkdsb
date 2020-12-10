@@ -67,8 +67,6 @@ class Parcours extends nodefony.Service {
               })) ;
     });
 
-    var t = this ;
-
     //this.api.get(`/api/parcours/${typeObj}/${idObj}`)
     //  .then((r) => {
     return Promise.all(listFonctionsDefered)
@@ -413,7 +411,16 @@ class Parcours extends nodefony.Service {
       content += "Salle : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
     }
     if (myNode.item.type_obj === 'Baie') {
-      content += "Baie : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
+      content += "Baie : " ;
+      content += `<span class='SpanLink'
+                          onclick="mobile.eventUserAction({
+                            'idObj': '${myNode.item.id_obj}',
+                            'typeObj': '${myNode.item.type_obj}',
+                            'name': '${myNode.item.extraDonnees[0].libelle}' },
+                            'baieListing','listing')"
+                      >(Vue Liste)</span>` ;
+      content += " : " +  myNode.item.extraDonnees[0].libelle + lockUnlock ;
+      content += "<HR>"
     }
     if (myNode.item.type_obj === 'Equipement') {
       content += "Equipement " ;

@@ -34,6 +34,9 @@ class PortListMobile extends nodefony.Service{
     let idEquipement = obj.idEquipement ;
     let nameEquipement = obj.name ;
 
+    document.getElementById("TableJS").innerHTML = '' ;
+    document.getElementById('idErreurList').innerHTML = '' ;
+
     this.kernel.divMainMenu.style.display=(false)?'block':'none';
     this.kernel.divUtilisateurs.style.display=(false)?'block':'none';
     this.kernel.divParcourir.style.display=(false)?'block':'none';
