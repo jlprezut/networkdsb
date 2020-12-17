@@ -198,7 +198,7 @@ class Vue2D extends nodefony.Service {
                     this.userTexture.src = '/app/images/User.png';
                     this.RJ45ConnectedTexture.src = '/app/images/RJ45-connected.png';
                     this.fibreConnectedTexture.src = '/app/images/Fibre-connected.png';
-                    this.imageObj.src = '/app/images/plan.png';
+                    this.imageObj.src = '/app/images/PlanEtg1.png';
 
                     this.stage.add(this.shapesLayer);
 
