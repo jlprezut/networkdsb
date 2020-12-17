@@ -74,6 +74,7 @@ class SearchGraphMobile extends nodefony.Service{
     this.kernel.divUtilisateurs.style.display=(false)?'block':'none';
     this.kernel.divParcourir.style.display=(false)?'block':'none';
     this.kernel.divErreurs.style.display=(false)?'block':'none';
+    this.kernel.divVue2D.style.display=(false)?'block':'none';
 
     this.kernel.divSearch.style.display=(true)?'block':'none';
 

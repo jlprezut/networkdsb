@@ -29,6 +29,8 @@ import baieListing from "../js/baieListing.js"
 import userAction from "../js/userAction.js" ;
 import portAction from "../js/portAction.js" ;
 
+import vue2D from "../js/vue2D.js" ;
+
 import nodefony from 'nodefony-client' ;
 
 
@@ -56,6 +58,7 @@ class Mobile extends nodefony.Service{
       .then((r) => {
         this.user = r ;
         this.errorGraph.initialize() ;
+        this.vue2D.initialize() ;
         this.api.get(`/api/login/${this.user.username}`)
           .then((r) => {
             if (r.id_user != 'null') {
@@ -77,8 +80,10 @@ class Mobile extends nodefony.Service{
     this.divSearch.style.display=(false)?'block':'none';
     this.divParcourir.style.display=(false)?'block':'none';
     this.divUtilisateurs.style.display=(false)?'block':'none';
+    this.divVue2D.style.display=(false)?'block':'none';
     document.getElementById('DIV_button_Erreur').style.display=(false)?'block':'none';
     document.getElementById('DIV_button_parcourir').style.display=(true)?'block':'none';
+    document.getElementById('DIV_button_vue2D').style.display=(true)?'block':'none';
     document.getElementById('DIV_button_utilisateurs').style.display=(true)?'block':'none';
     document.getElementById('DIV_button_search').style.display=(true)?'block':'none';
     this.arianeID.innerHTML = '' ;
@@ -91,6 +96,8 @@ class Mobile extends nodefony.Service{
     this.divSearch = document.getElementById("DIV_search") ;
     this.divParcourir = document.getElementById("DIV_Parcourir") ;
     this.divUtilisateurs = document.getElementById("DIV_utilisateurs") ;
+    this.divVue2D = document.getElementById("DIV_Vue2D") ;
+
     this.arianeID = document.getElementById("arianeID") ;
 
     this.api = new api(this) ;
@@ -120,6 +127,9 @@ class Mobile extends nodefony.Service{
     this.set("userAction",this.userAction) ;
     this.portAction = new portAction(this) ;
     this.set("portAction",this.portAction) ;
+
+    this.vue2D = new vue2D(this) ;
+    this.set("vue2D",this.vue2D) ;
   }
 
   initializeServices() {

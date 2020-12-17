@@ -119,3 +119,17 @@ table th {
   background-color: #4CAF50;
   color: white;
 }
+
+#large-container {
+  width: 3000px;
+  height: 1700px;
+  overflow: hidden;
+}
+
+#scroll-container {
+  width: calc(100% - 22px);
+  height: calc(80vh - 22px);
+  overflow: auto;
+  margin: 10px;
+  border: 1px solid grey;
+}

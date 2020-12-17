@@ -110,7 +110,7 @@ module.exports = {
       // SECURITY AREA  API  <passport-jwt>
       api_area: {
         pattern: /^\/api/,
-        redirectHttps: true,
+//        redirectHttps: true,
         stateless: true,
         crossDomain: cors
       }

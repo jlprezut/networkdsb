@@ -34,6 +34,10 @@ history.pushState(null, null, location.href);
     <button class="btn" id='parcourirLink'>Parcourir</button>
   </div>
   <BR>
+  <div class="containerButton masquer" id='DIV_button_vue2D'>
+    <button class="btn" id='vue2DLink'>Vue 2D</button>
+  </div>
+  <BR>
   <div class="containerButton masquer" id='DIV_button_utilisateurs'>
     <button class="btn" id='utilisateursLink'>Utilisateurs</button>
   </div>
@@ -79,6 +83,17 @@ history.pushState(null, null, location.href);
   <div id="DIV_vis"></div>
 
   <span id="actionPortOne"></span>
+</div>
+
+<div id="DIV_Vue2D" style="display:none">
+  <div id="DIV_Vue2D_Back">
+    <img id='backFromVue2D' class="backLink" alt='Retour'><BR>
+  </div>
+  <div id="scroll-container">
+    <div id="large-container">
+      <div id="containerVue2D"></div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
