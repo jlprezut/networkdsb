@@ -19,6 +19,20 @@ class portController extends nodefony.controller {
     }
 
     /**
+    *    @Route ("/api/port/{idPort}",
+    *      name="portd")
+    */
+    PortDetailAction(idPort) {
+      return this.queryService.callProcedure(`CALL port_list('port',${idPort})`)
+            .then((reponse) => {
+                return this.api.render(reponse) ;
+            })
+            .catch((error) => {
+              throw error ;
+            }) ;
+    }
+
+    /**
     *    @Route ("/api/port/{idPort}/text",
     *      name="porttxt")
     */
