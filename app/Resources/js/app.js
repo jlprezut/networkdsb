@@ -7,7 +7,6 @@
 import "../css/app.css";
 
 import nodefony from 'nodefony-client' ;
-
 /*
  *	Class Bundle App
  */
