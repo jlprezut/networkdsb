@@ -16,16 +16,12 @@ class BaieListing extends nodefony.Service {
   listenEvents() {
   }
 
-  goListing(obj) {
-    this.listing(obj.obj) ;
-  }
-
   listing(obj){
     let typeObj = obj.typeObj ;
     let idObj = obj.idObj ;
     let name = obj.name ;
 
-    this.kernel.ariane.addLink({ 'class': 'baieListing', 'methode': 'goListing', 'obj': { 'obj':obj, idObj:idObj, typeObj:'ListingBaie' }, 'libelle': 'Liste équipements', 'tooltip': name }) ;
+    this.kernel.ariane.addLink({ 'class': 'baieListing', 'methode': 'listing', 'obj': { 'obj':obj, idObj:idObj, typeObj:'ListingBaie' }, 'libelle': 'Liste équipements', 'tooltip': name }) ;
 
     document.getElementById("TableJS").innerHTML = '' ;
     document.getElementById('idErreurList').innerHTML = '' ;
@@ -42,7 +38,7 @@ class BaieListing extends nodefony.Service {
 
     let tableJS = document.getElementById("TableJS") ;
     let titre = document.createElement("span");
-    titre.innerHTML = name ;
+    titre.innerHTML = `${name} <span class='SpanLink' onclick="mobile.eventUserAction( {'idObj': ${idObj}, 'typeObj': '${typeObj}' },'parcours','affichageOne')">(Vue Graphique)</span><br>`
     tableJS.appendChild(titre) ;
 
     this.api.get(`/api/parcours/${typeObj}/${idObj}`)
@@ -51,12 +47,14 @@ class BaieListing extends nodefony.Service {
         var listFonctionsDefered=[];
         var nameEquipement=[] ;
         var nbportEquipement=[] ;
+        var idEquipement=[] ;
         var pos = 0 ;
 
         listEquipement.forEach((item, i) => {
           if (item.type_obj === 'Equipement') {
             nameEquipement[pos] = item.extraDonnees[0].libelle  ;
             nbportEquipement[pos] = item.extraDonnees[0].nb_port_par_ligne  ;
+            idEquipement[pos] = item.id_obj ;
             listFonctionsDefered[pos]=(t.api.get(`/api/equipement/${item.id_obj}/listing`)
                 .then((reponse) => {
                     return reponse ;
@@ -79,7 +77,7 @@ class BaieListing extends nodefony.Service {
 
             listResultats.forEach((resultats, i) => {
               titre = document.createElement("span");
-              titre.innerHTML = "<BR><BR>" + nameEquipement[i] + "<BR>" ;
+              titre.innerHTML = "<BR><BR>" + `${nameEquipement[i]} <span class='SpanLink' onclick="mobile.eventUserAction( {'idEquipement': ${idEquipement[i]}, 'name': '${nameEquipement[i]}' },'portList','listePort')">(Vue liste)</span> / <span class='SpanLink'  onclick="mobile.eventUserAction({ 'typeObj': 'Equipement', 'idObj': ${idEquipement[i]} }, 'parcours','affichageOne')">(Vue Graphique)</span><br>` + "<BR>" ;
               tableJS.appendChild(titre) ;
               entete = [] ;
               ligne = -1 ;
@@ -93,11 +91,25 @@ class BaieListing extends nodefony.Service {
                   ligne += 2 ;
                 }
                 entete[ligne-1][i%portParLigne] = { 'value': item.Port, 'informations': item.Informations } ;
-                if (item.Link === null) {
-                  entete[ligne][i%portParLigne] = { 'value': null, 'type': item.Type, 'link': null, 'id_obj': item.id_obj } ;
+
+                var valueItem = 'up'
+                var valueLink = ''
+                if (item.Up === 0) {
+                  valueItem = 'd' ;
+                  valueLink = null ;
                 } else {
-                  entete[ligne][i%portParLigne] = { 'value': 'x', 'type': item.Type, 'link': item.Link.replaceAll(" || ","<HR>"), 'id_obj': item.id_obj } ;
+                  if ( item.Error === 1 ) {
+                    valueItem = 'e' ;
+                  }
+                  if ( item.Link === null) {
+                    valueLink = null ;
+                  } else {
+                    valueLink = item.Link.replaceAll(" || ","<HR>") ;
+                  }
                 }
+
+                entete[ligne][i%portParLigne] = { 'value': valueItem, 'type': item.Type, 'link': valueLink, 'id_obj': item.id_obj } ;
+
               });
 
               myoptions = {

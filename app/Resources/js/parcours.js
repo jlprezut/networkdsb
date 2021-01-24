@@ -193,7 +193,7 @@ class Parcours extends nodefony.Service {
             }
 
             if (item.type_obj === obj.typeObj && parseFloat(item.id_obj) === parseFloat(obj.idObj) )  {
-              t.kernel.ariane.addLink({ 'class': 'parcours', 'methode': 'affichageOne', 'obj': obj, 'libelle': labelValue, 'tooltip': titleValue }) ;
+              t.kernel.ariane.addLink({ 'class': 'parcours', 'methode': 'affichageOne', 'obj': { 'obj': obj, 'idObj': obj.idObj, 'typeObj': obj.typeObj }, 'libelle': labelValue, 'tooltip': titleValue }) ;
               t.kernel.nodeFocus = item.type_obj + "-" + item.id_obj ;
               item.mainNode = true ;
             } else{
@@ -394,7 +394,15 @@ class Parcours extends nodefony.Service {
                             'name': '${myNode.item.extraDonnees[0].libelle}'},
                             'userAction',
                             'detailUtilisateur')"
-                        >(Vue Liste)</span>` ;
+                        >(Vue Liste</span> / ` ;
+      content += `<span class='SpanLink'
+                          onclick="mobile.eventUserAction({
+                            'idObj': ${myNode.item.id_obj},
+                            'typeObj' : '${myNode.item.type_obj}',
+                            'name': '${myNode.item.extraDonnees[0].libelle}'},
+                            'vue2D',
+                            'affichage')"
+                        >Vue 2D)</span>` ;
       content += ' : ' + myNode.item.extraDonnees[0].libelle + lockUnlock + '<HR>' ;
       if (this.kernel.isAdmin()) {
         content += `<span class='SpanLink'
@@ -434,7 +442,16 @@ class Parcours extends nodefony.Service {
       content += " : " + myNode.item.extraDonnees[0].libelle + lockUnlock + "<HR>" ;
     }
     if (myNode.item.type_obj === 'Port') {
-      content += "Port : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
+      content += "Port " ;
+      content += `<span class='SpanLink'
+                          onclick="mobile.eventUserAction({
+                            'idObj': ${myNode.item.id_obj},
+                            'typeObj' : '${myNode.item.type_obj}',
+                            'name': '${myNode.item.extraDonnees[0].libelle}'},
+                            'vue2D',
+                            'affichage')"
+                        >(Vue 2D)</span>` ;
+      content += " : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
       content += '<HR>' ;
       if (this.kernel.isAdmin()) {
         content += `<span class='SpanLink'

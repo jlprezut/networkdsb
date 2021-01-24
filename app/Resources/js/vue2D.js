@@ -30,8 +30,13 @@ class Vue2D extends nodefony.Service {
           kernel: this.kernel,
     });
     this.shapesLayer = new Konva.Layer();
+    this.shapesLayer.addName("LayerShape") ;
     this.tooltipLayer = new Konva.Layer();
+    this.tooltipLayer.addName("LayerTooltip") ;
     this.userLayer = new Konva.Layer() ;
+    this.userLayer.addName("LayerUser") ;
+    this.focusLayer = new Konva.Layer() ;
+    this.focusLayer.addName("LayerFocus") ;
 
     this.tooltip = new Konva.Label({
           opacity: 0.75,
@@ -87,10 +92,13 @@ class Vue2D extends nodefony.Service {
     this.rj45Texture.kernel = this.kernel ;
 
     this.RJ45ConnectedTexture = new Image();
-    this.RJ45ConnectedTexture.onload = function () {
-      this.kernel.vue2D.rj45Texture.src = '/app/images/RJ45.png';
-    };
     this.RJ45ConnectedTexture.kernel = this.kernel ;
+
+    this.RJ45ErrorTexture = new Image();
+    this.RJ45ErrorTexture.kernel = this.kernel ;
+
+    this.RJ45DownTexture = new Image();
+    this.RJ45DownTexture.kernel = this.kernel ;
 
     this.fibreTexture = new Image();
     this.fibreTexture.onload = function () {
@@ -99,10 +107,15 @@ class Vue2D extends nodefony.Service {
     this.fibreTexture.kernel = this.kernel ;
 
     this.fibreConnectedTexture = new Image();
-    this.fibreConnectedTexture.onload = function () {
-      this.kernel.vue2D.fibreTexture.src = '/app/images/Fibre.png';
-    };
     this.fibreConnectedTexture.kernel = this.kernel ;
+
+    this.fibreErrorTexture = new Image();
+    this.fibreErrorTexture.kernel = this.kernel ;
+
+    this.fibreDownTexture = new Image();
+    this.fibreDownTexture.kernel = this.kernel ;
+
+    this.pointeurTexture = new Image();
 
     this.planetsLayer = new Konva.Layer();
     this.stage.add(this.planetsLayer);
@@ -119,23 +132,20 @@ class Vue2D extends nodefony.Service {
 
     this.stage.add(this.tooltipLayer);
     this.stage.add(this.userLayer);
+    this.stage.add(this.focusLayer);
 
     this.stage.on('mouseover', function (evt) {
       var shape = evt.target;
       if (shape && shape.attrs.key) {
-        //shape.opacity(0.5);
           var t = this.attrs.kernel.vue2D.tooltip.getTag() ;
           t.show() ;
           this.attrs.kernel.vue2D.tooltipLayer.draw() ;
-       // shapesLayer.draw();
       }
     });
 
     this.stage.on('mouseout', function (evt) {
       var shape = evt.target;
       if (shape) {
-        //shape.opacity(0);
-        //shapesLayer.draw();
         this.attrs.kernel.vue2D.tooltip.hide();
           var t = this.attrs.kernel.vue2D.tooltip.getTag() ;
           t.hide() ;
@@ -175,6 +185,7 @@ class Vue2D extends nodefony.Service {
                 fill: 'white',
                 stroke: 'red',
                 key: "objet-" + area.id_objet,
+                name: "objet-" + area.id_objet,
                 toolTip: area.nom_objet,
                 opacity: 1,
               });
@@ -196,19 +207,54 @@ class Vue2D extends nodefony.Service {
                     }) ;
 
                     this.userTexture.src = '/app/images/user.png';
+
                     this.RJ45ConnectedTexture.src = '/app/images/RJ45-connected.png';
+                    this.RJ45ErrorTexture.src = '/app/images/RJ45-error.png';
+                    this.RJ45DownTexture.src = '/app/images/RJ45-down.png';
+
                     this.fibreConnectedTexture.src = '/app/images/Fibre-connected.png';
+                    this.fibreErrorTexture.src = '/app/images/Fibre-error.png';
+                    this.fibreDownTexture.src = '/app/images/Fibre-down.png';
+
+                    this.rj45Texture.src = '/app/images/RJ45.png';
+                    this.fibreTexture.src = '/app/images/Fibre.png';
                     this.imageObj.src = '/app/images/PlanEtg1.png';
+
+                    this.pointeurTexture.src = '/app/images/fleche.png';
 
                     this.stage.add(this.shapesLayer);
 
                     this.planetsLayer.moveToBottom();
                     this.userLayer.moveToTop();
+                    this.focusLayer.moveToTop() ;
                     this.tooltipLayer.moveToTop() ;
 
                     var scrollContainer = document.getElementById('scroll-container');
                     scrollContainer.addEventListener('scroll', this.repositionStage);
                     this.repositionStage();
+
+                    // one revolution per 4 seconds
+                    var angularSpeed = 90;
+                    var anim = new Konva.Animation(function (frame) {
+                      var angleDiff = (frame.timeDiff * angularSpeed) / 1000;
+                      var nodeList = mobile.vue2D.stage.find(".Fleche")
+                      nodeList.forEach((fleche, i) => {
+                        fleche.rotate(angleDiff);
+                      });
+                      var memoList = mobile.vue2D.stage.find(".Memo")
+                      memoList.forEach((memoNode, i) => {
+                        var newAngle = (memoNode.angle() + 5) ;
+                        if (newAngle > 360) {
+                          newAngle = 0 ;
+                        }
+                        memoNode.angle(newAngle) ;
+                        memoNode.rotate(angleDiff) ;
+                      });
+
+                    }, this.focusLayer);
+
+                    anim.start();
+
             }) ;
     }) ;
   }
@@ -216,7 +262,7 @@ class Vue2D extends nodefony.Service {
   listenEvents() {
     let select = document.getElementById('vue2DLink') ;
     select.addEventListener('click', (event) => {
-      this.kernel.vue2D.affichage() ;
+      this.kernel.vue2D.affichage(null) ;
     });
 
     let imgBack = document.getElementById("DIV_Vue2D_Back") ;
@@ -230,7 +276,18 @@ class Vue2D extends nodefony.Service {
     this.kernel.divVue2D.style.display=(false)?'block':'none';
   }
 
-  affichage() {
+  affichage(obj) {
+
+    let idObj = null ;
+    let typeObj = null ;
+    let name = null ;
+
+    if (obj !== null) {
+      idObj = obj.idObj ;
+      typeObj = obj.typeObj ;
+      name = obj.name ;
+    }
+
     this.kernel.divMainMenu.style.display=(false)?'block':'none';
     this.kernel.divUtilisateurs.style.display=(false)?'block':'none';
     this.kernel.divErreurs.style.display=(false)?'block':'none';
@@ -239,14 +296,82 @@ class Vue2D extends nodefony.Service {
 
     this.kernel.divVue2D.style.display=(true)?'block':'none';
 
-    this.kernel.ariane.addLink({ 'class': 'vue2D', 'methode': 'affichage', 'obj': { }, 'libelle': 'Vue 2D', 'tooltip': 'Vue 2D' }) ;
+    this.kernel.ariane.addLink({ 'class': 'vue2D', 'methode': 'affichage', 'obj': { 'obj':obj, idObj:idObj, typeObj:'UserVue2D' }, 'libelle': 'Vue 2D', 'tooltip': name }) ;
+
+    var redRect = mobile.vue2D.stage.find('.Fleche')
+    redRect.forEach((obj, i) => {
+        obj.destroy() ;
+    });
+
+    var redRect = mobile.vue2D.stage.find('.Memo')
+    redRect.forEach((obj, i) => {
+        obj.destroy() ;
+    });
+
+    var focusLayer = mobile.vue2D.stage.find('.LayerFocus')
+
+    var dx = -500 ;
+    var dy = -500 ;
+
+    if (idObj === null) {
+      dx = dx + 500  ;
+      dy = dy + 500 ;
+    } else {
+      var mys = mobile.vue2D.stage.find('.' + typeObj + '-' + idObj) ;
+
+      mys.each(function (shape) {
+          dx = dx + shape.attrs.x - 200  ;
+          dy = dy + shape.attrs.y - 200 ;
+
+          var pointeur = new Konva.Image({
+              image: mobile.vue2D.pointeurTexture,
+              x: shape.attrs.x + (shape.attrs.width/2),
+              y: shape.attrs.y + (shape.attrs.height/2),
+              width: 16,
+              height: 16,
+              name: 'Fleche',
+              offset: {
+                x: -shape.attrs.width/2,
+                y: 0,
+              },
+          });
+          focusLayer.add(pointeur)
+      })
+    }
+
+    let listMemo = this.kernel.memo.getMemoTab() ;
+    listMemo.forEach((item, i) => {
+      var mys = mobile.vue2D.stage.find('.' + item.type_obj + '-' + item.id_obj) ;
+
+      mys.each(function (shape) {
+        var pointeur = new Konva.Arc({
+            x: shape.attrs.x + (shape.attrs.width/2),
+            y: shape.attrs.y + (shape.attrs.height/2),
+            radius: shape.attrs.width/2,
+            innerRadius: shape.attrs.width/2,
+            outerRadius: shape.attrs.width/2,
+            angle: 60,
+            stroke: 'red',
+            strokeWidth: 4,
+            name: 'Memo',
+        });
+        focusLayer.add(pointeur)
+      });
+    }) ;
+
+    var scrollContainer = document.getElementById('scroll-container');
+    scrollContainer.scrollLeft = dx + this.padding;
+    scrollContainer.scrollTop = dy + this.padding;
+
+    this.repositionStage() ;
 
   }
 
-  repositionStage(e) {
+  repositionStage() {
     var scrollContainer = document.getElementById('scroll-container');
     var dx = scrollContainer.scrollLeft - mobile.vue2D.padding;
     var dy = scrollContainer.scrollTop - mobile.vue2D.padding;
+
     mobile.vue2D.stage.container().style.transform =
       'translate(' + dx + 'px, ' + dy + 'px)';
     mobile.vue2D.stage.x(-dx);
@@ -292,7 +417,8 @@ class Vue2D extends nodefony.Service {
             y: pos_y,
             width: 64,
             height: 64,
-            key: 'user-'+item.id_user,
+            key: 'User-'+item.id_user,
+            name: 'User-'+item.id_user,
             toolTip: item.nom_user,
             idObj: item.id_user,
             typeObj: 'User',
@@ -320,8 +446,16 @@ class Vue2D extends nodefony.Service {
           j++ ;
         }
         var texture = this.rj45Texture ;
-        if (item.nb_link>0) {
-          texture = this.RJ45ConnectedTexture ;
+        if (item.up === 0) {
+          texture = this.RJ45DownTexture ;
+        } else {
+          if (item.error === 1) {
+            texture = this.RJ45ErrorTexture ;
+          } else {
+            if (item.nb_link>0) {
+              texture = this.RJ45ConnectedTexture ;
+            }
+          }
         }
         var bunny = new Konva.Image({
             image: texture,
@@ -329,7 +463,8 @@ class Vue2D extends nodefony.Service {
             y: item.pos_y+(j*16)*decalage_y,
             width: 16,
             height: 16,
-            key: 'port-'+item.id_port ,
+            key: 'Port-'+item.id_port ,
+            name: 'Port-'+item.id_port ,
             toolTip: item.libelle,
             idObj: item.id_port,
             typeObj: 'Port',
@@ -340,33 +475,43 @@ class Vue2D extends nodefony.Service {
   }
 
   _handleTextureLoadedFibre(event) {
-      var id_objet = -1 ;
-      for (var i in this.fibre) {
-          var item = this.fibre[i].data ;
-          var j ;
-          var decalage_x = 0 ;
-          var decalage_y = 1;
-          if (item.orientation === 'Nord' || item.orientation === 'Sud') {
-              decalage_x = 1 ;
-              decalage_y = 0 ;
-      }
-      if (item.id_objet !== id_objet) {
-        id_objet = item.id_objet ;
-        j = 0 ;
-      } else {
-        j++ ;
-      }
-      var texture = this.fibreTexture ;
-      if (item.nb_link>0) {
-        texture = this.fibreConnectedTexture ;
-      }
+    var id_objet = -1 ;
+    for (var i in this.fibre) {
+        var item = this.fibre[i].data ;
+        var j ;
+        var decalage_x = 0 ;
+        var decalage_y = 1;
+        if (item.orientation === 'Nord' || item.orientation === 'Sud') {
+            decalage_x = 1 ;
+            decalage_y = 0 ;
+        }
+        if (item.id_objet !== id_objet) {
+          id_objet = item.id_objet ;
+          j = 0 ;
+        } else {
+          j++ ;
+        }
+        var texture = this.fibreTexture ;
+        if (item.up === 0) {
+          texture = this.fibreDownTexture ;
+        } else {
+          if (item.error === 1) {
+            texture = this.fibreErrorTexture ;
+          } else {
+            if (item.nb_link>0) {
+              texture = this.fibreConnectedTexture ;
+            }
+          }
+        }
+
         var bunny = new Konva.Image({
             image: texture,
             x: item.pos_x+(j*16)*decalage_x + 16*decalage_y,
             y: item.pos_y+(j*16)*decalage_y + 16*decalage_x,
             width: 16,
             height: 16,
-            key: 'port-'+item.id_port ,
+            key: 'Port-'+item.id_port ,
+            name: 'Port-'+item.id_port ,
             toolTip: item.libelle,
             idObj: item.id_port,
             typeObj: 'Port',

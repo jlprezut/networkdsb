@@ -123,18 +123,21 @@ class Table {
                         } else {
                             value = row[header].value;
                         }
-                        if (value === null) {
-                          value = '' ;
-                          if (row[header].type) {
-                            value = `<img class='${row[header].type}Img offImg' onclick="mobile.eventUserAction({ 'typeObj': 'Port', 'idObj': ${row[header].id_obj} },'parcours','affichageOne')">` ;
+                        if (row[header].type) {
+                          var compImg = 'Up' ;
+                          if (row[header].link === null) {
+                            compImg = 'Empty'
                           }
+                          if (value === 'e') {
+                            compImg = 'Error' ;
+                          }
+                          if (value === 'd') {
+                            compImg = 'Down' ;
+                          }
+                          value = `<span class='A_tooltip'><img class='${row[header].type}${compImg}Img' onclick="mobile.eventUserAction({ 'typeObj': 'Port', 'idObj': ${row[header].id_obj} },'parcours','affichageOne')"><span>${row[header].link}</span></span>`
                         } else {
-                          if (row[header].type) {
-                            value = `<span class='A_tooltip'><img class='${row[header].type}Img' onclick="mobile.eventUserAction({ 'typeObj': 'Port', 'idObj': ${row[header].id_obj} },'parcours','affichageOne')"><span>${row[header].link}</span></span>`
-                          } else {
-                            if (row[header].informations) {
-                              value = `<span class='A_tooltip'>${value}<span>${row[header].informations}</span></span>` ;
-                            }
+                          if (row[header].informations) {
+                            value = `<span class='A_tooltip'>${value}<span>${row[header].informations}</span></span>` ;
                           }
                         }
                     }

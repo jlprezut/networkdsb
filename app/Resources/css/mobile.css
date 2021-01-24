@@ -26,23 +26,59 @@ h1 {
   content: url('../public/images/Info.png');
 }
 
-.RJ45Img {
-  width: 20px;
+.RJ45UpImg {
+  width: 24px;
+  height: 20px;
+  content: url('../public/images/RJ45-connected.png');
+}
+
+.RJ45DownImg {
+  width: 24px;
+  height: 20px;
+  content: url('../public/images/RJ45-down.png');
+}
+
+.RJ45EmptyImg {
+  width: 24px;
   height: 20px;
   content: url('../public/images/RJ45.png');
 }
 
-.RJ45Img:hover {
+.RJ45ErrorImg {
+  width: 24px;
+  height: 20px;
+  content: url('../public/images/RJ45-error.png');
+}
+
+.RJ45DownImg:hover, .RJ45UpImg:hover, .RJ45EmptyImg:hover, .RJ45ErrorImg:hover {
   cursor: pointer ;
 }
 
-.FibreImg {
-  width: 20px;
-  height: 20px;
+.FibreUpImg {
+  width: 24px;
+  height: 39px;
+  content: url('../public/images/Fibre-connected.png');
+}
+
+.FibreEmptyImg {
+  width: 24px;
+  height: 39px;
   content: url('../public/images/Fibre.png');
 }
 
-.FibreImg:hover {
+.FibreDownImg {
+  width: 24px;
+  height: 39px;
+  content: url('../public/images/Fibre-down.png');
+}
+
+.FibreErrorImg {
+  width: 24px;
+  height: 39px;
+  content: url('../public/images/Fibre-error.png');
+}
+
+.FibreUpImg:hover, .FibreEmptyImg:hover, .FibreDownImg:hover, .FibreErrorImg:hover {
   cursor: pointer ;
 }
 

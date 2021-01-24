@@ -23,7 +23,7 @@ class Ariane extends nodefony.Service {
     }
     this.kernel.arianeTab.splice(id,100) ;
     this.refreshAriane() ;
-    this.kernel.eventUserAction(currentObj.obj, currentObj.class, currentObj.methode) ;
+    this.kernel.eventUserAction(currentObj.obj.obj, currentObj.class, currentObj.methode) ;
   }
 
   refreshAriane() {

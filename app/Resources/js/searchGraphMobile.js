@@ -45,7 +45,7 @@ class SearchGraphMobile extends nodefony.Service{
     let idObj = obj.idObj ;
     let typeObj = obj.typeObj ;
 
-    this.kernel.ariane.addLink({ 'class': 'searchGraph', 'methode': 'linkSearch', 'obj': { 'typeObj': 'Search', 'idObj': document.getElementById("texteSearch").value }, 'libelle': 'Search', 'tooltip': document.getElementById("texteSearch").value }) ;
+    this.kernel.ariane.addLink({ 'class': 'searchGraph', 'methode': 'linkSearch', 'obj': { 'obj': { 'idObj': document.getElementById("texteSearch").value }, 'typeObj': 'Search' }, 'libelle': 'Search', 'tooltip': document.getElementById("texteSearch").value }) ;
     this.kernel.parcours.affichageOne({ 'typeObj': typeObj, 'idObj': idObj }) ;
   }
 

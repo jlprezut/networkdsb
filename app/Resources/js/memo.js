@@ -77,6 +77,10 @@ class Memo extends nodefony.Service {
     return trouve ;
   }
 
+  getMemoTab() {
+    return this.memoTab ;
+  }
+
   highlightNode() {
     this.memoTab.forEach((item,j) => {
       this.kernel.network.canvas.body.nodes[item.type_obj + "-" + item.id_obj].options.borderWidth = 4 ;

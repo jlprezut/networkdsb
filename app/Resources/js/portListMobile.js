@@ -45,17 +45,28 @@ class PortListMobile extends nodefony.Service{
 
     this.kernel.divErreurs.style.display=(true)?'block':'none';
 
-    this.kernel.ariane.addLink({ 'class': 'portList', 'methode': 'listePort', 'obj': { 'typeObj': 'ListePortEquipement', 'idObj': idEquipement, 'idEquipement': idEquipement, 'name': nameEquipement }, 'libelle': 'Liste ports', 'tooltip': nameEquipement }) ;
+    this.kernel.ariane.addLink({ 'class': 'portList', 'methode': 'listePort', 'obj': { 'obj': obj, 'typeObj': 'ListePortEquipement', 'idObj': idEquipement }, 'libelle': 'Liste ports', 'tooltip': nameEquipement }) ;
 
     this.api.get(`/api/equipement/${idEquipement}/port`)
       .then((r) => {
         let content = '' ;
         let tooltip = '' ;
         if (r.length > 0) {
-            content += `<span class='SpanLink' onclick="mobile.eventUserAction({ 'typeObj': 'Equipement', 'idObj': ${r[0].id_equipement} },'parcours','affichageOne')">${r[0].baie_name} / ${r[0].equipement_name}</span></BR></BR>`  ;
+            content += `Baie : <span class='SpanLink' onclick="mobile.eventUserAction({ 'typeObj': 'Baie', 'idObj': ${r[0].id_baie} },'parcours','affichageOne')">${r[0].baie_name}</span></BR>`;
+            content += `Equipement : <span class='SpanLink' onclick="mobile.eventUserAction({ 'typeObj': 'Equipement', 'idObj': ${r[0].id_equipement} },'parcours','affichageOne')">${r[0].equipement_name}</span></BR></BR>`  ;
         }
         for (let i=0; i< r.length; i++) {
-          content += `<span class='SpanLink' onclick="mobile.eventUserAction({ 'idPort': ${r[i].id_obj} },'portList','showPort')">Port ${r[i].name}`;
+          var compImg = "Up" ;
+          if (r[i].nb_link === 0) {
+            compImg = 'Empty'
+          }
+          if (r[i].is_error === 1) {
+            compImg = 'Error' ;
+          }
+          if (r[i].up === 0) {
+            compImg = 'Down' ;
+          }
+          content += `<img class='${r[i].type_acces}${compImg}Img'>&nbsp;<span class='SpanLink' onclick="mobile.eventUserAction({ 'idPort': ${r[i].id_obj} },'portList','showPort')">Port ${r[i].name}`;
           if (r[i].nom_user !== null) {
             content += ` [${r[i].nom_user}]` ;
           }

@@ -57,7 +57,7 @@ class ErrorGraphMobile extends nodefony.Service{
     this.kernel.divErreurs.style.display=(true)?'block':'none';
 
 
-    this.kernel.ariane.addLink({ 'class': 'errorGraph', 'methode': 'listeErreur', 'obj': { 'typeObj': 'ListeErreur', 'idObj': '0' }, 'libelle': 'Liste erreurs', 'tooltip': '' }) ;
+    this.kernel.ariane.addLink({ 'class': 'errorGraph', 'methode': 'listeErreur', 'obj': { 'obj': obj, 'typeObj': 'ListeErreur', 'idObj': '0' }, 'libelle': 'Liste erreurs', 'tooltip': '' }) ;
 
     this.api.get('/api/error/port')
       .then((r) => {

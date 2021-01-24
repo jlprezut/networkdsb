@@ -111,7 +111,7 @@ class UserAction extends nodefony.Service {
       let idUser = obj.idUser ;
       let nameUser = obj.name ;
 
-      this.kernel.ariane.addLink({ 'class': 'userAction', 'methode': 'detailUtilisateur', 'obj': { 'typeObj': 'ListePortUser', 'idObj': idUser, 'idUser': idUser, 'name': nameUser }, 'libelle': 'Liste ports', 'tooltip': nameUser }) ;
+      this.kernel.ariane.addLink({ 'class': 'userAction', 'methode': 'detailUtilisateur', 'obj': { 'obj': obj, 'typeObj': 'ListePortUser', 'idObj': idUser }, 'libelle': 'Liste ports', 'tooltip': nameUser }) ;
 
       this.api.get(`/api/user/${idUser}/inventory`)
         .then((text) => {
