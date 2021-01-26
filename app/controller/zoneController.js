@@ -47,6 +47,33 @@ class zoneController extends nodefony.controller {
             }) ;
     }
 
+    /**
+    *    @Route ("/api/zone/baie/{idZone}",
+    *      name="zoneBaie")
+    */
+    ZoneBaieAction(idZone) {
+      return this.queryService.callProcedure(`CALL get_baies_zone(${idZone})`)
+            .then((reponse) => {
+                return this.api.render(reponse) ;
+            })
+            .catch((error) => {
+              throw error ;
+            }) ;
+    }
+
+    /**
+    *    @Route ("/api/zone/equipement/{idZone}",
+    *      name="zoneEquipement")
+    */
+    ZoneEquipementAction(idZone) {
+      return this.queryService.callProcedure(`CALL get_equipements_zone(${idZone})`)
+            .then((reponse) => {
+                return this.api.render(reponse) ;
+            })
+            .catch((error) => {
+              throw error ;
+            }) ;
+    }
 }
 
 module.exports = zoneController;

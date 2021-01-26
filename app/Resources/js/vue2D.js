@@ -20,6 +20,13 @@ class Vue2D extends nodefony.Service {
     this.height = 2000 ; // window.innerHeight;
     this.padding = 500 ;
 
+    this.listType = [ 'Switch','Bandeau','Quadrupleur','PreQuadrupleur','DSLAM','Routeur','Serveur','InterBaie','Divers','OLT','Splitter','Console']
+    this.typeTexture = []
+    this.listType.forEach((item, i) => {
+      this.typeTexture[item] = new Image();
+      this.typeTexture[item].src = '/app/images/' + item + '.png';
+    });
+
     this.users = [] ;
     this.rj45 = [] ;
     this.fibre = [] ;
@@ -167,9 +174,7 @@ class Vue2D extends nodefony.Service {
         var shape = evt.target;
         if (shape && shape.attrs.typeObj) {
             this.attrs.kernel.parcours.affichageOne({ 'typeObj': shape.attrs.typeObj, 'idObj': shape.attrs.idObj }) ;
-
             }
-        //}
       });
 
     let idZone = 1 ;
@@ -206,55 +211,110 @@ class Vue2D extends nodefony.Service {
                       }
                     }) ;
 
-                    this.userTexture.src = '/app/images/user.png';
+                    this.api.get(`/api/zone/baie/${idZone}`)
+                        .then((listBaie) => {
+                            listBaie.forEach((baie, i) => {
+                              var pointeur = new Konva.Rect({
+                                  x: baie.pos_x,
+                                  y: baie.pos_y,
+                                  width: baie.largeur,
+                                  height: baie.hauteur,
+                                  stroke: 'green',
+                                  strokeWidth: 1,
+                                  name: 'Baie-' + baie.id_baie,
+                                  toolTip: baie.nom_baie,
+                                  opacity: 1,
+                                  fill: 'white',
+                                  key: "Baie-" + baie.id_baie,
+                                  idObj: baie.id_baie,
+                                  typeObj: 'Baie',
 
-                    this.RJ45ConnectedTexture.src = '/app/images/RJ45-connected.png';
-                    this.RJ45ErrorTexture.src = '/app/images/RJ45-error.png';
-                    this.RJ45DownTexture.src = '/app/images/RJ45-down.png';
+                              });
+                              this.userLayer.add(pointeur)
+                            }) ;
 
-                    this.fibreConnectedTexture.src = '/app/images/Fibre-connected.png';
-                    this.fibreErrorTexture.src = '/app/images/Fibre-error.png';
-                    this.fibreDownTexture.src = '/app/images/Fibre-down.png';
+                            this.api.get(`/api/zone/equipement/${idZone}`)
+                                .then((listEquipement) => {
+                                    var offsetX = 0 ;
+                                    var offsetY = 0 ;
+                                    var id_baie = 0 ;
+                                    listEquipement.forEach((equipement, i) => {
+                                      if (equipement.id_baie !== id_baie) {
+                                        offsetX = 0 ;
+                                        offsetY = 0 ;
+                                        id_baie = equipement.id_baie ;
+                                      } else {
+                                        offsetX += 22 ;
+                                        if (offsetX +22 > equipement.largeur) {
+                                          offsetX = 0 ;
+                                          offsetY += 22 ;
+                                        }
+                                      }
+                                      var pointeur = new Konva.Image({
+                                          image: mobile.vue2D.typeTexture[equipement.type],
+                                          x: equipement.pos_x + offsetX,
+                                          y: equipement.pos_y + offsetY,
+                                          width: 22,
+                                          height: 22,
+                                          name: 'Equipement-' + equipement.id_equipement,
+                                          key: 'Equipement-' + equipement.id_equipement,
+                                          toolTip: equipement.description,
+                                          idObj: equipement.id_equipement,
+                                          typeObj: 'Equipement',
+                                      });
+                                      this.userLayer.add(pointeur)
+                                    }) ;
 
-                    this.rj45Texture.src = '/app/images/RJ45.png';
-                    this.fibreTexture.src = '/app/images/Fibre.png';
-                    this.imageObj.src = '/app/images/PlanEtg1.png';
+                                    this.userTexture.src = '/app/images/user.png';
 
-                    this.pointeurTexture.src = '/app/images/fleche.png';
+                                    this.RJ45ConnectedTexture.src = '/app/images/RJ45-connected.png';
+                                    this.RJ45ErrorTexture.src = '/app/images/RJ45-error.png';
+                                    this.RJ45DownTexture.src = '/app/images/RJ45-down.png';
 
-                    this.stage.add(this.shapesLayer);
+                                    this.fibreConnectedTexture.src = '/app/images/Fibre-connected.png';
+                                    this.fibreErrorTexture.src = '/app/images/Fibre-error.png';
+                                    this.fibreDownTexture.src = '/app/images/Fibre-down.png';
 
-                    this.planetsLayer.moveToBottom();
-                    this.userLayer.moveToTop();
-                    this.focusLayer.moveToTop() ;
-                    this.tooltipLayer.moveToTop() ;
+                                    this.rj45Texture.src = '/app/images/RJ45.png';
+                                    this.fibreTexture.src = '/app/images/Fibre.png';
+                                    this.imageObj.src = '/app/images/PlanEtg1.png';
 
-                    var scrollContainer = document.getElementById('scroll-container');
-                    scrollContainer.addEventListener('scroll', this.repositionStage);
-                    this.repositionStage();
+                                    this.pointeurTexture.src = '/app/images/fleche.png';
 
-                    // one revolution per 4 seconds
-                    var angularSpeed = 90;
-                    var anim = new Konva.Animation(function (frame) {
-                      var angleDiff = (frame.timeDiff * angularSpeed) / 1000;
-                      var nodeList = mobile.vue2D.stage.find(".Fleche")
-                      nodeList.forEach((fleche, i) => {
-                        fleche.rotate(angleDiff);
-                      });
-                      var memoList = mobile.vue2D.stage.find(".Memo")
-                      memoList.forEach((memoNode, i) => {
-                        var newAngle = (memoNode.angle() + 5) ;
-                        if (newAngle > 360) {
-                          newAngle = 0 ;
-                        }
-                        memoNode.angle(newAngle) ;
-                        memoNode.rotate(angleDiff) ;
-                      });
+                                    this.stage.add(this.shapesLayer);
 
-                    }, this.focusLayer);
+                                    this.planetsLayer.moveToBottom();
+                                    this.userLayer.moveToTop();
+                                    this.focusLayer.moveToTop() ;
+                                    this.tooltipLayer.moveToTop() ;
 
-                    anim.start();
+                                    var scrollContainer = document.getElementById('scroll-container');
+                                    scrollContainer.addEventListener('scroll', this.repositionStage);
+                                    this.repositionStage();
 
+                                    // one revolution per 4 seconds
+                                    var angularSpeed = 90;
+                                    var anim = new Konva.Animation(function (frame) {
+                                      var angleDiff = (frame.timeDiff * angularSpeed) / 1000;
+                                      var nodeList = mobile.vue2D.stage.find(".Fleche")
+                                      nodeList.forEach((fleche, i) => {
+                                        fleche.rotate(angleDiff);
+                                      });
+                                      var memoList = mobile.vue2D.stage.find(".Memo")
+                                      memoList.forEach((memoNode, i) => {
+                                        var newAngle = (memoNode.angle() + 5) ;
+                                        if (newAngle > 360) {
+                                          newAngle = 0 ;
+                                        }
+                                        memoNode.angle(newAngle) ;
+                                        memoNode.rotate(angleDiff) ;
+                                      });
+
+                                    }, this.focusLayer);
+
+                                    anim.start();
+                            }) ;
+                    }) ;
             }) ;
     }) ;
   }
@@ -331,7 +391,7 @@ class Vue2D extends nodefony.Service {
               height: 16,
               name: 'Fleche',
               offset: {
-                x: -shape.attrs.width/2,
+                x: -Math.max(shape.attrs.width/2,shape.attrs.height/2),
                 y: 0,
               },
           });
@@ -347,9 +407,9 @@ class Vue2D extends nodefony.Service {
         var pointeur = new Konva.Arc({
             x: shape.attrs.x + (shape.attrs.width/2),
             y: shape.attrs.y + (shape.attrs.height/2),
-            radius: shape.attrs.width/2,
-            innerRadius: shape.attrs.width/2,
-            outerRadius: shape.attrs.width/2,
+            radius: Math.max(shape.attrs.width/2,shape.attrs.height/2),
+            innerRadius: Math.max(shape.attrs.width/2,shape.attrs.height/2),
+            outerRadius: Math.max(shape.attrs.width/2,shape.attrs.height/2),
             angle: 60,
             stroke: 'red',
             strokeWidth: 4,

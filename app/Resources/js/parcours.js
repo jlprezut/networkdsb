@@ -427,7 +427,15 @@ class Parcours extends nodefony.Service {
                             'typeObj': '${myNode.item.type_obj}',
                             'name': '${myNode.item.extraDonnees[0].libelle}' },
                             'baieListing','listing')"
-                      >(Vue Liste)</span>` ;
+                      >(Vue Liste</span> / ` ;
+      content += `<span class='SpanLink'
+                          onclick="mobile.eventUserAction({
+                            'idObj': ${myNode.item.id_obj},
+                            'typeObj' : '${myNode.item.type_obj}',
+                            'name': '${myNode.item.extraDonnees[0].libelle}'},
+                            'vue2D',
+                            'affichage')"
+                        >Vue 2D)</span>` ;
       content += " : " +  myNode.item.extraDonnees[0].libelle + lockUnlock ;
       content += "<HR>"
     }
@@ -438,7 +446,15 @@ class Parcours extends nodefony.Service {
                             'idEquipement': '${myNode.item.id_obj}',
                             'name': '${myNode.item.extraDonnees[0].libelle}' },
                             'portList','listePort')"
-                      >(Vue Liste)</span>` ;
+                      >(Vue Liste</span> / ` ;
+      content += `<span class='SpanLink'
+                          onclick="mobile.eventUserAction({
+                            'idObj': ${myNode.item.id_obj},
+                            'typeObj' : '${myNode.item.type_obj}',
+                            'name': '${myNode.item.extraDonnees[0].libelle}'},
+                            'vue2D',
+                            'affichage')"
+                        >Vue 2D)</span>` ;
       content += " : " + myNode.item.extraDonnees[0].libelle + lockUnlock + "<HR>" ;
     }
     if (myNode.item.type_obj === 'Port') {
