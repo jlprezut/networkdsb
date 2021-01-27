@@ -98,7 +98,13 @@ class Parcours extends nodefony.Service {
             }) ;
             if (trouve.length === 0) {
               if (edge.get(item.type_obj + "-" + item.id_obj) === null) {
-                edge.add({id: (item.type_obj + "-" + item.id_obj), from: (item.extraDonnees[0].type_id_from + "-" + item.extraDonnees[0].id_from), to: (item.extraDonnees[0].type_id_to + "-" + item.extraDonnees[0].id_to), title: titleValue, item: item}) ;
+                let dashes = false ;
+                let color = "blue"
+                if (item.type_obj.includes('User')) {
+                  dashes = [2, 10, 2, 10] ;
+                  color = "red"
+                }
+                edge.add({id: (item.type_obj + "-" + item.id_obj), from: (item.extraDonnees[0].type_id_from + "-" + item.extraDonnees[0].id_from), to: (item.extraDonnees[0].type_id_to + "-" + item.extraDonnees[0].id_to), title: titleValue, item: item, dashes: dashes, color: { color: color }}) ;
               }
             }
           } else {
@@ -141,7 +147,7 @@ class Parcours extends nodefony.Service {
               imageValue = imageValue + '.png' ;
 
               if (edge.get(item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent) === null) {
-                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item, dashes : [5, 5], color: { color: "black" }}) ;
               }
             }
 
@@ -164,7 +170,7 @@ class Parcours extends nodefony.Service {
               titleValue = `Salle : ${item.extraDonnees[0].libelle}<HR>${titleValue}`;
 
               if (edge.get(item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent) === null) {
-                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item, dashes: [15, 15], color: { color: "black" }}) ;
               }
             }
 
@@ -178,7 +184,7 @@ class Parcours extends nodefony.Service {
               }
 
               if (edge.get(item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent) === null) {
-                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item, dashes: [15, 15], color: { color: "black" }}) ;
               }
             }
 
@@ -188,7 +194,7 @@ class Parcours extends nodefony.Service {
               titleValue = `${item.extraDonnees[0].type} : ${item.extraDonnees[0].libelle}<HR>${titleValue}`;
 
               if (edge.get(item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent) === null) {
-                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item}) ;
+                edge.add({id: (item.type_obj + "-" + item.id_obj + '/' + item.type_obj_parent + "-" + item.id_obj_parent), from: item.type_obj + "-" + item.id_obj, to: item.type_obj_parent + "-" + item.id_obj_parent, item: item, dashes: [15, 15], color: { color: "black" }}) ;
               }
             }
 
