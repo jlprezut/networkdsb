@@ -89,7 +89,8 @@ class UserAction extends nodefony.Service {
         .then((r) => {
           let content = '' ;
           for (let i=0; i< r.length; i++) {
-            content = content + `${r[i].name} <span class='SpanLink' onclick="mobile.eventUserAction( {'idUser': ${r[i].id_obj}, 'name': '${r[i].name}' },'userAction','detailUtilisateur')">(Vue liste)</span> / <span class='SpanLink'  onclick="mobile.eventUserAction({ 'typeObj': 'User', 'idObj': ${r[i].id_obj} }, 'parcours','affichageOne')">(Vue Graphique)</span><br>` ;
+            content = content + `${r[i].name} <span class='SpanLink' onclick="mobile.eventUserAction( {'idUser': ${r[i].id_obj}, 'name': '${r[i].name}' },'userAction','detailUtilisateur')">(Vue liste</span> / <span class='SpanLink'  onclick="mobile.eventUserAction({ 'typeObj': 'User', 'idObj': ${r[i].id_obj} }, 'parcours','affichageOne')">Vue Graphique)</span>` ;
+            content = content + '</br>' ;
           }
           if (content === '') {
             content = 'Aucun utilisateur...' ;

@@ -388,21 +388,24 @@ class Parcours extends nodefony.Service {
 
     if (myNode.item.type_obj === 'User') {
       content += 'User ' ;
-      content += `<span class='SpanLink'
+      content += `(<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idUser': ${myNode.item.id_obj},
                             'name': '${myNode.item.extraDonnees[0].libelle}'},
                             'userAction',
                             'detailUtilisateur')"
-                        >(Vue Liste</span> / ` ;
-      content += `<span class='SpanLink'
+                        >Vue Liste</span>` ;
+      if (myNode.item.extraDonnees[0].vue2D === 1) {
+        content += ` / <span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idObj': ${myNode.item.id_obj},
                             'typeObj' : '${myNode.item.type_obj}',
                             'name': '${myNode.item.extraDonnees[0].libelle}'},
                             'vue2D',
                             'affichage')"
-                        >Vue 2D)</span>` ;
+                        >Vue 2D</span>` ;
+      }
+      content += ')' ;
       content += ' : ' + myNode.item.extraDonnees[0].libelle + lockUnlock + '<HR>' ;
       if (this.kernel.isAdmin()) {
         content += `<span class='SpanLink'
@@ -421,52 +424,60 @@ class Parcours extends nodefony.Service {
     }
     if (myNode.item.type_obj === 'Baie') {
       content += "Baie : " ;
-      content += `<span class='SpanLink'
+      content += `(<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idObj': '${myNode.item.id_obj}',
                             'typeObj': '${myNode.item.type_obj}',
                             'name': '${myNode.item.extraDonnees[0].libelle}' },
                             'baieListing','listing')"
-                      >(Vue Liste</span> / ` ;
-      content += `<span class='SpanLink'
+                      >Vue Liste</span>` ;
+      if (myNode.item.extraDonnees[0].vue2D === 1) {
+        content += ` / <span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idObj': ${myNode.item.id_obj},
                             'typeObj' : '${myNode.item.type_obj}',
                             'name': '${myNode.item.extraDonnees[0].libelle}'},
                             'vue2D',
                             'affichage')"
-                        >Vue 2D)</span>` ;
+                        >Vue 2D</span>` ;
+      }
+      content += ')' ;
       content += " : " +  myNode.item.extraDonnees[0].libelle + lockUnlock ;
-      content += "<HR>"
+      content += "<HR>";
     }
     if (myNode.item.type_obj === 'Equipement') {
       content += "Equipement " ;
-      content += `<span class='SpanLink'
+      content += `(<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idEquipement': '${myNode.item.id_obj}',
                             'name': '${myNode.item.extraDonnees[0].libelle}' },
                             'portList','listePort')"
-                      >(Vue Liste</span> / ` ;
-      content += `<span class='SpanLink'
+                      >Vue Liste</span>` ;
+      if (myNode.item.extraDonnees[0].vue2D === 1) {
+        content += ` / <span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idObj': ${myNode.item.id_obj},
                             'typeObj' : '${myNode.item.type_obj}',
                             'name': '${myNode.item.extraDonnees[0].libelle}'},
                             'vue2D',
                             'affichage')"
-                        >Vue 2D)</span>` ;
+                        >Vue 2D</span>` ;
+      }
+      content += ')' ;
       content += " : " + myNode.item.extraDonnees[0].libelle + lockUnlock + "<HR>" ;
     }
     if (myNode.item.type_obj === 'Port') {
       content += "Port " ;
-      content += `<span class='SpanLink'
+      if (myNode.item.extraDonnees[0].vue2D === 1) {
+        content += `(<span class='SpanLink'
                           onclick="mobile.eventUserAction({
                             'idObj': ${myNode.item.id_obj},
                             'typeObj' : '${myNode.item.type_obj}',
                             'name': '${myNode.item.extraDonnees[0].libelle}'},
                             'vue2D',
                             'affichage')"
-                        >(Vue 2D)</span>` ;
+                        >Vue 2D</span>)` ;
+      }
       content += " : " + myNode.item.extraDonnees[0].libelle + lockUnlock ;
       content += '<HR>' ;
       if (this.kernel.isAdmin()) {
