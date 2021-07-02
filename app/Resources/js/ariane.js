@@ -1,5 +1,6 @@
 import nodefony from 'nodefony-client' ;
 
+
 class Ariane extends nodefony.Service {
 
   constructor(kernel) {
